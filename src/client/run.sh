@@ -6,18 +6,12 @@ declare SERVER_PORT="$( grep '^server_port' $DEFAULT_CONFIG_FILE | cut -f 2 )"
 declare SERVER_URL="$( grep '^server_URL' $DEFAULT_CONFIG_FILE | cut -f 2 )"
 declare KSIG='15' # SIGTERM
 
-if lsof -t -i:$SERVER_PORT
-then
-    kill -s $KSIG $( lsof -t -i:$SERVER_PORT )
-    
-    echo "$( date ): Dirty initialize because port was in use." >> \
-	 $SERVER_LOG_PATH/initialize.log
-fi
+echo "$( date ): Executing client test code." >> \
+     $SERVER_LOG_PATH/initialize.log
 
-# screen -d -m -S PID_synthesis_server_daemon \
-       $SERVER_LOG_PATH/src/server/server.py $SERVER_URL $SERVER_PORT
+$SERVER_LOG_PATH/src/client/client.py $SERVER_URL $SERVER_PORT
 
-echo "$( date ): Initialization success" >> \
+echo "$( date ): Client execution success." >> \
      $SERVER_LOG_PATH/initialize.log    
 
 

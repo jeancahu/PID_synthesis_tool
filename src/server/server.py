@@ -1,20 +1,20 @@
 #!/usr/bin/env python 
 
+from sys import exit
+from sys import argv
 import socket
-# import os
-# import commands
-# import MySQLdb as mdb
 import threading
 import time
-# import getpass
 
-import time # necesario para los delays
-
+## Init
+if len(argv) < 3:
+  print("Insuficientes argumentos")
+  exit(2)
 
 ## Global Vars:
-#server_URL = "carara.eie.ucr.ac.cr"
-server_URL = "192.168.0.4"
-server_port = 8494
+server_URL = str(argv[1])
+server_port = int(argv[2])
+
 
 # Comunicacion cliente-servidor:
 class Client(threading.Thread):
@@ -45,8 +45,13 @@ class Client(threading.Thread):
 def main(): 
 
   server = socket.socket(socket.AF_INET, socket.SOCK_STREAM) # Crear socket server  
-  server.bind((server_URL, server_port))
-  print("Se ha iniciado el server con el puerto" , server_port , "como receptor")
+  try:
+    server.bind((server_URL, server_port))
+    print("Se ha iniciado el server con el puerto" , server_port , "como receptor")
+  except:
+    print("Fue imposible inicializar el server con el puerto", server_port)
+    exit(1)
+
   server.listen(1)
   clients = [] # Lista de clientes
 
@@ -64,3 +69,4 @@ def main():
 
 if __name__ == "__main__": 
   main()
+  exit(0)

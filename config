@@ -17,8 +17,9 @@ else
     printf 'Executing configuration\n'
     printf "
 # Default config file PID_synthesis_server_client
-local_path $PWD
-
+local_path\t$PWD
+server_port\t8494
+server_URL\tcarara.eie.ucr.ac.cr
 
 " >$DEFAULT_CONFIG_FILE
 fi
