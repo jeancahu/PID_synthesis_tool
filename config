@@ -1,0 +1,26 @@
+#!/bin/bash
+
+declare DEFAULT_CONFIG_FILE="$HOME/.pid_ss.conf"
+
+if [ -f $DEFAULT_CONFIG_FILE ]
+then
+    read -p "A configuration already exist, do you want reload it? [y/N] " -n 1 OPTION
+    [ $OPTION ] || exit 0
+    printf '\n'
+    if [[ ${OPTION,,} =~ 'y' ]]
+    then
+	printf 'Deleting old configuration\n'
+	rm $DEFAULT_CONFIG_FILE
+	./$0
+    fi
+else
+    printf 'Executing configuration\n'
+    printf "
+# Default config file PID_synthesis_server_client
+local_path $PWD
+
+
+" >$DEFAULT_CONFIG_FILE
+fi
+
+exit 0
