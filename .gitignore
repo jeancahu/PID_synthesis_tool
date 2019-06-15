@@ -66,3 +66,6 @@ fastlane/readme.md
 
 # Emacs buffers
 *~
+
+# Python buffers
+__pycache__
