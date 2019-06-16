@@ -4,6 +4,17 @@
 # PI/PID Tunning
 #
 
+# Args:
+# * v,     Fractional order
+# * T,     Time constant
+# * K,     Proportional constant
+# * L,     Dead time constant
+# * Ms,    maximum sensitivity
+# * CType, Controler type ['PI','PID']
+
+# Internal values
+# * tao_o, Fractional normalized dead time
+
 import numpy as np
 from sys import exit
 from sys import argv
@@ -24,17 +35,6 @@ else:
     print("Error, unknown controller")
     exit(6)
 
-# Args:
-# * v,     Fractional order
-# * T,     Time constant
-# * K,     Proportional constant
-# * L,     Dead time constant
-# * Ms,    maximum sensitivity
-# * CType, Controler type ['PI','PID']
-
-# Internal values
-# * tao_o, Fractional normalized dead time
-
 def main ():
     print(Type, "controller tunnig")
     print(argv)
@@ -49,15 +49,7 @@ def main ():
     print("There are whole necessary values")
 
     try:
-        for num in argv[1:-1]:
-            print(type(num))
-            print(num)
-            if '.' in num:
-                print("float type")
-                args.append(float(num))
-            else:
-                print("int type")
-                args.append(int(num))
+        args = [ float(x) for x in argv[1:-1] ]
     except Exception:
         raise ValueError('There are args that are not numbers')
         exit(2)
@@ -71,18 +63,16 @@ def main ():
     
     # Verify v is in range
     if Type == 'PI':
-        if v <= 1.6 and v >= 1.0:
-            print('Fractional order is in range [1.0, 1.6]')
-        else:
-            raise ValueError('Fractional order is not in range [1.0, 1.6]')
-            exit(3)
+        v_range = (1.6,1.0)
     elif Type == 'PID':
-        if float(v) <= 1.8 and float(v) >= 1.0:
-            print('Fractional order is in range [1.0, 1.8]')
-        else:
-            raise ValueError('Fractional order is not in range [1.0, 1.8]')
-            exit(3)
+        v_range = (1.8,1.0)
 
+    if v <= v_range[0] and v >= v_range[1]:
+        print('Fractional order is in range [', v_range[1],', ', v_range[0],']')
+    else:
+        raise ValueError(
+            'Fractional order is not in range [', v_range[1],', ', v_range[0],']')
+    exit(3)
             
     # Calculate fractional normalized dead time
     tao_o = float(L)/(np.power(T,1/v))
@@ -132,6 +122,7 @@ def main ():
         T_d = np.multiply(tao_d, np.power(T, np.divide(1,v)))
         print('Differential value:', T_d)
 
-    exit(0)
     
-main()
+if __name__ == "__main__": 
+  main()
+  exit(0)
