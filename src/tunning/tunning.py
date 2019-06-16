@@ -72,8 +72,8 @@ def main ():
     else:
         raise ValueError(
             'Fractional order is not in range [', v_range[1],', ', v_range[0],']')
-    exit(3)
-            
+        exit(3)
+
     # Calculate fractional normalized dead time
     tao_o = float(L)/(np.power(T,1/v))
     print("fractional normalized dead time: ", tao_o)
@@ -100,27 +100,27 @@ def main ():
         exit(5)
     print('Maximum sensitivity is in range {1.4, 2.0}')
 
-    print(Type, 'Tunning:')
+    print(Type, 'Tunning results:')
 
     kappa_p = common.normalized_proportional_const(values_dict, v, tao_o)
-    print('Normalized proportional value:', kappa_p)
+    print('R:\tNormalized proportional value:\t', kappa_p)
 
     tao_i = common.normalized_integral_const(values_dict, v, tao_o)
-    print('Normalized integral value:', tao_i)
+    print('R:\tNormalized integral value:\t', tao_i)
 
     if Type == 'PID':
         tao_d = common.normalized_differential_const(values_dict, v, tao_o)
-        print('Normalized differential value:', tao_d)
+        print('R:\tNormalized differential value:\t', tao_d)
 
     K_p = np.divide(kappa_p, K)
-    print('Proportional value:', K_p)
+    print('R:\t__________ Proportional value:\t', K_p)
 
     T_i = np.multiply(tao_i, np.power(T, np.divide(1,v)))
-    print('Integral value:', T_i)
+    print('R:\t__________ Integral value:\t', T_i)
 
     if Type == 'PID':
         T_d = np.multiply(tao_d, np.power(T, np.divide(1,v)))
-        print('Differential value:', T_d)
+        print('R:\t__________ Differential value:\t', T_d)
 
     
 if __name__ == "__main__": 
