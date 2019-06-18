@@ -21,7 +21,19 @@ def main():
         print("No fue posible ingresar por el puerto ", server_port, server_URL)
         exit(1)
 
-    client.send("test".encode())
+    client.send("model".encode())
+    datos = client.recv(1000)
+    print(datos.decode())
+    client.send("1.5,4,4,4,1.4,PID".encode())
+    datos = client.recv(1000)
+    print(datos.decode())
+
+    
+    
+    #client.send("response_file".encode())
+    #client.send("test".encode())
+
+    ## Se reciben los parámetros
     datos = client.recv(1000)
     print(datos.decode())
     client.close()

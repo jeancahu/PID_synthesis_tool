@@ -10,6 +10,7 @@
 # * K,     Proportional constant
 # * L,     Dead time constant
 # * Ms,    maximum sensitivity
+# * synx,  Matlab syntax boolean
 # * CType, Controler type ['PI','PID']
 
 # Internal values
@@ -21,35 +22,47 @@ from sys import argv
 
 #
 
-from common import common
+from common.fractional_order_rule import common
+from common.outformat import table_format
 
 # Define controller type
 Type = argv[-1]
 if Type == 'PID':
-    from common import PID_Ms_2_0 as Ms_2_0
-    from common import PID_Ms_1_4 as Ms_1_4
+    from common.fractional_order_rule import PID_Ms_2_0 as Ms_2_0
+    from common.fractional_order_rule import PID_Ms_1_4 as Ms_1_4
 elif Type == 'PI':
-    from common import PI_Ms_2_0 as Ms_2_0
-    from common import PI_Ms_1_4 as Ms_1_4
+    from common.fractional_order_rule import PI_Ms_2_0 as Ms_2_0
+    from common.fractional_order_rule import PI_Ms_1_4 as Ms_1_4
 else:
     print("Error, unknown controller")
     exit(6)
 
+# Define syntax
+if type(argv[-2]) == str:
+    if argv[-2].lower() == 'true':
+        # Then use script syntax
+        syntx = True
+    elif argv[-2].lower() == 'false':
+        # Then use human readable syntax
+        syntx = False
+else:
+    syntx = bool(int(argv[-2]))
+
 def main ():
-    print(Type, "controller tunnig")
-    print(argv)
+    #print(Type, "controller tunnig")
+    #print(argv)
 
     args = []
     values_dict = {}
 
-    if len(argv) != 7:
+    if len(argv) != 8:
         raise ValueError('here are not enough values')
         exit(1)
 
-    print("There are whole necessary values")
+    #print("There are whole necessary values")
 
     try:
-        args = [ float(x) for x in argv[1:-1] ]
+        args = [ float(x) for x in argv[1:-2] ]
     except Exception:
         raise ValueError('There are args that are not numbers')
         exit(2)
@@ -68,7 +81,8 @@ def main ():
         v_range = (1.8,1.0)
 
     if v <= v_range[0] and v >= v_range[1]:
-        print('Fractional order is in range [', v_range[1],', ', v_range[0],']')
+        # print('Fractional order is in range [', v_range[1],', ', v_range[0],']')
+        pass
     else:
         raise ValueError(
             'Fractional order is not in range [', v_range[1],', ', v_range[0],']')
@@ -76,11 +90,12 @@ def main ():
 
     # Calculate fractional normalized dead time
     tao_o = float(L)/(np.power(T,1/v))
-    print("fractional normalized dead time: ", tao_o)
+    # print("fractional normalized dead time: ", tao_o)
 
     
     if tao_o <= 2.0 and tao_o >= 0.1:
-        print('Fractional normalized dead time is in range [0.1, 2.0]')
+        # print('Fractional normalized dead time is in range [0.1, 2.0]')
+        pass
     else:
         raise ValueError('Fractional normalized dead time is not in range [0.1, 2.0]')
         exit(4)
@@ -98,31 +113,25 @@ def main ():
     else:
         raise ValueError('Maximum sensitivity is not in {1.4, 2.0}')
         exit(5)
-    print('Maximum sensitivity is in range {1.4, 2.0}')
+    # print('Maximum sensitivity is in range {1.4, 2.0}')
 
-    print(Type, 'Tunning results:')
-
-    kappa_p = common.normalized_proportional_const(values_dict, v, tao_o)
-    print('R:\tNormalized proportional value:\t', kappa_p)
-
+    # Calculate results:
+    kappa_p = common.normalized_proportional_const(values_dict, v, tao_o)    
     tao_i = common.normalized_integral_const(values_dict, v, tao_o)
-    print('R:\tNormalized integral value:\t', tao_i)
-
     if Type == 'PID':
         tao_d = common.normalized_differential_const(values_dict, v, tao_o)
-        print('R:\tNormalized differential value:\t', tao_d)
-
+    else:
+        tao_d = 0
     K_p = np.divide(kappa_p, K)
-    print('R:\t__________ Proportional value:\t', K_p)
-
     T_i = np.multiply(tao_i, np.power(T, np.divide(1,v)))
-    print('R:\t__________ Integral value:\t', T_i)
-
     if Type == 'PID':
         T_d = np.multiply(tao_d, np.power(T, np.divide(1,v)))
-        print('R:\t__________ Differential value:\t', T_d)
+    else:
+        T_d = 0
 
-    
+    table_format.print_table_results(Type, Ms, syntx,
+        kappa_p, tao_i, tao_d, K_p, T_i, T_d)
+
 if __name__ == "__main__": 
   main()
   exit(0)

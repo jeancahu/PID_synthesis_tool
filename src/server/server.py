@@ -2,6 +2,8 @@
 
 from sys import exit
 from sys import argv
+from subprocess import Popen as subproc
+from subprocess import PIPE
 import socket
 import threading
 import time
@@ -28,17 +30,63 @@ class Client(threading.Thread):
 
   def run(self):
     """ 
-    COMMENTARIO
+    Este hilo se encarga de ejecutar las diferentes transacciones de datos
+    necesarias para compartir el modelo o la respuesta del sistema desde
+    el cliente al servidor y posteriormente los parámetros del controlador
+    y la imagen de la nueva implementación simulada, desde el servidor al
+    dispositivo cliente
+    
+    Primer tramo: Tipo de información: [model,response_file]
+    Segundo tramo: Tupla de parámetros o fichero de texto plano según sea
+        el caso
     """
-
-    datos = self.socket.recv(1024) # Recibe 1024 bytes del cliente
+    datos = self.socket.recv(512) # Recibe 512 bytes del cliente
     datos = datos.decode('utf-8') # Decodificar datos según el protocolo
     datos = datos.replace('\n', '')
     print("Los datos son: ", datos) # Imprime los datos en la bitácora
 
-    self.socket.send("Comando acceptado".encode('utf-8')) # Se responde al cliente
+    if datos == 'model':
+      self.socket.send("Comando acceptado".encode('utf-8')) # Se responde al cliente
+      datos = self.socket.recv(512) # Recibe 512 bytes del cliente
+      datos = datos.decode('utf-8') # Decodificar datos según el protocolo
+      datos = datos.replace('\n', '')
+      datos = datos.replace(',',' ')
+      print("Los parámetros son: ", datos) # Imprime los datos en la bitácora
+      self.socket.send("Parámetros recibidos".encode('utf-8')) # Se responde al cliente
+
+      ## Ejecutar el subprocess
+      command = '../tunning/tunning.py '+datos
+      tunning_process = subproc(command, stdout=PIPE, shell=True)
+      out, err = tunning_process.communicate() 
+      result = out.decode('utf-8')
+      result = result.split('\n')
+
+      response = ""
+      #print(result)
+      for lin in result:
+        if lin.startswith('R:'):
+          print(lin)
+          response += lin.split('\t')[2]+','
+          #print(lin.split('\t')[2])
+
+      response = response[0:-1] # Eliminar la coma final
+      response = response.replace(' ','') # Eliminar espacios
+      #print(response)
+      tunning_process.terminate()
+
+      ## Se envían los parámetros al cliente
+      self.socket.send(response.encode('utf-8'))
+      
+        
+    elif datos == 'response_file':
+      self.socket.send("Comando acceptado".encode('utf-8')) # Se responde al cliente
+    else:
+      self.socket.send("Comando desconocido".encode('utf-8')) # Se responde al cliente
+
+    self.__del__() # Destruye la conexión
 
   def __del__(self):
+    print("El cliente " + self.datos_str + " se ha desconectado")
     self.socket.close() # El cliente se despide
 
 
