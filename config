@@ -18,6 +18,7 @@ else
     printf "
 # Default config file PID_synthesis_server_client
 local_path\t$PWD
+cache_path\t/tmp/pid_ss
 server_port\t8494
 server_URL\tcarara.eie.ucr.ac.cr
 

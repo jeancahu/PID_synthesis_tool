@@ -18,9 +18,9 @@ do
 	$SERVER_PATH/src/tunning/tunning.py $1 $2 $3 $4 $SENSIBILITY True $CONTROLLER
 	if (( $? ))
 	then
-	    printf "${CONTROLLER}_${SENSIBILITY/\./_}=false;\n"
+	    printf "${CONTROLLER}_Ms_${SENSIBILITY/\./_}_enable=false;\n"
 	else
-	    printf "${CONTROLLER}_${SENSIBILITY/\./_}=true;\n"
+	    printf "${CONTROLLER}_Ms_${SENSIBILITY/\./_}_enable=true;\n"
 	fi
     done
 done

@@ -32,6 +32,9 @@ printf "output_path='$M_CACHE_PATH/';\n" >> $M_CACHE_PATH/parameters.m
 printf "
 run $SERVER_PATH/src/sketcher/lib/start.m
 run $M_CACHE_PATH/parameters.m
+run $SERVER_PATH/src/sketcher/lib/crone_pm_aprox.m
+run $SERVER_PATH/src/sketcher/lib/define_controllers.m
+run $SERVER_PATH/src/sketcher/lib/close_loop_ft.m
 run $SERVER_PATH/src/sketcher/sys_response.m
 run $SERVER_PATH/src/sketcher/lib/finish.m
 " > $M_CACHE_PATH/script.m
