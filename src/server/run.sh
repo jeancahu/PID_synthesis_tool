@@ -15,8 +15,12 @@ then
 fi
 
 # screen -d -m -S PID_synthesis_server_daemon \
-       $SERVER_LOG_PATH/src/server/server.py $SERVER_URL $SERVER_PORT
-
+until $SERVER_LOG_PATH/src/server/server.py $SERVER_URL $SERVER_PORT
+do
+    sleep 4
+done
+       
+       
 echo "$( date ): Initialization success" >> \
      $SERVER_LOG_PATH/initialize.log    
 
