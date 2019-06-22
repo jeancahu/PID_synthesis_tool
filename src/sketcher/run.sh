@@ -7,8 +7,9 @@
 # 
 
 ## Global server parameters
-declare DEFAULT_CONFIG_FILE="$HOME/.pid_ss.conf"
-declare SERVER_PATH="$( grep '^local_path' $DEFAULT_CONFIG_FILE | cut -f 2 )"
+source $( dirname $0 )/../../bash/functions.sh
+
+define_from_config local_path SERVER_PATH
 
 ## Local vars
 M_CACHE_PATH=$1

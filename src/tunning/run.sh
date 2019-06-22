@@ -5,11 +5,11 @@
 #
 #
 
-declare DEFAULT_CONFIG_FILE="$HOME/.pid_ss.conf"
-declare SERVER_PATH="$( grep '^local_path' $DEFAULT_CONFIG_FILE | cut -f 2 )"
-#declare SERVER_PORT="$( grep '^server_port' $DEFAULT_CONFIG_FILE | cut -f 2 )"
-#declare SERVER_URL="$( grep '^server_URL' $DEFAULT_CONFIG_FILE | cut -f 2 )"
-#declare KSIG='15' # SIGTERM
+## Global parameters
+source $( dirname $0 )/../../bash/functions.sh
+
+define_from_config local_path SERVER_PATH
+define_from_config python_env PYTHON_ENV
 
 MATLAB_SYNTAX=True
 if [[ $5 =~ 'False' ]]; then MATLAB_SYNTAX=False ; fi
@@ -18,7 +18,8 @@ for CONTROLLER in PI PID
 do
     for SENSIBILITY in 1.4 2.0
     do
-	$SERVER_PATH/src/tunning/tunning.py $1 $2 $3 $4 $SENSIBILITY $MATLAB_SYNTAX $CONTROLLER
+	$PYTHON_ENV $SERVER_PATH/src/tunning/tunning.py \
+		    $1 $2 $3 $4 $SENSIBILITY $MATLAB_SYNTAX $CONTROLLER
 	if (( $? ))
 	then
 	    [[ $5 == 'False' ]] || printf "${CONTROLLER}_Ms_${SENSIBILITY/\./_}_enable=false;\n"
