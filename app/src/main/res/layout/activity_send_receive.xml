@@ -7,9 +7,23 @@
     tools:context=".sendNreceive">
 
     <TextView
-        android:id="@+id/textFileContent"
+        android:id="@+id/textTunningResults"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:text="TextView"/>
+        android:layout_height="match_parent"
+        android:layout_alignTop="@+id/scrollView"
+        android:layout_alignBottom="@+id/scrollView"
+        android:layout_marginBottom="0dp"
+        android:text="No data" />
+
+    <ScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" />
+    </ScrollView>
 
 </RelativeLayout>

@@ -13,25 +13,122 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.net.Socket;
 
 public class sendNreceive extends AppCompatActivity {
 
     // Constants
     private static final int READ_REQUEST_CODE = 42;
+    private static final int TIMEOUT = 30;
+    private static final String SERVER_URL = "192.168.0.4";
+    //private static final String SERVER_URL = "163.178.124.156";
+    private static final int SERVER_PORT = 8494;
+    private static final String MODEL_FILE_TYPE = "model_file";
+    private static final String MODEL_FOTF_TYPE = "model_fotf";
 
-    private static String file_content; // Response file content
-    TextView textView_content;
+    // Tunning results text view
+    private static TextView textView_content;
+    private volatile static String textView_cs_server_model_response;
+    private volatile static String textView_cs_server_tunning_response;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_send_receive);
 
-        // Search for a response file
-        searchTextFile();
+        textView_content = (TextView) findViewById(R.id.textTunningResults);
 
-        // Show content preview
-        textView_content = (TextView) findViewById(R.id.textFileContent);
+        String params;
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null) {
+            params = bundle.getString("v_value")+',';
+            params += bundle.getString("T_value")+',';
+            params += bundle.getString("kp_value")+',';
+            params += bundle.getString("L_value");
+            this.sendModelRequest(MODEL_FOTF_TYPE, params);
+        } else {
+            // Search for a response file
+            searchTextFileAndSend();
+        }
+    }
+
+    @Override
+    protected void onStart (){
+        super.onStart();
+
+        // Refresh textview
+        refresTextView();
+    }
+
+    private void refresTextView () {
+        while (textView_cs_server_model_response == null) { }
+        textView_content.setText(textView_cs_server_model_response);
+        while (textView_cs_server_tunning_response == null) { }
+        textView_content.setText(textView_cs_server_tunning_response);
+    }
+
+    private void sendModelRequest(final String model_type,
+                                  final String model_data) {
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+
+                try {
+                    //Replace below IP with the IP of that device in which server socket open.
+                    //If you change port then change the port number in the server side code also.
+                    Socket s = new Socket(SERVER_URL, SERVER_PORT);
+
+                    InputStream in = s.getInputStream();
+                    InputStreamReader sr_input = new InputStreamReader(
+                            in, "UTF-8");
+                    BufferedReader input = new BufferedReader(sr_input);
+
+                    OutputStream out = s.getOutputStream();
+                    PrintWriter output = new PrintWriter(out);
+
+                    // Send the model type
+                    output.println(model_type);
+                    output.flush();
+
+                    // Receive confirmation
+                    String model_server_response = "";
+                    String temporal = "";
+                    do {
+                        model_server_response += temporal;
+                        temporal = input.readLine();
+                    } while ( ! temporal.contains("EOF") ); // Search for EOF
+                    //input.reset();
+                    textView_cs_server_model_response = model_server_response;
+
+                    // Send the model data
+                    output.println(model_data+"\nEOF\n");
+                    output.flush();
+
+                    // Receive tunning results and show
+                    // Receive confirmation
+                    String tunning_results = "";
+                    temporal = "";
+                    do {
+                        tunning_results += temporal;
+                        temporal = input.readLine()+'\n';
+                    } while ( ! temporal.contains("EOF") ); // Search for EOF
+
+                    // Refresh tunning results
+                    textView_cs_server_tunning_response = tunning_results;
+
+                    output.close();
+                    out.close();
+                    s.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+
+                }
+            }
+        });
+
+        thread.start();
     }
 
     // Read content from a file path, set this.file_content
@@ -59,7 +156,7 @@ public class sendNreceive extends AppCompatActivity {
                     Toast.LENGTH_SHORT).show();
             e.printStackTrace();
         }
-         this.file_content = content.toString();
+         this.sendModelRequest(MODEL_FILE_TYPE, content.toString());
     }
 
     @Override
@@ -76,7 +173,7 @@ public class sendNreceive extends AppCompatActivity {
         }
     }
 
-    public void searchTextFile(){
+    public void searchTextFileAndSend(){
         // Open Activity with model list
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         intent.addCategory(Intent.CATEGORY_OPENABLE);

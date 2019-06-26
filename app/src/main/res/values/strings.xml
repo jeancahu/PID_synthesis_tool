@@ -2,8 +2,9 @@
     <string name="app_name">PI/PID synthesis</string>
     <string name="file_not_found_err_message">Error de dirección</string>
     <string name="file_permission_err_message">Error de lectura</string>
-    <string name="file_reading_info_message">Leyendo mensaje</string>
+    <string name="file_reading_info_message">Leyendo fichero de texto</string>
     <string name="permitted_info_message">Permiso otorgado</string>
     <string name="denied_info_message">Permiso denegado</string>
     <string name="model_request_message">Favor seleccionar un modelo</string>
+    <string name="connection_err_message">No fue posible comunicar con el servidor</string>
 </resources>
