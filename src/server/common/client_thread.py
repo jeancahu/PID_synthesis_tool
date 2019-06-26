@@ -52,7 +52,15 @@ class Client(threading.Thread):
         self.socket.send(response.encode())
 
         # Receive model data
-        print(self.receive_plain_text())
+        #print(self.receive_plain_text())
+        step_response = self.receive_plain_text()
+        #print(step_response)
+        command = '../../bash/compute_request.sh << EOF\n'+step_response+'\nEOF\n'
+        tunning_process = subproc(command,
+                                  stdout=PIPE,
+                                  shell=True)
+        out, err = tunning_process.communicate()
+        print(out.decode())
 
     def model_fotf (self):
         # Se responde al cliente
@@ -67,22 +75,31 @@ class Client(threading.Thread):
         
         # Send tunning results
         ## Ejecutar el subprocess
-        command = '../tunning/run.sh '+data.replace(',',' ')+"False"
+        command = '../../bash/compute_request.sh '+data.replace(',',' ')
         tunning_process = subproc(command,
                                   stdout=PIPE,
                                   shell=True)
-        out, err = tunning_process.communicate() 
-        result = out.decode()+self.eof    
+        out, err = tunning_process.communicate()
+
+        ## Open results file
+        cach_path = out.decode().split('\n')[0]
+        file_path = cach_path+"/results_table.txt"
+        results_file = open(file_path)
+        results_file = ''.join(results_file.readlines())
+
+        ## Send file content
+        result = results_file+self.eof
         tunning_process.terminate()
         print(result)
         self.socket.send(result.encode('utf-8'))
-        #response="hola"+'\n'
-        #self.socket.send(response.encode())
 
-        # Receive model data
-        data = self.socket.recv(512).decode()
-        data = data.replace("\nEOF\n",'')
-        data = data.replace('\n',' ')
+        ## Send images
+        command = '../../bash/wait_and_list_images.sh '+cach_path
+        tunning_process = subproc(command,
+                                  stdout=PIPE,
+                                  shell=True)
+        out, err = tunning_process.communicate()
+        print(out.decode())
         
     def model_undefined (self):
         # Se responde al cliente
