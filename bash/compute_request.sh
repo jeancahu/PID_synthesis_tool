@@ -47,9 +47,21 @@ printf "${STEP_RESPONSE}\n" \
        > ${CACHE_PATH}/${SIMU_DIR}/step_response.txt
 
 ## Generate results table
-$SERVER_PATH/src/tunning/run.sh \
-    $FRA_ORDER $TIME_CONS $PROP_CONS $DEAD_TIME False \
-    > ${CACHE_PATH}/${SIMU_DIR}/results_table.txt &
+{
+    $SERVER_PATH/src/tunning/run.sh \
+	$FRA_ORDER $TIME_CONS $PROP_CONS $DEAD_TIME False \
+	> ${CACHE_PATH}/${SIMU_DIR}/results_table.txt \
+	2> ${CACHE_PATH}/${SIMU_DIR}/error_log.txt
+    if (( $? )) # If there are not solutions then send error log
+    then
+	{
+	printf '\n\n'
+	grep '^ValueError' \
+	     ${CACHE_PATH}/${SIMU_DIR}/error_log.txt |
+	    uniq
+	} >> ${CACHE_PATH}/${SIMU_DIR}/results_table.txt
+    fi
+}&
 
 ## Generate matlab parameters header
 {

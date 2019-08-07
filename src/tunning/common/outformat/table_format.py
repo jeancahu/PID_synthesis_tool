@@ -14,7 +14,7 @@ def print_table_results (controller_type,
         if controller_type == 'PID':
             print(controller+'_T_d='+str(T_d)+';')
     else:
-        print(controller_type, 'Tunning results, sensibility (MS):', Ms )
+        print(controller_type, 'Tunning results, sensibility (Ms):', Ms )
         print('R:\tNormalized proportional value:\t', kappa_p)
         print('R:\tNormalized integral value:\t', tao_i)
         if controller_type == 'PID':

@@ -2,6 +2,7 @@
 
 import threading
 import socket
+import base64
 from subprocess import Popen as subproc
 from subprocess import PIPE
 
@@ -99,7 +100,20 @@ class Client(threading.Thread):
                                   stdout=PIPE,
                                   shell=True)
         out, err = tunning_process.communicate()
-        print(out.decode())
+        images_str = out.decode()
+        images_list = images_str.split(',')
+        print(images_list)
+
+        ####
+        with open(cach_path+'/'+images_list[1], "rb") as imageFile:
+            #image = base64.b64encode(imageFile.read())
+            image = imageFile.read()
+            #print(image)
+
+            #size_bytes = str(len(image)) + '\n'
+            #self.socket.send(size_bytes.encode('utf-8'))
+            self.socket.sendall(image)
+        ####
         
     def model_undefined (self):
         # Se responde al cliente
