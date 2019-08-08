@@ -2,7 +2,6 @@
 
 import threading
 import socket
-import base64
 from subprocess import Popen as subproc
 from subprocess import PIPE
 
@@ -14,11 +13,20 @@ class Client(threading.Thread):
         threading.Thread.__init__(self)
         self.socket = socket_client
         self.socket.setblocking(True)
-        # Datos del cliente
+
+        ## Client data
         self.datos_str = datos_cliente[0] + ":" + str(datos_cliente[1])
         self.sha_id = ''
         self.eof = '\n'+"EOF"+'\n'
         print("El cliente " + self.datos_str + " se ha conectado")
+
+        ## Model data
+        # var: str: model type
+        self.model_type = ''        
+        # var: str: model_str <- "FRA_ORDER TIME_CONS PROP_CONS DEAD_TIME"
+        self.model_str = ''
+        # var: str: Temporals absolute path in system
+        self.cach_path = ''
     
     def run(self):
         """ 
@@ -35,67 +43,86 @@ class Client(threading.Thread):
 
         # Receive controller type
         model = self.socket.recv(512) # Recibe 512 bytes del cliente
-        model = model.decode()[:10] # Decodificar datos según el protocolo
-        print("El modelo es de tipo: ", model) # Imprime los datos en la bitácora
+        self.model_type = model.decode()[:10] # Decodificar datos según el protocolo
+        print("El modelo es de tipo: ", self.model_type) # Imprime los datos en la bitácora
   
-        if model == 'model_fotf':
+        if self.model_type == 'model_fotf':
+            # Data model processing
             self.model_fotf()
-        elif model == 'model_file':
+            self.compute_controller_params_and_simulations()
+            self.send_controller_parameters()
+            self.send_images()
+
+        elif self.model_type == 'model_file':
+            # Data file processing
             self.model_file()
+            self.compute_controller_params_and_simulations()
+            self.send_controller_parameters()
+            self.send_images()
+
         else:
             self.model_undefined()
 
         self.__del__()
-        
+
     def model_file (self):
         # Se responde al cliente
         response ="model_accepted"+self.eof
         self.socket.send(response.encode())
 
         # Receive model data
-        #print(self.receive_plain_text())
-        step_response = self.receive_plain_text()
-        #print(step_response)
-        command = '../../bash/compute_request.sh << EOF\n'+step_response+'\nEOF\n'
-        tunning_process = subproc(command,
-                                  stdout=PIPE,
-                                  shell=True)
-        out, err = tunning_process.communicate()
-        print(out.decode())
+        self.step_response = self.receive_plain_text()
+        #print(self.step_response)
 
     def model_fotf (self):
         # Se responde al cliente
         response ="model_accepted"+self.eof
         self.socket.send(response.encode('utf-8'))
-        
+
         # Receive model data
         data = self.socket.recv(512).decode()
         data = data.replace("\nEOF\n",'')
         data = data.replace('\n',' ')
-        print(data)
-        
+        self.model_str = data.replace(',',' ')
+        print(self.model_str)
+
+    def model_undefined (self):
+        # Se responde al cliente
+        response ="model_denied"+self.eof
+        self.socket.send(response.encode())
+
+    def compute_controller_params_and_simulations (self):
         # Send tunning results
         ## Ejecutar el subprocess
-        command = '../../bash/compute_request.sh '+data.replace(',',' ')
+        if self.model_type == 'model_fotf':
+            command = '../../bash/compute_request.sh '+self.model_str
+        elif self.model_type == 'model_file':
+            command = '../../bash/compute_request.sh << EOF\n'+self.step_response+'\nEOF\n'
+        else:
+            pass
+
         tunning_process = subproc(command,
                                   stdout=PIPE,
                                   shell=True)
         out, err = tunning_process.communicate()
+        tunning_process.terminate()
+        self.cach_path = out.decode().split('\n')[0]
+        print(self.cach_path)
 
+    def send_controller_parameters (self):
         ## Open results file
-        cach_path = out.decode().split('\n')[0]
-        file_path = cach_path+"/results_table.txt"
+        file_path = self.cach_path+"/results_table.txt"
         results_file = open(file_path)
         results_file = ''.join(results_file.readlines())
 
         ## Send file content
         result = results_file+self.eof
-        tunning_process.terminate()
-        print(result)
         self.socket.send(result.encode('utf-8'))
+        print(result)
 
+    def send_images (self):
         ## Send images
-        command = '../../bash/wait_and_list_images.sh '+cach_path
+        command = '../../bash/wait_and_list_images.sh '+self.cach_path
         tunning_process = subproc(command,
                                   stdout=PIPE,
                                   shell=True)
@@ -105,21 +132,11 @@ class Client(threading.Thread):
         print(images_list)
 
         ####
-        with open(cach_path+'/'+images_list[1], "rb") as imageFile:
-            #image = base64.b64encode(imageFile.read())
+        with open(self.cach_path+'/'+images_list[1], "rb") as imageFile:
             image = imageFile.read()
-            #print(image)
-
-            #size_bytes = str(len(image)) + '\n'
-            #self.socket.send(size_bytes.encode('utf-8'))
             self.socket.sendall(image)
         ####
         
-    def model_undefined (self):
-        # Se responde al cliente
-        response ="model_denied"+self.eof
-        self.socket.send(response.encode())
-
     def receive_plain_text (self):
         result = ""
         while not 'EOF' in result:
