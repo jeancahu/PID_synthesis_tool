@@ -46,6 +46,30 @@ printf "${CACHE_PATH}/${SIMU_DIR}\n"
 printf "${STEP_RESPONSE}\n" \
        > ${CACHE_PATH}/${SIMU_DIR}/step_response.txt
 
+
+## Using identool if there are not input parameters
+if [ "$*" ]
+then
+    :
+else
+    ## Run the identool program
+    $SERVER_PATH/src/identool/run.sh ${CACHE_PATH}/${SIMU_DIR} &>/dev/null
+    until grep 'model_calculated_values' \
+	       ${CACHE_PATH}/${SIMU_DIR}/identool_results.m &>/dev/null
+    do
+	sleep 0.1
+    done
+    PARAMS=( $(
+		 sed 's/.=//g;s/ .*//;s/;/\t/g' \
+		     <${CACHE_PATH}/${SIMU_DIR}/identool_results.m
+	     )  )
+    # Setting the new identified parameters
+    FRA_ORDER=${PARAMS[0]}
+    TIME_CONS=${PARAMS[1]}
+    PROP_CONS=${PARAMS[2]}
+    DEAD_TIME=${PARAMS[3]}
+fi
+
 ## Generate results table
 {
     $SERVER_PATH/src/tunning/run.sh \
