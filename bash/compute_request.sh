@@ -53,6 +53,11 @@ then
     :
 else
     ## Run the identool program
+
+    ## Setting outfiles path
+    printf "output_path='${CACHE_PATH}/${SIMU_DIR}/';\n" \
+	   > ${CACHE_PATH}/${SIMU_DIR}/parameters.m
+
     $SERVER_PATH/src/identool/run.sh ${CACHE_PATH}/${SIMU_DIR} &>/dev/null
     until grep 'model_calculated_values' \
 	       ${CACHE_PATH}/${SIMU_DIR}/identool_results.m &>/dev/null
