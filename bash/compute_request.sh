@@ -28,24 +28,23 @@ else
 	md5sum | cut -f 1 -d ' ' )"
 fi
 
+## Cache dir to standard output
+printf "${CACHE_PATH}/${SIMU_DIR}\n"
+
 ## Verify if simulation already exist
 if [ -d ${CACHE_PATH}/${SIMU_DIR} ]
 then
     :
-    #printf 'There is a directory\n'
-    #exit 0 # FIXME
+    # There is a directory
+    exit 0
 else
-    #printf 'There is not a directory\n'
+    # There is not a directory
     mkdir -p ${CACHE_PATH}/${SIMU_DIR}
 fi
-
-## Cache dir to standard output
-printf "${CACHE_PATH}/${SIMU_DIR}\n"
 
 ## Save step sys response
 printf "${STEP_RESPONSE}\n" \
        > ${CACHE_PATH}/${SIMU_DIR}/step_response.txt
-
 
 ## Using identool if there are not input parameters
 if [ "$*" ]
