@@ -1,0 +1,1 @@
+fclose(file_id);
