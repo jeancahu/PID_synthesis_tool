@@ -1,9 +1,9 @@
 #!/bin/bash
 
-V0=('t,X1,')
-V1=('t,X2,')
-V2=('t,X3,')
-V3=('t,X4,')
+V0=('X1_t,X1,')
+V1=('X2_t,X2,')
+V2=('X3_t,X3,')
+V3=('X4_t,X4,')
 V0_N=("'PI 1.4',")
 V1_N=("'PI 2.0',")
 V2_N=("'PID 1.4',")
@@ -38,7 +38,7 @@ do
   plot(${V0[$NUM0]}${V1[$NUM1]}${V2[$NUM2]}${V3[$NUM3]}t,R,t,D);
   xlabel('Time (s)');
   ylabel('Magnitude (%)')
-  legend(${V0_N[$NUM0]}${V1_N[$NUM1]}${V2_N[$NUM2]}${V3_N[$NUM3]}'|R(s)|=15%','|D(s)|=5%','Location','northwest');
+  legend(${V0_N[$NUM0]}${V1_N[$NUM1]}${V2_N[$NUM2]}${V3_N[$NUM3]}'|R(s)|=15%','|D(s)|=5%','Location','southeast');
 
   % Save the image
   print(output_path+"'"'"${I0_N[$NUM0]}${I1_N[$NUM1]}${I2_N[$NUM2]}${I3_N[$NUM3]}RD.png"'"'",'-dpng')
