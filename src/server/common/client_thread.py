@@ -132,9 +132,23 @@ class Client(threading.Thread):
         print(images_list)
 
         ####
-        with open(self.cach_path+'/'+images_list[1], "rb") as imageFile:
-            image = imageFile.read()
-            self.socket.sendall(image)
+        for image in images_list[1:]:
+            print("Enviando nombre de la imagen")
+            image_name = image[:-4] + '\n'
+            image_name = image_name.encode('utf-8')
+            self.socket.send(image_name)
+
+            print("Recibiendo la confirmación del usuario")
+            print(self.socket.recv(512).decode())
+
+            with open(self.cach_path+'/'+image, "rb") as imageFile:
+                image_hex = imageFile.read()
+                self.socket.sendall(image_hex)
+
+            print("Recibiendo la confirmación del usuario")
+            print(self.socket.recv(512).decode())
+
+        self.socket.send("END".encode('utf-8'))
         ####
         
     def receive_plain_text (self):
