@@ -11,8 +11,8 @@ source $( dirname $0 )/../../bash/functions.sh
 define_from_config local_path SERVER_PATH
 define_from_config python_env PYTHON_ENV
 
-MATLAB_SYNTAX=True
-if [[ $5 =~ 'False' ]]; then MATLAB_SYNTAX=False ; fi
+SYNTAX=m_code
+if [[ $5 =~ 'False' ]]; then SYNTAX=human_readable ; fi
 
 declare -i TOTAL_ERROR=1
 declare -i ERROR
@@ -22,7 +22,7 @@ do
     for SENSIBILITY in 1.4 2.0
     do
 	$PYTHON_ENV $SERVER_PATH/src/tunning/tunning.py \
-		    $1 $2 $3 $4 $SENSIBILITY $MATLAB_SYNTAX $CONTROLLER
+		    $1 $2 $3 $4 $SENSIBILITY $SYNTAX $CONTROLLER
 	ERROR=$?
 	if (( $ERROR ))
 	then

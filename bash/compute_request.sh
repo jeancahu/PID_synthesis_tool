@@ -36,7 +36,8 @@ if [ -d ${CACHE_PATH}/${SIMU_DIR} ]
 then
     :
     # There is a directory
-    exit 0
+    # TODO: verify data
+    #exit 0
 else
     # There is not a directory
     mkdir -p ${CACHE_PATH}/${SIMU_DIR}

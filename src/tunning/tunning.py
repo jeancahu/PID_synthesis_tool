@@ -10,7 +10,7 @@
 # * K,     Proportional constant
 # * L,     Dead time constant
 # * Ms,    maximum sensitivity
-# * synx,  Matlab syntax boolean
+# * synx,  syntax string
 # * CType, Controler type ['PI','PID']
 
 # Internal values
@@ -39,14 +39,9 @@ else:
 
 # Define syntax
 if type(argv[-2]) == str:
-    if argv[-2].lower() == 'true':
-        # Then use script syntax
-        syntx = True
-    elif argv[-2].lower() == 'false':
-        # Then use human readable syntax
-        syntx = False
+    syntx = argv[-2].lower()
 else:
-    syntx = bool(int(argv[-2]))
+    syntx = "none"
 
 def main ():
     #print(Type, "controller tunnig")
