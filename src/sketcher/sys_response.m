@@ -59,9 +59,11 @@ X2_t = [X2_tref; (X2_tper + TPER)];
 X3_t = [X3_tref; (X3_tper + TPER)];
 X4_t = [X4_tref; (X4_tper + TPER)];
 
-t = X1_t; % Default time vector;
+TMAX=max([max(X1_t) max(X2_t) max(X3_t) max(X4_t)]);
 
-R=(t>TREF)*k_Ref;
+t = [0; 0; TPER; TPER; TMAX]; % Default time vector
+
+R=[0; k_Ref; k_Ref; k_Ref; k_Ref];
 R=R+operationPoint;
-D=(t>TPER)*k_Per;
+D=[0; 0; 0; k_Per; k_Per];
 D=D+operationPoint;
