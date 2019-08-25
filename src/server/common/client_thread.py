@@ -145,9 +145,6 @@ class Client(threading.Thread):
                 image_hex = imageFile.read()
                 self.socket.sendall(image_hex)
 
-            print("Recibiendo la confirmación del usuario")
-            print(self.socket.recv(512).decode())
-
         self.socket.send("END".encode('utf-8'))
         ####
         

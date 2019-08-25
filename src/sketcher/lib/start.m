@@ -22,3 +22,6 @@ wh=1000;
 % Simulation
 k_Ref=15; % Rs intensity
 k_Per=5; % Ds intensity
+
+% Line width
+set(0, 'DefaultLineLineWidth', 3);
