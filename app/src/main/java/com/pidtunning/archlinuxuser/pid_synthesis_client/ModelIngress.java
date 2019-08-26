@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 public class ModelIngress extends AppCompatActivity {
 
@@ -38,10 +39,23 @@ public class ModelIngress extends AppCompatActivity {
     }
 
     private boolean verifyValues(){
+        // Verify range and values
+        if ( Float.parseFloat(editText_v.getText().toString()) < 1.0
+                || Float.parseFloat(editText_v.getText().toString()) > 1.8){
+            Toast.makeText(this,
+                    getResources().getString(R.string.frac_const_value_request_message),
+                    Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        // TODO: Verify the others values
         return true;
     }
 
     private void openActivitySendReceive (){
+        // Notify state
+        Toast.makeText(this,
+                getResources().getString(R.string.processing_info_message),
+                Toast.LENGTH_SHORT).show();
         // Go to next activity, send and receive params
         Intent intent = new Intent(this, sendNreceive.class);
         intent.putExtra("v_value", editText_v.getText().toString());
