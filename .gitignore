@@ -69,3 +69,7 @@ fastlane/readme.md
 
 # Python buffers
 __pycache__
+
+# identool binary
+src/identool/lib/slprj/
+*.slxc
