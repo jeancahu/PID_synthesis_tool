@@ -1,0 +1,114 @@
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <link rel="stylesheet" type="text/css" href="/css/tool_style.css" media="screen" />
+    <title>PI/PID Tunning CGI tool web interface</title>
+  </head>
+  <body>
+
+    <resultsbox>
+    <parameters>
+      <h2>Model parameters:</h2>
+      <model>
+	Fractional parameter is:_____{{v_param}} <br>
+	Time constant is:____________{{T_param}} <br>
+	Proportional constant is:____{{K_param}} <br>
+	Dead time constant is:_______{{L_param}} <br>
+      </model>
+
+      <h2>Controller parameters:</h2>
+      {{controller_params}}
+    </parameters>
+
+    <images_tag>
+      <img src="/images/{{default_image}}.png" alt="image" id="image_container">
+
+      <div id="keyboard">
+	<button onclick="pi_14_toggle()">PI 1.4</button>
+	<button onclick="pi_20_toggle()">PI 2.0</button>
+	<button onclick="pid_14_toggle()">PID 1.4</button>
+	<button onclick="pid_20_toggle()">PID 2.0</button>
+      </div>
+      
+      <script>
+
+	// Set orientation
+	screen.orientation.lock('landscape-primary');
+	
+	var direction = "RD.png";
+	var pi_14 = "A";
+	var pi_20 = "B";
+	var pid_14 = "C";
+	var pid_20 = "D";
+
+	//Preload images
+	{% for image in image_list %}
+	var {{image}} = new Image();
+	{{image}}.src = "/images/{{image}}.png";
+	{% endfor %}
+	
+	function pi_14_toggle ()
+	{
+	    if (pi_14 == "A")
+	    {
+		pi_14 = ""
+	    }
+	    else
+	    {
+		pi_14 = "A"
+	    }
+	    refresh_image();
+	}
+
+	function pi_20_toggle ()
+	{
+	    if (pi_20 == "B")
+	    {
+		pi_20 = ""
+	    }
+	    else
+	    {
+		pi_20 = "B"
+	    }
+	    refresh_image();
+	}
+
+	function pid_14_toggle ()
+	{
+	    if (pid_14 == "C")
+	    {
+		pid_14 = ""
+	    }
+	    else
+	    {
+		pid_14 = "C"
+	    }
+	    refresh_image();
+	}
+
+	function pid_20_toggle ()
+	{
+	    if (pid_20 == "D")
+	    {
+		pid_20 = ""
+	    }
+	    else
+	    {
+		pid_20 = "D"
+	    }
+	    refresh_image();
+	}
+	
+	function refresh_image ()
+	{
+	    direction = "/images/" + pi_14 + pi_20 + pid_14 + pid_20 + 'RD.png'
+	    console.log(direction)
+	    document.getElementById("image_container").src = direction;
+	}
+      </script>
+    </images_tag>
+    
+    </resultsbox>
+    
+  </body>
+</html>
