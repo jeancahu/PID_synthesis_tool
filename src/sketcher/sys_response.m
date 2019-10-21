@@ -112,5 +112,5 @@ fclose(fid);
 
 
 file_id = fopen(output_path+"ready.txt", "wt");
-fprintf(file_id,'simulations_vectors_ready\n')
+fprintf(file_id,'simulations_vectors_ready\n');
 fclose(file_id);
