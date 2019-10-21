@@ -78,6 +78,8 @@ class Client(threading.Thread):
             self.model_fotf()
             self.compute_controller_params_and_simulations()
             self.send_controller_parameters()
+            if self.model_flags['simulation_vectors']:
+                self.send_simulation_vectors()
             if not self.model_flags['no_images']:
                 self.send_images()
 
@@ -86,6 +88,8 @@ class Client(threading.Thread):
             self.model_file()
             self.compute_controller_params_and_simulations()
             self.send_controller_parameters()
+            if self.model_flags['simulation_vectors']:
+                self.send_simulation_vectors()
             if not self.model_flags['no_images']:
                 self.send_images()
 
@@ -148,13 +152,26 @@ class Client(threading.Thread):
         self.socket.send(result.encode('utf-8'))
         print(result)
 
+    def send_simulation_vectors (self):
+        ## Send images
+        command = '../../bash/wait_and_send_vectors.sh '+self.cach_path
+        simulation_process = subproc(command,
+                                  stdout=PIPE,
+                                  shell=True)
+        out, err = simulation_process.communicate()
+        simulation_process.terminate()
+        vectors_str = out.decode()+"\nEOF\n"
+        self.socket.sendall(vectors_str.encode('utf-8'))
+        print(self.socket.recv(512).decode('utf-8'))
+
     def send_images (self):
         ## Send images
         command = '../../bash/wait_and_list_images.sh '+self.cach_path
-        tunning_process = subproc(command,
+        simulation_process = subproc(command,
                                   stdout=PIPE,
                                   shell=True)
-        out, err = tunning_process.communicate()
+        out, err = simulation_process.communicate()
+        simulation_process.terminate()
         images_str = out.decode()
         images_list = images_str.split(',')
         print(images_list)
