@@ -69,36 +69,42 @@ D=[0; 0; 0; k_Per; k_Per];
 D=D+operationPoint;
 
 out = [t R];
-savename=output_path+'R.txt';
-save(savename,'out');
+fid=fopen(output_path+"R.txt",'wt');
+for i = 1:length(out)
+    fprintf(fid,'%d\t%d\n',out(i,1),out(i,2));
+end
+fclose(fid);
 
 out = [t D];
-savename=output_path+'D.txt';
-save(savename,'out');
+fid=fopen(output_path+"D.txt",'wt');
+for i = 1:length(out)
+    fprintf(fid,'%d\t%d\n',out(i,1),out(i,2));
+end
+fclose(fid);
 
 out = [X1_t X1];
-fid=fopen('X1.txt','wt');
+fid=fopen(output_path+"X1.txt",'wt');
 for i = 1:length(out)
     fprintf(fid,'%d\t%d\n',out(i,1),out(i,2));
 end
 fclose(fid);
 
 out = [X2_t X2];
-fid=fopen('X2.txt','wt');
+fid=fopen(output_path+"X2.txt",'wt');
 for i = 1:length(out)
     fprintf(fid,'%d\t%d\n',out(i,1),out(i,2));
 end
 fclose(fid);
 
 out = [X3_t X3];
-fid=fopen('X3.txt','wt');
+fid=fopen(output_path+"X3.txt",'wt');
 for i = 1:length(out)
     fprintf(fid,'%d\t%d\n',out(i,1),out(i,2));
 end
 fclose(fid);
 
 out = [X4_t X4];
-fid=fopen('X4.txt','wt');
+fid=fopen(output_path+"X4.txt",'wt');
 for i = 1:length(out)
     fprintf(fid,'%d\t%d\n',out(i,1),out(i,2));
 end
