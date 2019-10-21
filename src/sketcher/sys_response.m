@@ -77,20 +77,33 @@ savename=output_path+'D.txt';
 save(savename,'out');
 
 out = [X1_t X1];
-savename=output_path+'R.txt';
-save(savename,'out');
+fid=fopen('X1.txt','wt');
+for i = 1:length(out)
+    fprintf(fid,'%d\t%d\n',out(i,1),out(i,2));
+end
+fclose(fid);
 
 out = [X2_t X2];
-savename=output_path+'R.txt';
-save(savename,'out');
+fid=fopen('X2.txt','wt');
+for i = 1:length(out)
+    fprintf(fid,'%d\t%d\n',out(i,1),out(i,2));
+end
+fclose(fid);
 
 out = [X3_t X3];
-savename=output_path+'R.txt';
-save(savename,'out');
+fid=fopen('X3.txt','wt');
+for i = 1:length(out)
+    fprintf(fid,'%d\t%d\n',out(i,1),out(i,2));
+end
+fclose(fid);
 
 out = [X4_t X4];
-savename=output_path+'R.txt';
-save(savename,'out');
+fid=fopen('X4.txt','wt');
+for i = 1:length(out)
+    fprintf(fid,'%d\t%d\n',out(i,1),out(i,2));
+end
+fclose(fid);
+
 
 file_id = fopen(output_path+"ready.txt", "wt");
 fprintf(file_id,'simulations_vectors_ready\n')
