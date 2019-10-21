@@ -21,8 +21,9 @@ class Client(threading.Thread):
         print("El cliente " + self.datos_str + " se ha conectado")
 
         ## Model data
-        # var: str: model type
-        self.model_type = ''        
+        # var: str: model information and parametes
+        self.model = ''
+        self.model_flags = {}
         # var: str: model_str <- "FRA_ORDER TIME_CONS PROP_CONS DEAD_TIME"
         self.model_str = ''
         # var: str: Temporals absolute path in system
@@ -42,23 +43,51 @@ class Client(threading.Thread):
         """
 
         # Receive controller type
-        model = self.socket.recv(512) # Recibe 512 bytes del cliente
-        self.model_type = model.decode()[:10] # Decodificar datos según el protocolo
-        print("El modelo es de tipo: ", self.model_type) # Imprime los datos en la bitácora
-  
-        if self.model_type == 'model_fotf':
+        model = self.socket.recv(1024) # Recibe 512 bytes del cliente
+        self.model = model.decode() # Decodificar datos según el protocolo
+        print("El modelo y parámetros son: ", self.model) # Imprime los datos en la bitácora
+
+        # Flags default definition
+        self.model_flags['type'] = 'model_null'                # Default model value
+        self.model_flags['concatenate_params_result'] = False  # Concatenate model params to solution
+        self.model_flags['no_images'] = False                  # Do not send images
+        self.model_flags['simulation_vectors'] = False         # Send simulation result vectors
+        self.model_flags['gnuplot'] = False                    # Generate images with GNUplot
+        self.model_flags['json_format'] = False                # Send results table in JSON format
+        
+        # Flags definition
+        if 'model_fotf' in self.model:
+            self.model_flags['type'] = 'model_fotf'
+        if 'model_file' in self.model:
+            self.model_flags['type'] = 'model_file'
+        if 'concatenate_params_result' in self.model:
+            self.model_flags['concatenate_params_result'] = True
+        if 'no_images' in self.model:
+            self.model_flags['no_images'] = True
+        if 'simulation_vectors' in self.model:
+            self.model_flags['simulation_vectors'] = True
+        if 'gnuplot' in self.model:
+            self.model_flags['gnuplot'] = True
+        if 'json_format' in self.model:
+            self.model_flags['json_format'] = True
+
+
+        # Resolve model logic
+        if self.model_flags['type'] == 'model_fotf':
             # Data model processing
             self.model_fotf()
             self.compute_controller_params_and_simulations()
             self.send_controller_parameters()
-            self.send_images()
+            if not self.model_flags['no_images']:
+                self.send_images()
 
-        elif self.model_type == 'model_file':
+        elif self.model_flags['type'] == 'model_file':
             # Data file processing
             self.model_file()
             self.compute_controller_params_and_simulations()
             self.send_controller_parameters()
-            self.send_images()
+            if not self.model_flags['no_images']:
+                self.send_images()
 
         else:
             self.model_undefined()
@@ -70,16 +99,15 @@ class Client(threading.Thread):
         response ="model_accepted"+self.eof
         self.socket.send(response.encode())
 
-        # Receive model data
+        # Receive model data vectors as string
         self.step_response = self.receive_plain_text()
-        #print(self.step_response)
 
     def model_fotf (self):
         # Se responde al cliente
         response ="model_accepted"+self.eof
         self.socket.send(response.encode('utf-8'))
 
-        # Receive model data
+        # Receive model data and erase unnecessary syntax
         data = self.socket.recv(512).decode()
         data = data.replace("\nEOF\n",'')
         data = data.replace('\n',' ')
@@ -94,9 +122,9 @@ class Client(threading.Thread):
     def compute_controller_params_and_simulations (self):
         # Send tunning results
         ## Ejecutar el subprocess
-        if self.model_type == 'model_fotf':
+        if self.model_flags['type'] == 'model_fotf':
             command = '../../bash/compute_request.sh '+self.model_str
-        elif self.model_type == 'model_file':
+        elif self.model_flags['type'] == 'model_file':
             command = '../../bash/compute_request.sh << EOF\n'+self.step_response+'\nEOF\n'
         else:
             pass

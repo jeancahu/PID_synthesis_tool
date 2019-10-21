@@ -67,3 +67,31 @@ R=[0; k_Ref; k_Ref; k_Ref; k_Ref];
 R=R+operationPoint;
 D=[0; 0; 0; k_Per; k_Per];
 D=D+operationPoint;
+
+out = [t R];
+savename=output_path+'R.txt';
+save(savename,'out');
+
+out = [t D];
+savename=output_path+'D.txt';
+save(savename,'out');
+
+out = [X1_t X1];
+savename=output_path+'R.txt';
+save(savename,'out');
+
+out = [X2_t X2];
+savename=output_path+'R.txt';
+save(savename,'out');
+
+out = [X3_t X3];
+savename=output_path+'R.txt';
+save(savename,'out');
+
+out = [X4_t X4];
+savename=output_path+'R.txt';
+save(savename,'out');
+
+file_id = fopen(output_path+"ready.txt", "wt");
+fprintf(file_id,'simulations_vectors_ready\n')
+fclose(file_id);
