@@ -15,14 +15,14 @@ def print_table_results (controller_type,
             print(controller+'_T_d='+str(T_d)+';')
 
     elif script_syntax == 'json':
-        print("{\n\t'type':",'"'+controller_type+'",',
-              "\n\t'ms':",'"'+str(Ms)+'",',
-              "\n\t'n_kp':", str(kappa_p)+',',
-              "\n\t'n_ti':", str(tao_i)+',',
-              "\n\t'n_td':", str(tao_d)+',',
-              "\n\t'kp':", str(K_p)+',',
-              "\n\t'ti':", str(T_i)+',',
-              "\n\t'td':", str(T_d),
+        print("{\n\t\"type\":",'"'+controller_type+'",',
+              "\n\t\"ms\":",'"'+str(Ms)+'",',
+              "\n\t\"n_kp\":", str(kappa_p)+',',
+              "\n\t\"n_ti\":", str(tao_i)+',',
+              "\n\t\"n_td\":", str(tao_d)+',',
+              "\n\t\"kp\":", str(K_p)+',',
+              "\n\t\"ti\":", str(T_i)+',',
+              "\n\t\"td\":", str(T_d),
               "\n}"
         )
 

@@ -11,12 +11,13 @@ define_from_config local_path SERVER_PATH
 define_from_config cache_path CACHE_PATH
 
 ## Local variables
-FRA_ORDER="$1"
-TIME_CONS="$2"
-PROP_CONS="$3"
-DEAD_TIME="$4"
+SYNTAX="$1"
+FRA_ORDER="$2"
+TIME_CONS="$3"
+PROP_CONS="$4"
+DEAD_TIME="$5"
 
-if [ "$*" ]
+if [ $FRA_ORDER ] && [ $TIME_CONS ] && [ $PROP_CONS ] && [ $DEAD_TIME ]
 then
     SIMU_DIR="$(
     printf "$FRA_ORDER,$TIME_CONS,$PROP_CONS,$DEAD_TIME" |
@@ -48,7 +49,7 @@ printf "${STEP_RESPONSE}\n" \
        > ${CACHE_PATH}/${SIMU_DIR}/step_response.txt
 
 ## Using identool if there are not input parameters
-if [ "$*" ]
+if [ $FRA_ORDER ] && [ $TIME_CONS ] && [ $PROP_CONS ] && [ $DEAD_TIME ]
 then
     :
 else
@@ -78,7 +79,7 @@ fi
 ## Generate results table
 {
     $SERVER_PATH/src/tunning/run.sh \
-	$FRA_ORDER $TIME_CONS $PROP_CONS $DEAD_TIME False \
+	$FRA_ORDER $TIME_CONS $PROP_CONS $DEAD_TIME $SYNTAX \
 	> ${CACHE_PATH}/${SIMU_DIR}/results_table.txt \
 	2> ${CACHE_PATH}/${SIMU_DIR}/error_log.txt
     if (( $? )) # If there are not solutions then send error log

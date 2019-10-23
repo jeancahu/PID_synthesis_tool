@@ -53,7 +53,7 @@ class Client(threading.Thread):
         self.model_flags['no_images'] = False                  # Do not send images
         self.model_flags['simulation_vectors'] = False         # Send simulation result vectors
         self.model_flags['gnuplot'] = False                    # Generate images with GNUplot
-        self.model_flags['json_format'] = False                # Send results table in JSON format
+        self.model_flags['output_format'] = 'human_readable'   # Send results table with format
         
         # Flags definition
         if 'model_fotf' in self.model:
@@ -69,8 +69,9 @@ class Client(threading.Thread):
         if 'gnuplot' in self.model:
             self.model_flags['gnuplot'] = True
         if 'json_format' in self.model:
-            self.model_flags['json_format'] = True
-
+            self.model_flags['output_format'] = 'json'
+        elif 'm_code_format' in self.model:
+            self.model_flags['output_format'] = 'm_code'
 
         # Resolve model logic
         if self.model_flags['type'] == 'model_fotf':
@@ -127,9 +128,12 @@ class Client(threading.Thread):
         # Send tunning results
         ## Ejecutar el subprocess
         if self.model_flags['type'] == 'model_fotf':
-            command = '../../bash/compute_request.sh '+self.model_str
+            command = '../../bash/compute_request.sh '\
+                +self.model_flags['output_format']+' '+self.model_str
         elif self.model_flags['type'] == 'model_file':
-            command = '../../bash/compute_request.sh << EOF\n'+self.step_response+'\nEOF\n'
+            command = '../../bash/compute_request.sh '\
+                +self.model_flags['output_format']+' << EOF\n'\
+                +self.step_response+'\nEOF\n'
         else:
             pass
 

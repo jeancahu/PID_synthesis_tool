@@ -11,8 +11,8 @@ source $( dirname $0 )/../../bash/functions.sh
 define_from_config local_path SERVER_PATH
 define_from_config python_env PYTHON_ENV
 
-SYNTAX=m_code
-if [[ $5 =~ 'False' ]]; then SYNTAX=human_readable ; fi
+SYNTAX='m_code'
+if [[ $5 ]]; then SYNTAX="$5" ; fi
 
 declare -i TOTAL_ERROR=1
 declare -i ERROR
@@ -26,9 +26,11 @@ do
 	ERROR=$?
 	if (( $ERROR ))
 	then
-	    [[ $5 == 'False' ]] || printf "${CONTROLLER}_Ms_${SENSIBILITY/\./_}_enable=false;\n"
+	    [[ $SYNTAX == 'm_code' ]] &&
+		printf "${CONTROLLER}_Ms_${SENSIBILITY/\./_}_enable=false;\n"
 	else
-	    [[ $5 == 'False' ]] || printf "${CONTROLLER}_Ms_${SENSIBILITY/\./_}_enable=true;\n"
+	    [[ $SYNTAX == 'm_code' ]] &&
+		printf "${CONTROLLER}_Ms_${SENSIBILITY/\./_}_enable=true;\n"
 	fi
 	TOTAL_ERROR=$(( ERROR*TOTAL_ERROR )) # Zero if there is at least one solution
     done
