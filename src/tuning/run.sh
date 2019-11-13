@@ -21,7 +21,7 @@ for CONTROLLER in PI PID
 do
     for SENSIBILITY in 1.4 2.0
     do
-	$PYTHON_ENV $SERVER_PATH/src/tunning/tunning.py \
+	$PYTHON_ENV $SERVER_PATH/src/tuning/tuning.py \
 		    $1 $2 $3 $4 $SENSIBILITY $SYNTAX $CONTROLLER
 	ERROR=$?
 	if (( $ERROR ))

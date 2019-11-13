@@ -78,7 +78,7 @@ fi
 
 ## Generate results table
 {
-    $SERVER_PATH/src/tunning/run.sh \
+    $SERVER_PATH/src/tuning/run.sh \
 	$FRA_ORDER $TIME_CONS $PROP_CONS $DEAD_TIME $SYNTAX \
 	> ${CACHE_PATH}/${SIMU_DIR}/results_table.txt \
 	2> ${CACHE_PATH}/${SIMU_DIR}/error_log.txt
@@ -99,7 +99,7 @@ fi
 printf "v=$FRA_ORDER;T=$TIME_CONS;K=$PROP_CONS;L=$DEAD_TIME;\n"
 
 ## Add controller params
-$SERVER_PATH/src/tunning/run.sh $FRA_ORDER $TIME_CONS $PROP_CONS $DEAD_TIME
+$SERVER_PATH/src/tuning/run.sh $FRA_ORDER $TIME_CONS $PROP_CONS $DEAD_TIME
 
 ## Setting outfiles path
 printf "output_path='${CACHE_PATH}/${SIMU_DIR}/';\n"

@@ -125,7 +125,7 @@ class Client(threading.Thread):
         self.socket.send(response.encode())
 
     def compute_controller_params_and_simulations (self):
-        # Send tunning results
+        # Send tuning results
         ## Ejecutar el subprocess
         if self.model_flags['type'] == 'model_fotf':
             command = '../../bash/compute_request.sh '\
@@ -137,11 +137,11 @@ class Client(threading.Thread):
         else:
             pass
 
-        tunning_process = subproc(command,
+        tuning_process = subproc(command,
                                   stdout=PIPE,
                                   shell=True)
-        out, err = tunning_process.communicate()
-        tunning_process.terminate()
+        out, err = tuning_process.communicate()
+        tuning_process.terminate()
         self.cach_path = out.decode().split('\n')[0]
         print(self.cach_path)
 
