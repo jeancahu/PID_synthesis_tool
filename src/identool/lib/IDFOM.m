@@ -1,5 +1,5 @@
 %% Main execution
-% The nex program is able to generate de fractional model parameters
+% The next program is able to generate the fractional model parameters
 % compute previous variables and then get the final constants
 
 file_id = fopen(output_path+"identool_results.m", "wt");
@@ -323,7 +323,6 @@ fprintf('Gm(s)=\t----------------------------\n')
 fprintf('\t\t\t%1.2Es^%1.2E+1 \n',To,vo)
 
 %% Write optimal model in results cache file:
-
 fprintf(file_id,'v=%.20f;',vo);
 fprintf(file_id,'T=%.20f;',To);
 fprintf(file_id,'K=%.20f;',Ko);
