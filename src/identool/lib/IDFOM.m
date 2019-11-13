@@ -317,20 +317,18 @@ else
 end
 fprintf('  IAE\t= %1.2d\n',IAEns)
 
-fprintf('Modelo de orden fraccional:\n\n')
-
-fprintf('El modelo es:\n')
+fprintf('Fractional order model:\n')
 fprintf('\t\t %1.2E*exp(-%1.2Es)\n',Ko,Lo)
 fprintf('Gm(s)=\t----------------------------\n')
 fprintf('\t\t\t%1.2Es^%1.2E+1 \n',To,vo)
 
-%% Modelo encontrado, parámetros óptimos:
+%% Write optimal model in results cache file:
 
-fprintf(file_id,'v=%.20f;',vo)
-fprintf(file_id,'T=%.20f;',To)
-fprintf(file_id,'K=%.20f;',Ko)
-fprintf(file_id,'L=%.20f;',Lo)
-fprintf(file_id,' %% model_calculated_values\n')
+fprintf(file_id,'v=%.20f;',vo);
+fprintf(file_id,'T=%.20f;',To);
+fprintf(file_id,'K=%.20f;',Ko);
+fprintf(file_id,'L=%.20f;',Lo);
+fprintf(file_id,' %% model_calculated_values\n');
 
 %% Graphics and simulations:
 figure(1)
