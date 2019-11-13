@@ -17,7 +17,7 @@
 
 body
 {
-    padding: 35px;
+    padding: 15px;
     background: rgb(2,0,36);
     background: linear-gradient(180deg,
 				rgba(2,0,36,1) 0%,
@@ -45,13 +45,10 @@ h2
     left: 20%;
 
     // Opacity setted with RGBA:
-    background: rgba(255,255,255,0.7);
+	//background: rgba(255,255,255,0.7);
+    background: rgb(255,255,255,0.8);
     //opacity: 0.7;
     text-align: center;
-    //padding: 0px;
-    //margin: 0px;
-    //border: 2px solid silver;
-    
 }
 
 #textcontent
@@ -88,63 +85,40 @@ form div + div {
 
 resultsbox
 {
+    position: static;
     display: flex;
     justify-content: center;
-    
-    position: relative;
-    top: 15px;
-    bottom: 15px;
-    right: 15px;
-    left: 15px;
-
-    //padding: 0px;
-    //margin: 0px;
-    //border: 2px solid silver;
-    
+    //top: 15px;
+    //bottom: 15px;
+    //right: 15px;
+    //left: 15px;
+    min-height: 90%;
+    //background: rgb(255,255,255,0.8);
 }
 
 parameters
 {
-    //position: absolute;
-    //top: 0px;
-    //bottom: 0px;
-    //right: 0px;
-
-    //min-width: 30%;
-    opacity: 0.7;
-    //display: flex;
     text-align: left; 
     display: inline-block;
-    //background: olive;
-    background: white;
-    //height: 100%;
-    //width: 30%;
-    padding; 8px;
-    border: 30px solid white;
+    background: rgb(255,255,255,0.8);
     font-family: monospace;
     color: black;
+    min-height: 600px;
 }
 
-model
+parameters > div
 {
-    font-family: monospace;
-    color: black;
+    margin: 30px;
 }
 
 images_tag
 {
     display: inline-block;
     justify-content: center;
-
     text-align: center;
-    
-    //position: absolute;
-    //top: 0px;
-    //bottom: 0px;
-    //left: 0px;
-
-    max-width: 60%;
     background: white;
+    min-width: 75%;
+    //min-height: 90%;
 }
 
 img
@@ -154,14 +128,27 @@ img
     height: auto;
 }
 
+#response_graph
+{
+    //margin-top: 15px;
+    border: 0;
+    min-height: 90%;
+    min-width: 100%;
+}
+
 #keyboard
 {
-    //position: absolute;
-    justify-content: center;
-    //width: 100%;
-    
+    justify-content: center;  
     screen: flex-row;
-    padding: 5px;
+    //padding: 5px;
+    //background: aqua;
+}
+
+.result_button
+{
+    margin-right: 10px;
+    margin-left: 10px;
+    //border: 11px solid white;
 }
 
 button
@@ -186,3 +173,52 @@ button:hover
     transition: all 0.4s ease 0s;
 }
 
+.number_space
+{
+    margin: 5px;
+    //background: rgb(255, 82, 197);
+    background: #662737;
+    border-radius: 0px 54px 54px 54px;
+    -moz-border-radius: 0px 54px 54px 54px;
+    -webkit-border-radius: 0px 54px 54px 54px;
+    //border: 1px dotted #000000;
+    //-webkit-box-shadow: 10px 10px 5px 0px rgba(0,0,0,0.75);
+    //-moz-box-shadow: 10px 10px 5px 0px rgba(0,0,0,0.75);
+    //box-shadow: 10px 10px 5px 0px rgba(0,0,0,0.75);
+    display: flex;
+    flex-direction: column;
+}
+
+#model_params > div > label
+{
+    text-indent: 10px;
+    text-align: left;
+    color: white;
+    font-weight: bold;
+}
+
+#controllers_params > div > label
+{
+    text-indent: 10px;
+    text-align: left;
+    color: white;
+    font-weight: bold;
+}
+
+number_label
+{
+    color: white;
+    margin: 5px;
+    background: #8a344a;
+    border-radius: 31px 31px 31px 31px;
+    -moz-border-radius: 31px 31px 31px 31px;
+    -webkit-border-radius: 31px 31px 31px 31px;
+    //border: 0px solid #000000;
+    text-align: center;
+}
+
+#result_web_pag
+{
+    width: 100%;
+    height: 100%;
+}

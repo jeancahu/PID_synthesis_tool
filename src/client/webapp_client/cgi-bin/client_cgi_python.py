@@ -2,6 +2,9 @@
 
 import socket, re
 import cgi
+import jinja2
+#import sys
+from json import loads as json_to_python
 
 ## Global Vars
 server_URL = "163.178.124.156"
@@ -15,77 +18,101 @@ except:
     # print("No fue posible ingresar por el puerto ", server_port, server_URL)
     pass
 
-client.send("model_fotf".encode())
+form_data = cgi.FieldStorage()
+model_parameters = "no_images,simulation_vectors,json_format"
+
+if "form_input" in form_data.keys():
+    step_resp = form_data.getvalue('textcontent')
+    step_resp = re.sub('^ *$' ,'' ,step_resp)
+    if step_resp:
+        model_type="model_file"
+        in_frac_order = "-"
+        in_time_const = "-"
+        in_prop_const = "-"
+        in_dtime_const = "-"
+
+    else:
+        model_type="model_fotf"
+        in_frac_order = form_data.getvalue('in_frac')
+        in_time_const = form_data.getvalue('in_time')
+        in_prop_const = form_data.getvalue('in_prop')
+        in_dtime_const = form_data.getvalue('in_dtime')
+
+else:
+    model_type="model_fotf"
+    in_frac_order = str(form_data["v"].value)
+    in_time_const = str(form_data["T"].value)
+    in_prop_const = str(form_data["K"].value)
+    in_dtime_const = str(form_data["L"].value)
+
+# Send model type
+model_type=model_type+','+model_parameters
+client.send(model_type.encode())
 response = client.recv(512)
-# print(response.decode())
-
-# Receive model params
-# in_model = input("Insert model type (model_fotf/model_file): ")
-
-in_frac_order = str(cgi.FieldStorage()["v"].value)
-in_time_const = str(cgi.FieldStorage()["T"].value)
-in_prop_const = str(cgi.FieldStorage()["K"].value)
-in_dtime_const = str(cgi.FieldStorage()["L"].value)
 
 # Send models parameters
-parameters = in_frac_order+","+in_time_const+","+\
-    in_prop_const+","+in_dtime_const+"\nEOF"
-client.send(parameters.encode())
+if 'model_fotf' in model_type:
+    parameters = in_frac_order+","+in_time_const+","+\
+        in_prop_const+","+in_dtime_const
+    client.send(parameters.encode())
+else:
+    parameters = step_resp+'\nEOF'
+    client.sendall(parameters.encode())
+
 controller_params = client.recv(2048).decode()
-# print(controller_params)
 
-# Receive the first name
-image_name = client.recv(512).decode('utf-8')
-image_name = image_name.replace('\n','')
+result = ""
+while not 'EOF' in result:
+    # Recibe 512 bytes del cliente; data len
+    result += client.recv(512).decode('utf-8')
+vectors_result = result.replace("\nEOF\n",'')
+client.send("vectors_received_confirmation".encode('utf-8'))
 
-images_list = []
-while True:
-    # print(image_name)
-    if "END" in image_name:
-        break
+# Close socket
+client.close()
 
-    images_list.append(image_name)
-    
-    # print("ImageNameReceived")
-    confirmation="ImageNameReceived".encode('utf-8')
-    client.send(confirmation)
+signal_template = jinja2.Template("""
+	var {{vect}} = {
+	    x: vect_{{vect}}_t,
+	    y: vect_{{vect}},
+	    type: 'scatter',
+	    name: '{{name}}'
+	};
+""")
 
-    data_bytes = bytes()
-    with open(images_path + image_name+".png", 'wb') as f:
-        while True:
-            data_bytes = b''.join([data_bytes, client.recv(4096)])
-            end_line = data_bytes[-20:].decode('utf-8', errors="ignore")
+signals_define = []
+vects = ('X1', 'X2', 'X3', 'X4', 'R', 'D')
+vects_names = ("PI, Ms=1.4", "PI, Ms=2.0", "PID, Ms=1.4", "PID, Ms=2.0", "r(s)", "d(s)")
+for vect, name in zip(vects, vects_names):
+    signals_define.append(signal_template.render(
+        vect=vect,
+        name=name
+    ))
 
-            # Search for PNG end format sequence
-            if 'IENDB`' in end_line and \
-               ( "RD\n" in end_line[-3:] or "END" in end_line[-3:]):
-                image_name = re.sub('.*IENDB`','', end_line)
-                image_name = image_name.replace('\n','')
-                break
-        f.write(data_bytes)
-        del(data_bytes)
-        f.close()
-        
+controller_params = controller_params.replace('EOF', '')
+controller_params = re.sub('[\t ]','', controller_params)
+controller_params = controller_params.replace('}\n{', '},{')
+
+jin_env = jinja2.Environment(loader=jinja2.FileSystemLoader('/var/www/templates'))
+
+template = jin_env.get_template("results_page.html")
+template_plotly = jin_env.get_template("iframe_plotly.html")
+
+iframe_plotly = template_plotly.render(vectors_define=vectors_result,
+                                       signals_define=signals_define)
+
+plotly_page_file_link = "/tmp/plotly.html"
+plotly_page_file = open('../html'+plotly_page_file_link, "w+")
+plotly_page_file.write(iframe_plotly)
+plotly_page_file.close()
+
+page_code = template.render(v_param=in_frac_order,
+                            T_param=in_time_const,
+                            K_param=in_prop_const,
+                            L_param=in_dtime_const,
+                            controller_params=controller_params,
+                            iframe_plotly=plotly_page_file_link)
+
 print("Content-type:text/html\r\n\r\n")
-print('<html>')
-print('<head>')
-print('<title>PI/PID Tunning CGI tool web interface</title>')
-print('</head>')
-print('<body>')
-print('<h2>Tunning parameters:</h2>')
+print(page_code)
 
-print("Fractional parameter is: ", cgi.FieldStorage()["v"].value, '<br>')
-print("Time constant is: ", cgi.FieldStorage()["T"].value, '<br>')
-print("Proportional constant is: ", cgi.FieldStorage()["K"].value, '<br>')
-print("Dead time constant is: ", cgi.FieldStorage()["L"].value, '<br>')
-
-print('<h2>Controller parameters:</h2>')
-print(controller_params.replace('\n', "<br>\n"))
-
-print('<h2>Images:</h2>')
-
-for image in images_list:
-    print('<img src="/images/'+image+'.png" alt="image">')
-
-print('</body>')
-print('</html>')
