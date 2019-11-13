@@ -65,7 +65,7 @@ def main ():
     # Define model values
     v    = float(args[0])
     T    = args[1]
-    K    = args[2]
+    K    = abs(args[2])
     L    = args[3]
     Ms   = args[4]
     
