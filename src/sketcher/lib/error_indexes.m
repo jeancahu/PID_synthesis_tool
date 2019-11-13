@@ -1,6 +1,6 @@
 TMIN=0; % FIXME
 
-err_min_step = min([X1_t[2] X2_t[2] X3_t[2] X4_t[2]])
+err_min_step = min([X1_t(2) X2_t(2) X3_t(2) X4_t(2)])
 err_index_temp_time = [TMIN;err_min_step;TMAX]
 
 %% PI 1.4 Ms
