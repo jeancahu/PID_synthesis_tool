@@ -2,9 +2,6 @@
 % The next program is able to generate the fractional model parameters
 % compute previous variables and then get the final constants
 
-file_id = fopen(output_path+"identool_results.m", "wt");
-file_json_id = fopen(output_path+"identool_results_json_format.txt", "wt");
-
 %% Global variables definition
 
 global To vo Lo Ko ynorm unorm tnorm long tin tmax tu
@@ -16,6 +13,15 @@ t=carga(:,1);                                % time vector
 u=carga(:,2);                                % control signal vector
 y=carga(:,3);                                % controled variable vector
 long=length(t);                              % t vector define the default length
+
+% Infer vectors
+diff_t = diff(t);
+diff_u = diff(u);
+diff_y = diff(y);
+
+mean(diff_t(1:long/3))
+mean(diff_u(1:long/3))
+mean(diff_y(1:long/3))
 
 fprintf('Optimal model is in process...\n')
 
@@ -312,7 +318,7 @@ else
     fprintf('  v\t= %1.2d\n',vo)
 end
 if (To/floor(To))~=1
-    fprintf('  To\t= %1.2d\n',To)
+    fprintf('  T\t= %1.2d\n',To)
 else
     fprintf('  T\t= %1.1d\n',To)
 end
@@ -329,7 +335,8 @@ fprintf(file_json_id, '\t"type": "fractional_model",\n')
 fprintf(file_json_id, '\t"v": %.20f,\n', vo)
 fprintf(file_json_id, '\t"T": %.20f,\n', To)
 fprintf(file_json_id, '\t"K": %.20f,\n', Ko)
-fprintf(file_json_id, '\t"L": %.20f\n', Lo)
+fprintf(file_json_id, '\t"L": %.20f,\n', Lo)
+fprintf(file_json_id, '\t"IAE": %.20f\n', IAEns)
 fprintf(file_json_id, '};\n')
 
 
