@@ -10,8 +10,8 @@ fprintf(file_erridx_id, '\t"type": "error_indexes"');
 
 %% PI 1.4 Ms
 if PI_Ms_1_4_enable
-    IAE_r = sum(abs(step(Myr_PI_Ms_1_4*k_Ref,err_index_temp_time)-1));
-    IAE_d = sum(abs(step(Myd_PI_Ms_1_4*k_Per,err_index_temp_time)));
+    IAE_r = sum(abs(step(Myr_PI_Ms_1_4,err_index_temp_time)-1));
+    IAE_d = sum(abs(step(Myd_PI_Ms_1_4,err_index_temp_time)));
     TOTAL_IAE=IAE_r+IAE_d
 
     fprintf(file_erridx_id, ',\n\t"IAE_R_PI_1_4": %.20f', IAE_r);     % Reference error
@@ -21,8 +21,8 @@ end
 
 %% PI 2.0 Ms
 if PI_Ms_2_0_enable
-    IAE_r = sum(abs(step(Myr_PI_Ms_2_0*k_Ref,err_index_temp_time)-1));
-    IAE_d = sum(abs(step(Myd_PI_Ms_2_0*k_Per,err_index_temp_time)));
+    IAE_r = sum(abs(step(Myr_PI_Ms_2_0,err_index_temp_time)-1));
+    IAE_d = sum(abs(step(Myd_PI_Ms_2_0,err_index_temp_time)));
     TOTAL_IAE=IAE_r+IAE_d
 
     fprintf(file_erridx_id, ',\n\t"IAE_R_PI_2_0": %.20f', IAE_r);     % Reference error
@@ -32,8 +32,8 @@ end
 
 %% PID ODoL 1.4 Ms
 if PID_Ms_1_4_enable
-    IAE_r = sum(abs(step(Myr_PID_Ms_1_4*k_Ref,err_index_temp_time)-1));
-    IAE_d = sum(abs(step(Myd_PID_Ms_1_4*k_Per,err_index_temp_time)));
+    IAE_r = sum(abs(step(Myr_PID_Ms_1_4,err_index_temp_time)-1));
+    IAE_d = sum(abs(step(Myd_PID_Ms_1_4,err_index_temp_time)));
     TOTAL_IAE=IAE_r+IAE_d
 
     fprintf(file_erridx_id, ',\n\t"IAE_R_PID_1_4": %.20f', IAE_r);     % Reference error
@@ -43,8 +43,8 @@ end
 
 %% PID ODoL 2.0 Ms
 if PID_Ms_2_0_enable
-    IAE_r = sum(abs(step(Myr_PID_Ms_2_0*k_Ref,err_index_temp_time)-1));
-    IAE_d = sum(abs(step(Myd_PID_Ms_2_0*k_Per,err_index_temp_time)));
+    IAE_r = sum(abs(step(Myr_PID_Ms_2_0,err_index_temp_time)-1));
+    IAE_d = sum(abs(step(Myd_PID_Ms_2_0,err_index_temp_time)));
     TOTAL_IAE=IAE_r+IAE_d
 
     fprintf(file_erridx_id, ',\n\t"IAE_R_PID_2_0": %.20f', IAE_r);     % Reference error
