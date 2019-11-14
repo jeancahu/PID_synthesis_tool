@@ -53,6 +53,7 @@ class Client(threading.Thread):
         self.model_flags['no_images'] = False                  # Do not send images
         self.model_flags['simulation_vectors'] = False         # Send simulation result vectors
         self.model_flags['gnuplot'] = False                    # Generate images with GNUplot
+        self.model_flags['model_parameters'] = False           # Send model parameters, IDFOM results
         self.model_flags['output_format'] = 'human_readable'   # Send results table with format
         
         # Flags definition
@@ -68,6 +69,8 @@ class Client(threading.Thread):
             self.model_flags['simulation_vectors'] = True
         if 'gnuplot' in self.model:
             self.model_flags['gnuplot'] = True
+        if 'no_images' in self.model:
+            self.model_flags['model_parameters'] = True
         if 'json_format' in self.model:
             self.model_flags['output_format'] = 'json'
         elif 'm_code_format' in self.model:
@@ -75,7 +78,7 @@ class Client(threading.Thread):
 
         # Resolve model logic
         if self.model_flags['type'] == 'model_fotf':
-            # Data model processing
+            # Data model TF processing
             self.model_fotf()
             self.compute_controller_params_and_simulations()
             self.send_controller_parameters()
@@ -83,6 +86,8 @@ class Client(threading.Thread):
                 self.send_simulation_vectors()
             if not self.model_flags['no_images']:
                 self.send_images()
+            if self.model_flags['model_parameters']:
+                self.send_model_parameters()
 
         elif self.model_flags['type'] == 'model_file':
             # Data file processing
@@ -93,6 +98,8 @@ class Client(threading.Thread):
                 self.send_simulation_vectors()
             if not self.model_flags['no_images']:
                 self.send_images()
+            if self.model_flags['model_parameters']:
+                self.send_model_parameters()
 
         else:
             self.model_undefined()
@@ -145,6 +152,19 @@ class Client(threading.Thread):
         self.cach_path = out.decode().split('\n')[0]
         print(self.cach_path)
 
+    def send_model_parameters (self):
+        ## Open IDFOM results file
+        file_path = self.cach_path+"/identool_results_json_format.txt"
+        results_file = open(file_path)
+        results_file = ''.join(results_file.readlines())
+
+        ## Send file content
+        result = results_file+self.eof
+        self.socket.send(result.encode('utf-8'))
+
+        ## Read client ack response
+        print(self.socket.recv(512).decode('utf-8'))
+
     def send_controller_parameters (self):
         ## Open results file
         file_path = self.cach_path+"/results_table.txt"
@@ -154,7 +174,6 @@ class Client(threading.Thread):
         ## Send file content
         result = results_file+self.eof
         self.socket.send(result.encode('utf-8'))
-        print(result)
 
     def send_simulation_vectors (self):
         ## Send images
@@ -165,6 +184,8 @@ class Client(threading.Thread):
         out, err = simulation_process.communicate()
         simulation_process.terminate()
         vectors_str = out.decode()+"\nEOF\n"
+
+        ## Receive client ack
         self.socket.sendall(vectors_str.encode('utf-8'))
         print(self.socket.recv(512).decode('utf-8'))
 
