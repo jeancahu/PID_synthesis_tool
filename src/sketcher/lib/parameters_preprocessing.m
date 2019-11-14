@@ -1,2 +1,2 @@
-% Set K as positive for simulations
-K=abs(K);
+% Set controllers action
+action=K/abs(K);
