@@ -10,21 +10,17 @@ t=carga(:,1);                                % time vector
 u=carga(:,2);                                % control signal vector
 y=carga(:,3);                                % controled variable vector
 long=length(t);                              % define the default length
+m_long=long/2;
 
 % Infer vectors
-diff_t = diff(t);
-diff_u = diff(u);
-diff_y = diff(y);
+a_diff_t = abs(diff(t));
+a_diff_u = abs(diff(u));
+a_diff_y = abs(diff(y));
 
-mean(diff_t(1:(long/3)))
-mean(diff_t((long/3):(2*long/3)))
-mean(diff_t((2*long/3):long))
+mean(a_diff_t(m_long:end))
+mean(a_diff_u(m_long:end))
+mean(a_diff_y(m_long:end))
 
-mean(diff_u(1:(long/3)))
-mean(diff_u((long/3):(2*long/3)))
-mean(diff_u((2*long/3):long))
-
-mean(diff_y(1:(long/3)))
-mean(diff_y((long/3):(2*long/3)))
-mean(diff_y((2*long/3):long))
-
+sum(a_diff_t)
+sum(a_diff_u)
+sum(a_diff_y)
