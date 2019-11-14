@@ -17,17 +17,17 @@ diff_v1 = diff(in_v1);
 diff_v2 = diff(in_v2);
 diff_v3 = diff(in_v3);
 
-sum_v1 = sum(diff_v1(m_long:end));
-sum_v2 = sum(diff_v2(m_long:end));
-sum_v3 = sum(diff_v3(m_long:end));
+sum_v1 = mean(abs(diff_v1(m_long:end)))*m_long;
+sum_v2 = mean(abs(diff_v2(m_long:end)))*m_long;
+sum_v3 = mean(abs(diff_v3(m_long:end)))*m_long;
 
 mid_line_v1 = (in_v1(end)-in_v1(1))/2;
 mid_line_v2 = (in_v2(end)-in_v2(1))/2;
 mid_line_v3 = (in_v3(end)-in_v3(1))/2;
 
-sum_v1/mid_line_v1
-sum_v2/mid_line_v2
-sum_v3/mid_line_v3
+in_v1_index = abs(sum_v1/mid_line_v1)
+in_v2_index = abs(sum_v2/mid_line_v2)
+in_v3_index = abs(sum_v3/mid_line_v3)
 
 t = in_v1;
 u = in_v2;
