@@ -16,6 +16,15 @@ diff_t = diff(t);
 diff_u = diff(u);
 diff_y = diff(y);
 
-mean(diff_t(1:long/3))
-mean(diff_u(1:long/3))
-mean(diff_y(1:long/3))
+mean(diff_t(1:(long/3)))
+mean(diff_t((long/3):(2*long/3)))
+mean(diff_t((2*long/3):long))
+
+mean(diff_u(1:(long/3)))
+mean(diff_u((long/3):(2*long/3)))
+mean(diff_u((2*long/3):long))
+
+mean(diff_y(1:(long/3)))
+mean(diff_y((long/3):(2*long/3)))
+mean(diff_y((2*long/3):long))
+
