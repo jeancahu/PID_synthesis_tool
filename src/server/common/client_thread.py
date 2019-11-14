@@ -159,8 +159,7 @@ class Client(threading.Thread):
         results_file = ''.join(results_file.readlines())
 
         ## Send file content
-        result = results_file+self.eof
-        self.socket.send(result.encode('utf-8'))
+        self.socket.send(results_file.encode('utf-8'))
 
         ## Read client ack response
         print(self.socket.recv(512).decode('utf-8'))
