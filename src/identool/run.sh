@@ -33,6 +33,7 @@ printf "output_path='$M_CACHE_PATH/';\n" >> $M_CACHE_PATH/parameters.m
 printf "
 run $SERVER_PATH/src/identool/lib/start.m
 run $M_CACHE_PATH/parameters.m
+run $SERVER_PATH/src/identool/lib/set_variables.m
 run $SERVER_PATH/src/identool/lib/IDFOM.m
 run $SERVER_PATH/src/identool/lib/finish.m
 " > $M_CACHE_PATH/identool.m

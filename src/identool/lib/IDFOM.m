@@ -2,27 +2,6 @@
 % The next program is able to generate the fractional model parameters
 % compute previous variables and then get the final constants
 
-%% Global variables definition
-
-global To vo Lo Ko ynorm unorm tnorm long tin tmax tu
-
-%% Load data from thread cache
-
-carga=load(output_path+"step_response.txt"); % step response .txt load data
-t=carga(:,1);                                % time vector
-u=carga(:,2);                                % control signal vector
-y=carga(:,3);                                % controled variable vector
-long=length(t);                              % t vector define the default length
-
-% Infer vectors
-diff_t = diff(t);
-diff_u = diff(u);
-diff_y = diff(y);
-
-mean(diff_t(1:long/3))
-mean(diff_u(1:long/3))
-mean(diff_y(1:long/3))
-
 fprintf('Optimal model is in process...\n')
 
 %% Static gain processing
