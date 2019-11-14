@@ -3,6 +3,7 @@
 % compute previous variables and then get the final constants
 
 file_id = fopen(output_path+"identool_results.m", "wt");
+file_json_id = fopen(output_path+"identool_results_json_format.txt", "wt");
 
 %% Global variables definition
 
@@ -321,6 +322,16 @@ fprintf('Fractional order model:\n')
 fprintf('\t\t %1.2E*exp(-%1.2Es)\n',Ko,Lo)
 fprintf('Gm(s)=\t----------------------------\n')
 fprintf('\t\t\t%1.2Es^%1.2E+1 \n',To,vo)
+
+%% Write optimal model in results cache file:
+fprintf(file_json_id, '{ // Model optimal parameters\n')
+fprintf(file_json_id, '\t"type": "fractional_model",\n')
+fprintf(file_json_id, '\t"v": %.20f,\n', vo)
+fprintf(file_json_id, '\t"T": %.20f,\n', To)
+fprintf(file_json_id, '\t"K": %.20f,\n', Ko)
+fprintf(file_json_id, '\t"L": %.20f\n', Lo)
+fprintf(file_json_id, '};\n')
+
 
 %% Write optimal model in results cache file:
 fprintf(file_id,'v=%.20f;',vo);
