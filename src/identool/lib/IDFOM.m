@@ -309,14 +309,14 @@ fprintf('Gm(s)=\t----------------------------\n')
 fprintf('\t\t\t%1.2Es^%1.2E+1 \n',To,vo)
 
 %% Write optimal model in results cache file:
-fprintf(file_json_id, '{ // Model optimal parameters\n');
+fprintf(file_json_id, '{\n');
 fprintf(file_json_id, '\t"type": "fractional_model",\n');
 fprintf(file_json_id, '\t"v": %.20f,\n', vo);
 fprintf(file_json_id, '\t"T": %.20f,\n', To);
 fprintf(file_json_id, '\t"K": %.20f,\n', Ko);
 fprintf(file_json_id, '\t"L": %.20f,\n', Lo);
 fprintf(file_json_id, '\t"IAE": %.20f\n', IAEns);
-fprintf(file_json_id, '};\n');
+fprintf(file_json_id, '}\n');
 
 
 %% Write optimal model in results cache file:

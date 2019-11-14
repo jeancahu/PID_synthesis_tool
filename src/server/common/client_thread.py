@@ -69,7 +69,7 @@ class Client(threading.Thread):
             self.model_flags['simulation_vectors'] = True
         if 'gnuplot' in self.model:
             self.model_flags['gnuplot'] = True
-        if 'no_images' in self.model:
+        if 'model_parameters' in self.model:
             self.model_flags['model_parameters'] = True
         if 'json_format' in self.model:
             self.model_flags['output_format'] = 'json'
