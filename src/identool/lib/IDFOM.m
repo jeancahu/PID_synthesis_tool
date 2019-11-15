@@ -369,3 +369,7 @@ for i = 1:length(out)
     fprintf(fid,'%d\t%d\t%d\t%d\n',out(i,1),out(i,2),out(i,3),out(i,4));
 end
 fclose(fid);
+
+file_flag_id = fopen(output_path+"ready.txt", "a+");
+fprintf(file_id,'model_comparison_ready\n');
+fclose(file_flag_id);

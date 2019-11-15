@@ -222,10 +222,13 @@ class Client(threading.Thread):
 
     def send_model_comparison (self):
         ## Send model simulation
-        file_path = self.cach_path+"/model_step_response.txt"
-        results_file = open(file_path)
-        results_file = ''.join(results_file.readlines())
-        result = results_file+self.eof
+        command = '../../bash/wait_and_send_model_comparison.sh '+self.cach_path
+        simulation_process = subproc(command,
+                                  stdout=PIPE,
+                                  shell=True)
+        out, err = simulation_process.communicate()
+        simulation_process.terminate()
+        result = out.decode()+"\nEOF\n"
 
         ## Receive client ack
         self.socket.sendall(result.encode('utf-8'))
