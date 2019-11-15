@@ -371,5 +371,5 @@ end
 fclose(fid);
 
 file_flag_id = fopen(output_path+"ready.txt", "a+");
-fprintf(file_id,'model_comparison_ready\n');
+fprintf(file_flag_id,'model_comparison_ready\n');
 fclose(file_flag_id);
