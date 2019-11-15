@@ -35,7 +35,7 @@
 
 	    <div class='number_space'>
 	      <label>IAE Index</label>
-	      <number_label>-</number_label>
+	      <number_label>{{model_IAE}}</number_label>
 	    </div>
 
 	    
@@ -52,67 +52,91 @@
 	    </div>
 
 	    <div class='number_space'>
-	      <label>Proportional value</label>
+	      <label>Proportional Gain</label>
 	      <number_label id='kp_const'>-</number_label>
 	    </div>
 
 	    <div class='number_space'>
-	      <label>Integral value</label>
+	      <label>Integral Time</label>
 	      <number_label id='ti_const'>-</number_label>
 	    </div>
 
 	    <div class='number_space'>
-	      <label>Differential value</label>
+	      <label>Derivative time</label>
 	      <number_label id='td_const'>-</number_label>
 	    </div>
 
 	    <div class='number_space'>
-	      <label>Normal. Prop. value</label>
-	      <number_label id='n_kp_const'>-</number_label>
+	      <label>Servo-control performance</label>
+	      <number_label id='servo_iae'>-</number_label>
 	    </div>
 
 	    <div class='number_space'>
-	      <label>Normal. Integral value</label>
-	      <number_label id='n_ti_const'>-</number_label>
+	      <label>Regulatory performance</label>
+	      <number_label id='reg_iae'>-</number_label>
 	    </div>
 
 	    <div class='number_space'>
-	      <label>Normal. diff. value</label>
-	      <number_label id='n_td_const'>-</number_label>
+	      <label>Overall performance</label>
+	      <number_label id='total_iae'>-</number_label>
 	    </div>
-
-	    
+	    	    
 	  </div>
 	</div>
       </parameters>
 
     <images_tag>
 
-      <iframe id="response_graph" scrolling="no" src="{{iframe_plotly}}"></iframe>
+      <iframe id="response_graph" scrolling="no" src="{{iframe_plotly_close_loop}}"></iframe>
      
       <div id="keyboard">
 	<button class='result_button' onclick='params_toggle("PI","1.4")'>PI, Ms=1.4</button>
 	<button class='result_button' onclick='params_toggle("PI","2.0")'>PI, Ms=2.0</button>
 	<button class='result_button' onclick='params_toggle("PID","1.4")'>PID, Ms=1.4</button>
 	<button class='result_button' onclick='params_toggle("PID","2.0")'>PID, Ms=2.0</button>
+	<button id='toggle_graph' class='result_button' onclick='toggle_iframe_src()'>y vs ym</button>
       </div>
 
       <script type="text/javascript">
-      
+
+	document.getElementById("toggle_graph").disabled = {{button_disable}};
+	
 	var controllers = [ {{controller_params}} ];
+	var error_indexes = {{error_indexes}};
+	var key = '';
+
+	var iframe_src_model = false;
+	
+	function toggle_iframe_src()
+	{
+	    if (iframe_src_model)
+	    {
+		iframe_src_model = false;
+		document.getElementById('toggle_graph').innerHTML = 'y vs ym';
+		document.getElementById('response_graph').src = "{{iframe_plotly_close_loop}}";
+	    } else {
+		iframe_src_model = true;
+		document.getElementById('toggle_graph').innerHTML = 'Close-Loop';
+		document.getElementById('response_graph').src = "{{iframe_plotly_model_comparison}}";
+	    }
+	}
+	
 	function params_toggle(cnt, ms)
 	{
 	    for ( var element = 0; element<controllers.length; element++ ){
 		console.log(controllers[element]);
 		if ( controllers[element].type == cnt && controllers[element].ms == ms )
 		{
+		    key = cnt+'_'+ms.replace('.','_');
+
 		    document.getElementById('controller_name').innerHTML = cnt+', Ms = '+ms;
 		    document.getElementById('kp_const').innerHTML = controllers[element].kp;
 		    document.getElementById('ti_const').innerHTML = controllers[element].ti;
 		    document.getElementById('td_const').innerHTML = controllers[element].td;
-		    document.getElementById('n_kp_const').innerHTML = controllers[element].n_kp;
-		    document.getElementById('n_ti_const').innerHTML = controllers[element].n_ti;
-		    document.getElementById('n_td_const').innerHTML = controllers[element].n_td;
+
+		    document.getElementById('servo_iae').innerHTML = 'IAE = '+error_indexes['IAE_R_'+key];
+		    document.getElementById('reg_iae').innerHTML = 'IAE = '+error_indexes['IAE_D_'+key];
+		    document.getElementById('total_iae').innerHTML = 'IAE = '+error_indexes['IAE_T_'+key];
 		    break;
 		}
 	    }

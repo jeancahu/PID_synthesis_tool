@@ -15,7 +15,7 @@
 
 	var layout = {
 	    title: {
-		text: "Closed-loop System Responses",
+		text: "{{title}}",
 		font: {size: 14}
 	    },
 	    xaxis: {
@@ -33,7 +33,7 @@
 
 	};
 	
-	var data = [X1, X2, X3, X4, R, D];
+	var data = {{data}};
 	Plotly.newPlot('response_graph', data, layout, {responsive: true});
       
       </script>    
