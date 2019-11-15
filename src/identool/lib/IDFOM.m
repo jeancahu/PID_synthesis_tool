@@ -275,8 +275,8 @@ else
     [zo, po, koo]=APC(1,vo,0.001,1000);
     Gm= zpk(zo,po,koo);
 end
-    Gmo=Ko*exp(-(Lo+tin)*s)/(To*Gm+1);
 
+Gmo=Ko*exp(-(Lo+tin)*s)/(To*Gm+1);
 ym=step(Gmo,tnorm);
 
 %% Print parameters
@@ -361,3 +361,11 @@ subplot(2,1,2)
 % Save the image
 print(output_path+"model_comparison.png",'-dpng')
 fprintf('Image ready\n')
+
+% Save signals to file
+out = [tnorm unorm ynorm ym/Ko];
+fid=fopen(output_path+"model_step_response.txt",'wt');
+for i = 1:length(out)
+    fprintf(fid,'%d\t%d\t%d\t%d\n',out(i,1),out(i,2),out(i,3),out(i,4));
+end
+fclose(fid);

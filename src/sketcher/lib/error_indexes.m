@@ -53,7 +53,7 @@ if PID_Ms_2_0_enable
 end
 
 %% Close JSON object
-fprintf(file_erridx_id, '\n}\n');
+fprintf(file_erridx_id, '\n}');
 
 file_id = fopen(output_path+"ready.txt", "a+");
 fprintf(file_id,'error_indexes_ready\n');

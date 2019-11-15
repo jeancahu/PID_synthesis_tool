@@ -55,6 +55,7 @@ class Client(threading.Thread):
         self.model_flags['gnuplot'] = False                    # Generate images with GNUplot
         self.model_flags['model_parameters'] = False           # Send model parameters, IDFOM results
         self.model_flags['error_indexes'] = False              # Send error indexes to client
+        self.model_flags['model_comparison'] = False           # Send model simulation vector
         self.model_flags['output_format'] = 'human_readable'   # Send results table with format
         
         # Flags definition
@@ -74,6 +75,8 @@ class Client(threading.Thread):
             self.model_flags['model_parameters'] = True
         if 'error_indexes' in self.model:
             self.model_flags['error_indexes'] = True
+        if 'model_comparison' in self.model:
+            self.model_flags['model_comparison'] = True
         if 'json_format' in self.model:
             self.model_flags['output_format'] = 'json'
         elif 'm_code_format' in self.model:
@@ -107,6 +110,8 @@ class Client(threading.Thread):
                 self.send_model_parameters()
             if self.model_flags['error_indexes']:
                 self.send_error_indexes()
+            if self.model_flags['model_comparison']:
+                self.send_model_comparison()
 
         else:
             self.model_undefined()
@@ -213,6 +218,17 @@ class Client(threading.Thread):
 
         ## Receive client ack
         self.socket.sendall(vectors_str.encode('utf-8'))
+        print(self.socket.recv(512).decode('utf-8'))
+
+    def send_model_comparison (self):
+        ## Send model simulation
+        file_path = self.cach_path+"/model_step_response.txt"
+        results_file = open(file_path)
+        results_file = ''.join(results_file.readlines())
+        result = results_file+self.eof
+
+        ## Receive client ack
+        self.socket.sendall(result.encode('utf-8'))
         print(self.socket.recv(512).decode('utf-8'))
 
     def send_images (self):
