@@ -1,3 +1,5 @@
+#!/bin/bash
+
 echo '%% System Models' > system_models.m
 echo "s=tf('s');" >> system_models.m
 
