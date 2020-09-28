@@ -6,7 +6,7 @@ from subprocess import Popen as subproc
 from subprocess import PIPE
 
 # Comunicacion cliente-servidor:
-class Client(threading.Thread):
+class PID_Client(threading.Thread):
     """ Cliente conectado al server
     """
     def __init__(self, socket_client, datos_cliente):
@@ -28,15 +28,15 @@ class Client(threading.Thread):
         self.model_str = ''
         # var: str: Temporals absolute path in system
         self.cach_path = ''
-    
+
     def run(self):
-        """ 
+        """
         Este hilo se encarga de ejecutar las diferentes transacciones de datos
         necesarias para compartir el modelo o la respuesta del sistema desde
         el cliente al servidor y posteriormente los parámetros del controlador
         y la imagen de la nueva implementación simulada, desde el servidor al
         dispositivo cliente
-    
+
         Primer tramo: Tipo de información: [model,response_file]
         Segundo tramo: Tupla de parámetros o fichero de texto plano según sea
         el caso
@@ -57,7 +57,7 @@ class Client(threading.Thread):
         self.model_flags['error_indexes'] = False              # Send error indexes to client
         self.model_flags['model_comparison'] = False           # Send model simulation vector
         self.model_flags['output_format'] = 'human_readable'   # Send results table with format
-        
+
         # Flags definition
         if 'model_fotf' in self.model:
             self.model_flags['type'] = 'model_fotf'
@@ -262,7 +262,7 @@ class Client(threading.Thread):
 
         self.socket.send("END".encode('utf-8'))
         ####
-        
+
     def receive_plain_text (self):
         result = ""
         while not 'EOF' in result:
