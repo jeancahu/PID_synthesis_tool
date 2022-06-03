@@ -10,3 +10,6 @@ Identool use system control methods to identify simple models.
 
 ## control_sys_tools
 Aplicación móvil para la sintonización de controladores PI/PID de 1 GdL basada en un  modelo de orden fraccional
+
+## PID_synthesis_server_client
+PID Synthesis software, Server and Client
