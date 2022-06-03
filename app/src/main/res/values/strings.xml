@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">PI/PID synthesis</string>
+    <string name="file_not_found_err_message">Error de dirección</string>
+    <string name="file_permission_err_message">Error de lectura</string>
+    <string name="file_reading_info_message">Leyendo fichero de texto</string>
+    <string name="permitted_info_message">Permiso otorgado</string>
+    <string name="denied_info_message">Permiso denegado</string>
+    <string name="model_request_message">Favor seleccionar un modelo</string>
+    <string name="connection_err_message">No fue posible comunicar con el servidor</string>
+    <string name="file_sending_info_message">Enviando fichero de texto</string>
+    <string name="images_receiving_info_message">Recibiendo imágenes</string>
+    <string name="processing_info_message">Procesando datos</string>
+
+    <string name="frac_const_value_request_message">Orden fraccional fuera del rango [1.0, 1.8]</string>
+    <string name="time_const_request_message">Favor seleccionar un modelo</string>
+    <string name="prop_const_request_message">Favor seleccionar un modelo</string>
+    <string name="deadtime_const_request_message">Favor seleccionar un modelo</string>
+
+</resources>

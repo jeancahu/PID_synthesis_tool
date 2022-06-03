@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".sendNreceive">
+
+    <com.github.chrisbanes.photoview.PhotoView
+        android:id="@+id/simulation_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+
+        android:layout_above="@+id/divider"
+        android:layout_marginBottom="0dp" />
+
+    <!--
+    <ImageView
+        android:id="@+id/simulation_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:srcCompat="@tools:sample/backgrounds/scenic" />
+    -->
+
+    <TextView
+        android:id="@+id/textTunningResults"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/divider"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="40dp"
+        android:layout_marginBottom="40dp"
+        android:scrollbars="vertical"
+        android:text="No data"
+        android:textSize="10dp" />
+
+    <CheckBox
+        android:id="@+id/PI_14"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="150dp"
+        android:layout_marginBottom="34dp"
+        android:text="PI Ms 1.4" />
+
+    <CheckBox
+        android:id="@+id/PI_20"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignTop="@id/PI_14"
+        android:layout_marginEnd="28dp"
+        android:layout_marginBottom="34dp"
+        android:layout_toStartOf="@+id/PI_14"
+        android:text="PI Ms 2.0" />
+
+    <CheckBox
+        android:id="@+id/PID_14"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/PI_20"
+        android:layout_alignLeft="@id/PI_20"
+        android:layout_marginBottom="18dp"
+        android:layout_toStartOf="@+id/PID_20"
+        android:text="PID Ms 1.4" />
+
+    <CheckBox
+        android:id="@+id/PID_20"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/PI_14"
+        android:layout_alignLeft="@id/PI_14"
+        android:layout_marginBottom="18dp"
+        android:layout_alignTop="@id/PID_14"
+        android:text="PID Ms 2.0" />
+
+    <ToggleButton
+        android:id="@+id/showImage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="31dp"
+        android:layout_marginBottom="28dp"
+        android:text="ToggleButton"
+        android:textOff="Image"
+        android:textOn="Params" />
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="151dp"
+        android:background="?android:attr/listDivider" />
+
+    <ProgressBar
+        android:id="@+id/recepcion"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/divider"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="30dp"
+        android:layout_marginEnd="30dp"
+        android:layout_marginBottom="-26dp" />
+
+</RelativeLayout>
