@@ -3,3 +3,4 @@ PID tuning web tool, server and client, django back-end
 
 ## PID_synthesis_android_client
 PID Synthesis software, Android Client
+Android TCP/IP client for https://github.com/jeancahu/PID_synthesis_server_client
