@@ -1,0 +1,41 @@
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <!-- Plotly.js -->
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  </head>
+  <body style="height:100%;width:100%;margin:0;">
+      <div id="response_graph" style="height:100%;width:100%;margin:0;"></div>
+      <script type="text/javascript">
+	{{vectors_define}}
+	
+	{% for element in signals_define %}
+	{{element}}
+	{% endfor %}
+
+	var layout = {
+	    title: {
+		text: "{{title}}",
+		font: {size: 14}
+	    },
+	    xaxis: {
+		title: {
+		    text: "Time",
+		    font: {size: 14}
+		}
+	    },
+	    yaxis: {
+		title: {
+		    text: "Magnitude (%)",
+		    font: {size: 14}
+		}
+	    }
+
+	};
+	
+	var data = {{data}};
+	Plotly.newPlot('response_graph', data, layout, {responsive: true});
+      
+      </script>    
+  </body>
+</html>

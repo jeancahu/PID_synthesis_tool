@@ -1,0 +1,44 @@
+#!/bin/bash
+
+declare DEFAULT_CONFIG_FILE="$HOME/.pid_ss.conf"
+declare PYTHON_ENV=python
+
+## Error codes
+declare -i E_OKAY=0
+declare -i E_P3NF=1
+
+if [ -f $DEFAULT_CONFIG_FILE ]
+then
+    read -p "A configuration already exist, do you want reload it? [y/N] " -n 1 OPTION
+    [ $OPTION ] || exit $E_OKAY
+    printf '\n'
+    if [[ ${OPTION,,} =~ 'y' ]]
+    then
+	printf 'Deleting old configuration\n'
+	rm $DEFAULT_CONFIG_FILE
+	./$0
+    fi
+else
+
+    if which python3.7 &>/dev/null
+    then PYTHON_ENV=$( which python3.7 )
+    elif which python3.5 &>/dev/null
+    then PYTHON_ENV=$( which python3.5 )
+    elif which python3 &>/dev/null
+    then PYTHON_ENV=$( which python3 )
+    else
+	printf "Please install Python3\n" >/dev/stderr
+	exit $E_P3NF
+    fi
+    
+    printf 'Executing configuration\n'
+    printf "# Default config file PID_synthesis_server_client
+local_path\t$PWD
+cache_path\t/tmp/pid_ss
+server_port\t8494
+server_URL\tcarara.eie.ucr.ac.cr
+python_env\t$PYTHON_ENV
+" >$DEFAULT_CONFIG_FILE
+fi
+
+exit $E_OKAY
