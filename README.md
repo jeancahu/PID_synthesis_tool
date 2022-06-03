@@ -13,3 +13,6 @@ Aplicación móvil para la sintonización de controladores PI/PID de 1 GdL basad
 
 ## PID_synthesis_server_client
 PID Synthesis software, Server and Client
+
+## PID_tuning_python_module
+PID tuning module for Python3
