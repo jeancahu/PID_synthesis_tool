@@ -1,6 +1,11 @@
 # Fractional order rule # TODO: include reference
+# TODO: quitar los raise, colocarlos donde corresponde
 
 import numpy as _np
+from pidtuning.models.controller import Controller
+
+valid_controllers = ('PID', 'PI')
+valid_Ms          = ('1.4', '2.0')
 
 PID_Ms_1_4 = {
 
@@ -521,3 +526,99 @@ def normalized_differential_const (values_dict, v, tao_o):
     result += c4*tao_o
     result += c5
     return result
+
+
+def tuning(alpha, T, K, L, Ms, ctype):
+    """
+    PI/PID Tunning rule for fractional order models
+    # TODO: add tuning rule paper reference
+
+    Args:
+    param: in: alpha     Fractional order
+    param: in: T         Time constant
+    param: in: K         Proportional constant
+    param: in: L         Dead time constant
+    param: in: Ms        Maximum sensitivity
+    param: in: ctype     Controler type ['PI','PID']
+
+    Internal values
+    * tao_o, Fractional normalized dead time
+    """
+
+    if ctype == 'PID' or ctype == 'PI':
+        pass
+    else:
+        raise ValueError("Unknown controller")
+        return False
+
+    try:
+        alpha    = float(alpha)
+        # T        = T
+        K        = abs(K)
+        # L        = L
+        # Ms       = Ms
+
+    except Exception:
+        raise ValueError("Wrong input value, tuning input error")
+        return False
+
+    # Verify alpha is in range
+    if ctype == 'PI':
+        alpha_range = (1.6,1.0)
+    elif ctype == 'PID':
+        alpha_range = (1.8,1.0)
+
+    if alpha <= alpha_range[0] and alpha >= alpha_range[1]:
+        pass
+    else:
+        raise ValueError(
+            'Fractional order is not in range [', alpha_range[1],', ', alpha_range[0],']')
+        return False
+
+    # Calculate fractional normalized dead time
+    tao_o = float(L)/(_np.power(T,1/alpha))
+
+    if tao_o <= 2.0 and tao_o >= 0.1:
+        pass
+    else:
+        raise ValueError('Fractional normalized dead time is not in range [0.1, 2.0]')
+        return False
+
+    if Ms == '2.0':
+        if ctype == 'PID':
+            values_dict = PID_Ms_2_0
+        elif ctype == 'PI':
+            values_dict = PI_Ms_2_0
+    elif Ms == '1.4':
+        if ctype == 'PID':
+            values_dict = PID_Ms_1_4
+        elif ctype == 'PI':
+            values_dict = PI_Ms_1_4
+    else:
+        raise ValueError('Maximum sensitivity is not in {1.4, 2.0}')
+        return False
+
+    # Calculate results:
+    kappa_p = normalized_proportional_const(values_dict, alpha, tao_o)
+    tao_i = normalized_integral_const(values_dict, alpha, tao_o)
+    if ctype == 'PID':
+        tao_d = normalized_differential_const(values_dict, alpha, tao_o)
+    else:
+        tao_d = 0
+    K_p = _np.divide(kappa_p, K)
+    T_i = _np.multiply(tao_i, _np.power(T, _np.divide(1, alpha)))
+    if ctype == 'PID':
+        T_d = _np.multiply(tao_d, _np.power(T, _np.divide(1, alpha)))
+    else:
+        T_d = 0
+
+    return Controller(
+        ctype,   # Controller type
+        Ms,      # Controller-plant sensivity
+        kappa_p, # Normalized proportional constant
+        tao_i,   # Normalized integral constant
+        tao_d,   # Normalized differential constant
+        K_p,     # Proportional constant
+        T_i,     # Integral constant
+        T_d,     # Differential constant
+    )
