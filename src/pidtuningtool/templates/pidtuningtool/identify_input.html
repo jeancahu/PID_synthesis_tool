@@ -2,53 +2,19 @@
 {% load i18n static %}
 
 {% block header %}
-<!-- Plotly.js -->
-<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 {% endblock %}
 
 
 {% block content %}
-    <form action = "/interactive/client_cgi_python.py?form_input=true" method = "post" target = "_blank">
+<h3>Select an input method</h3>
 
-      <div id="step_response_graph"></div>
+{# TODO Cards for every method, an image and a bref description the method does, continue button #}
 
-      Paste your step response here...<br>
-      <textarea name="textcontent" id="textcontent">
-      </textarea>
+<a href="{% url 'pidtuningtool_mi' %}">Fractional order model as input</a>
+<a href="{% url 'pidtuningtool_ri' %}">Plant open-loop response as input</a>
 
-      <div>
-	  <label for="name">File with step response:</label>
-	  <input type="file" id="in_file">Upload file, columm format is: time, step signal and system signal</input><br>
-	</div>
-
-      <div>
-	  <label for="name">Fractional order:</label>
-	  <input type="number" name="in_frac" value=1 step=0.001 min=1 max=1.8 id="in_frac"/><br>
-	</div>
-
-      <div>
-	  <label for="name">Time constant:</label>
-	  <input type="number" name="in_time" value=1 step=0.001 min=0.001 id="in_time"/><br>
-	</div>
-
-      <div>
-	  <label for="name">Proportional constant:</label>
-	  <input type="number" name="in_prop" value=1 step=0.001 min=0.001 id="in_prop"/><br>
-	</div>
-
-      <div>
-	  <label for="name">Dead time constant:</label>
-	  <input type="number" name="in_dtime" value=1 step=0.001 min=0.001 id="in_dtime"/><br>
-      </div><br>
-
-      <button type="submit" id="submit_button">Compute</button>
-
-    </form>
-
-    {% endblock %}
+{% endblock %}
 
 
 {% block footer %}
-<!-- show the plant response when a step signal is applied -->
-<script src="{% static 'pidtuningtool/js/plant_step_response.js' %}"></script>
 {% endblock %}
