@@ -14,6 +14,10 @@ module.exports = {
       'js/mathjax': {
         import: './js/mathjax.js',
       },
+      'js/model_as_input': {
+        import: './js/model_as_input.js',
+      },
+
     },
     output: {
         filename: '[name].bundle.js',

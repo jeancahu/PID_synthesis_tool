@@ -44,15 +44,15 @@ def plant_open_loop_response(request):
 def plant_fractional_model(request):
     # Plant fractional order model previously calculated by the user
     try:
-        body = request.body
-        data = json.loads(body)
+        data = request.POST
 
-        if 'head' not in data or 'body' not in data:
-            if 'v' not in data['body'] or \
-               'T' not in data['body'] or \
-               'K' not in data['body'] or \
-               'L' not in data['body']:
-                return JsonResponse(status=400, data={"message": "Invalid data format"})
+        if 'in_frac' not in data or \
+           'in_time' not in data or \
+           'in_prop' not in data or \
+           'in_dtime' not in data:
+            return JsonResponse(status=400, data={"message": "Invalid data format"})
+
+        print("v: {}\nT: {}\nK: {}\nL: {}".format(data["in_frac"], data["in_time"], data["in_prop"], data["in_dtime"]))
 
         return JsonResponse(status=200, data={"message": "Web push successful"})
     except TypeError:
