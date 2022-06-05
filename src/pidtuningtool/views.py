@@ -12,6 +12,19 @@ def identify_plant(request):
     }
     return render(request, 'pidtuningtool/identify_input.html', context)
 
+@require_GET
+def fractional_order_model_input(request):
+    context = {
+    }
+    return render(request, 'pidtuningtool/fractional_order_model_input.html', context)
+
+@require_GET
+def plant_step_response_input(request):
+    context = {
+    }
+    return render(request, 'pidtuningtool/plant_step_response_input.html', context)
+
+
 @require_POST
 def plant_open_loop_response(request):
     # Open loop plant response when a step signal is applied

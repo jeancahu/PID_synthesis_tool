@@ -1,0 +1,34 @@
+{% extends "./base.html" %}
+{% load i18n static %}
+
+{% block header %}
+<!-- Plotly.js -->
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+{% endblock %}
+
+
+{% block content %}
+    <form action = "/interactive/client_cgi_python.py?form_input=true" method = "post" target = "_blank">
+
+      <div id="step_response_graph"></div>
+
+      Paste your step response here...<br>
+      <textarea name="textcontent" id="textcontent">
+      </textarea>
+
+      <div>
+	  <label for="name">File with step response:</label>
+	  <input type="file" accept=".txt, text/csv, text/tsv" id="in_file">Upload file, columm format is: time, step signal and system signal</input><br>
+	</div>
+
+      <button type="submit" id="submit_button">Compute</button>
+
+    </form>
+
+    {% endblock %}
+
+
+{% block footer %}
+<!-- show the plant response when a step signal is applied -->
+<script src="{% static 'pidtuningtool/js/plant_step_response.js' %}"></script>
+{% endblock %}

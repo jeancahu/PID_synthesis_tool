@@ -1,0 +1,36 @@
+{% extends "./base.html" %}
+{% load i18n static %}
+
+{% block header %}
+{% endblock %}
+
+
+{% block content %}
+    <form action = "/interactive/client_cgi_python.py?form_input=true" method = "post" target = "_blank">
+      <div>
+	  <label for="name">Fractional order:</label>
+	  <input type="number" name="in_frac" value=1 step=0.001 min=1 max=1.8 id="in_frac"/><br>
+	</div>
+
+      <div>
+	  <label for="name">Time constant:</label>
+	  <input type="number" name="in_time" value=1 step=0.001 min=0.001 id="in_time"/><br>
+	</div>
+
+      <div>
+	  <label for="name">Proportional constant:</label>
+	  <input type="number" name="in_prop" value=1 step=0.001 min=0.001 id="in_prop"/><br>
+	</div>
+
+      <div>
+	  <label for="name">Dead time constant:</label>
+	  <input type="number" name="in_dtime" value=1 step=0.001 min=0.001 id="in_dtime"/><br>
+      </div><br>
+
+      <button type="submit" id="submit_button">Compute</button>
+    </form>
+    {% endblock %}
+
+
+{% block footer %}
+{% endblock %}
