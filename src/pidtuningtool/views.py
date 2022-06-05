@@ -7,10 +7,10 @@ from .__version__ import __version__ as se_version # TODO
 # from django.conf import settings # TODO
 
 @require_GET
-def pidtuningtool(request):
+def identify_plant(request):
     context = {
     }
-    return render(request, 'pidtuningtool/index.html', context)
+    return render(request, 'pidtuningtool/identify_input.html', context)
 
 @require_POST
 def plant_open_loop_response(request):
