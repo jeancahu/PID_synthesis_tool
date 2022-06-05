@@ -3,9 +3,8 @@
     <head>
         <meta charset="utf-8"/>
         <link rel="stylesheet" type="text/css" href="{% static '/pidtuningtool/css/tool_style.css' %}" />
-
+        <link rel="stylesheet" type="text/css" href="{% static '/pidtuningtool/css/main_style.css' %}" />
         {% block header %}{% endblock %}
-
     <title>PI/PID Tunning Tool</title>
   </head>
   <body>
@@ -15,8 +14,11 @@
 
     {% block content %}{% endblock %}
 
-{% block footer %}
-{% endblock %}
   </div>
  </body>
+ <footer>
+     {% block footer %}
+     {% endblock %}
+     <script src="{% static 'pidtuningtool/js/main_style.bundle.js' %}"></script>
+ </footer>
 </html>
