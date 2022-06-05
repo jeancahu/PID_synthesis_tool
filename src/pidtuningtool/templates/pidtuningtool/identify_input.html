@@ -11,31 +11,32 @@
 {# TODO Cards for every method, an image and a bref description the method does, continue button #}
 
 <div class="container-fluid">
-    <div class="row align-items-center justify-content-center">
-        <div class="col-sm-6 justify-content-center">
+    <div class="row justify-content-center">
 
+        <div class="col-lg-4 d-flex align-items-stretch justify-content-center">
             <div class="card text-center" style="width: 18rem;">
                 <img src="{% static 'pidtuningtool/img/card_mi.png' %}" class="card-img-top" alt="fractional order model example">
-        <div class="card-body">
-            <h5 class="card-title">Fractional order model</h5>
-            <p class="card-text">Give the model parameters for the plant on which, then the tool will calculate properly constants for the controller.</p>
-            <a href="{% url 'pidtuningtool_mi' %}" class="btn btn-primary">Continue</a>
-        </div>
-    </div>
+                <div class="card-body">
+                    <h5 class="card-title">Fractional order model</h5>
+                    <p class="card-text">Give the model parameters for the plant on which, then the tool will calculate properly constants for the controller.</p>
+                    <a href="{% url 'pidtuningtool_mi' %}" class="btn btn-primary">Continue</a>
+                </div>
+            </div>
         </div>
 
-        <div class="col-sm-6">
+        <div class="col-lg-4 d-flex align-items-stretch justify-content-center">
             <div class="card text-center" style="width: 18rem;">
-        <img src="{% static 'pidtuningtool/img/card_ri.png' %}" class="card-img-top" alt="step response example">
-        <div class="card-body">
-            <h5 class="card-title">Plant open-loop response</h5>
-            <p class="card-text">Select a text file with the time, step and plant response vectors in it then the tool will approach a proper model.</p>
-            <a href="{% url 'pidtuningtool_ri' %}" class="btn btn-primary">Continue</a>
+                <img src="{% static 'pidtuningtool/img/card_ri.png' %}" class="card-img-top" alt="step response example">
+                <div class="card-body">
+                    <h5 class="card-title">Plant open-loop response</h5>
+                    <p class="card-text">Select a text file with the time, step and plant response vectors in it then the tool will approach a proper model.</p>
+                    <a href="{% url 'pidtuningtool_ri' %}" class="btn btn-primary">Continue</a>
+                </div>
+            </div>
         </div>
+
     </div>
-    </div>
-        </div>
-    </div>
+
 </div>
 
 {% endblock %}

@@ -2,8 +2,9 @@
 {% load i18n static %}
 
 {% block header %}
+<!-- <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+     <script src="{% static 'pidtuningtool/js/mathjax.bundle.js' %}" id="MathJax-script" async></script> -->
 {% endblock %}
-
 
 {% block content %}
     <form action = "/interactive/client_cgi_python.py?form_input=true" method = "post" target = "_blank">
@@ -29,8 +30,7 @@
 
       <button type="submit" id="submit_button">Compute</button>
     </form>
-    {% endblock %}
-
+{% endblock %}
 
 {% block footer %}
 {% endblock %}

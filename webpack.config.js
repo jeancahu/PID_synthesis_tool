@@ -11,6 +11,9 @@ module.exports = {
         'js/main_style': {
             import: './js/index.js',
         },
+      'js/mathjax': {
+        import: './js/mathjax.js',
+      },
     },
     output: {
         filename: '[name].bundle.js',
