@@ -7,30 +7,45 @@
 {% endblock %}
 
 {% block content %}
-<form action="{% url 'pidtuningtool_post_mi' %}" method = "post" target = "_blank">
+<form action="{% url 'pidtuningtool_post_mi' %}" method="post" target="_blank" style="max-width: 404rem;">
     {% csrf_token %}
-    <div>
-	  <label for="name">Fractional order:</label>
-	  <input type="number" name="in_frac" value=1 step=0.001 min=1 max=1.8 id="in_frac"/><br>
-	</div>
+    <div class="container-fluid m-4">
+        <div class="row justify-content-center m-2">
+            <img src="{% static 'pidtuningtool/img/card_mi.svg' %}" style="padding: 8px; height: 8rem;" class="card-img-top" alt="fractional order model example">
+        </div>
 
-      <div>
-	  <label for="name">Time constant:</label>
-	  <input type="number" name="in_time" value=1 step=0.001 min=0.001 id="in_time"/><br>
-	</div>
+        <div class="form-group row justify-content-center m-2">
+	          <label for="in_frac" class="col-sm-2 col-form-label">Fractional order (α):</label>
+        <div class="col-sm-2">
+            <input type="number" class="form-control" name="in_frac" value=1 step=0.001 min=1 max=1.8 id="in_frac"/>
+        </div>
+	  </div>
 
-      <div>
-	  <label for="name">Proportional constant:</label>
-	  <input type="number" name="in_prop" value=1 step=0.001 min=0.001 id="in_prop"/><br>
-	</div>
+    <div class="form-group row justify-content-center m-2">
+	      <label for="in_time" class="col-sm-2 col-form-label">Time constant (T):</label>
+        <div class="col-sm-2">
+            <input type="number" class="form-control" name="in_time" value=1 step=0.001 min=0.001 id="in_time"/>
+        </div>
+	  </div>
 
-      <div>
-	  <label for="name">Dead time constant:</label>
-	  <input type="number" name="in_dtime" value=1 step=0.001 min=0.001 id="in_dtime"/><br>
-      </div><br>
+    <div class="form-group row justify-content-center m-2">
+	      <label for="in_prop" class="col-sm-2 col-form-label">Proportional constant (K):</label>
+	      <div class="col-sm-2">
+            <input type="number" class="form-control" name="in_prop" value=1 step=0.001 min=0.001 id="in_prop"/>
+        </div>
+	  </div>
 
-      <button type="submit" id="submit_button">Compute</button>
-    </form>
+    <div class="form-group row justify-content-center m-2">
+	      <label for="in_dtime" class="col-sm-2 col-form-label">Dead time constant (L):</label>
+	      <div class="col-sm-2">
+            <input type="number" class="form-control" name="in_dtime" value=1 step=0.001 min=0.001 id="in_dtime"/>
+        </div>
+      </div>
+
+      <button type="submit" class="btn btn-success m-2" id="submit_button">Compute</button>
+</form>
+    </div>
+
     {% endblock %}
 
     {% block footer %}

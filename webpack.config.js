@@ -17,7 +17,9 @@ module.exports = {
       'js/model_as_input': {
         import: './js/model_as_input.js',
       },
-
+      'js/response_as_input': {
+        import: './js/response_as_input.js',
+      },
     },
     output: {
         filename: '[name].bundle.js',
