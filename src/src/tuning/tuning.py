@@ -3,6 +3,7 @@
 #
 # PI/PID Tunning
 #
+# Local tool to tune a PID/PI controller from the command line
 
 # Args:
 # * v,     Fractional order
