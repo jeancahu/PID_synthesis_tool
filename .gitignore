@@ -110,3 +110,4 @@ wheels/
 src/pidtuningtool/static/pidtuningtool/css/main_style.css
 *.bundle.js*
 *.map
+octave-workspace

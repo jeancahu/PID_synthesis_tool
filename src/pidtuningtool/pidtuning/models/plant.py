@@ -1,5 +1,11 @@
 from ..rules import frac_order as _frac_order # Only rule it has by now
 
+#import numpy as np
+#import matplotlib
+#from scipy import signal
+#import control
+#from oct2py import Oct2py as o2p # ??
+
 class FractionalOrderModel():
     def __init__(self,
                  alpha=0,                 # Fractional order   (alpha)
@@ -15,7 +21,10 @@ class FractionalOrderModel():
         print("Create a fractional order model for the plant")
 
         if not (alpha or time_constant or proportional_constant or dead_time_constant):
-            pass
+            if not (len(time_vector) and len(step_vector) and len(resp_vector)):
+                raise ValueError("Plant model wrong input values, no vectors or constants")
+
+
 
         try:
             self.alpha = float(alpha)
