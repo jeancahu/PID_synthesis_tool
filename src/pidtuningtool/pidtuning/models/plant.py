@@ -8,6 +8,7 @@ from ..rules import frac_order as _frac_order # Only rule it has by now
 from subprocess import Popen, PIPE, STDOUT
 from os import path, remove, rmdir
 import tempfile
+import json
 
 class FractionalOrderModel():
     def __init__(self,
@@ -24,7 +25,17 @@ class FractionalOrderModel():
         print("Create a fractional order model for the plant")
 
         ## Identify the plant model
-        if not (alpha or time_constant or proportional_constant or dead_time_constant):
+        if (alpha or time_constant or proportional_constant or dead_time_constant):
+            try:
+                self.alpha = float(alpha)
+                self.T     = float(time_constant)
+                self.K     = float(proportional_constant)
+                self.L     = float(dead_time_constant)
+                self.IAE   = 0.0
+            except Exception:
+                raise ValueError("Plant model wrong input values")
+
+        else:
             if not (len(time_vector) and len(step_vector) and len(resp_vector)):
                 raise ValueError("Plant model wrong input values, no vectors or constants")
 
@@ -73,11 +84,16 @@ file_json_id = fopen("{}", "wt");
 global To vo Lo Ko ynorm unorm tnorm long tin tmax tu
 
 %% Load data from thread cache
-carga=load("./step_response.txt"); % step response .txt load data
-in_v1=carga(:,1);                                % time vector
-in_v2=carga(:,2);                                % control signal vector
-in_v3=carga(:,3);                                % controled variable vector
-                """.format(results_file) + "".join(script)
+in_v1={};                                % time vector
+in_v2={};                                % control signal vector
+in_v3={};                                % controled variable vector
+
+                """.format(
+                    results_file,
+                    str(time_vector).replace(',',';'),
+                    str(step_vector).replace(',',';'),
+                    str(resp_vector).replace(',',';'),
+                ) + "".join(script)
 
                 octave_run.stdin.write(script.encode())
                 octave_run.stdin.close()
@@ -92,23 +108,22 @@ in_v3=carga(:,3);                                % controled variable vector
                 print(octave_run.returncode)
 
                 results = open(results_file, 'r')
-                print("".join(results.readlines()))
+                results_dict = json.loads("".join(results.readlines()))
                 results.close()
                 remove(results_file)
                 rmdir(tmpdir)
 
+                print(results_dict)
+                self.alpha = results_dict["v"]
+                self.T = results_dict["T"]
+                self.K = results_dict["K"]
+                self.L = results_dict["L"]
+                self.IAE = results_dict["L"]
+
             except Exception as e:
-                print(e)
-                #raise ValueError("Plant model wrong input values")
+                raise ValueError("Plant response wrong input vectors, verify your data")
 
-        try:
-            self.alpha = float(alpha)
-            self.T     = float(time_constant)
-            self.K     = float(proportional_constant)
-            self.L     = float(dead_time_constant)
-        except Exception:
-            raise ValueError("Plant model wrong input values")
-
+        ## Tune controllers
         self.controllers = self.tune_controllers()
 
     def tune_controllers(self):
