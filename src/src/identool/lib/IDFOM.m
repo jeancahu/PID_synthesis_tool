@@ -1,4 +1,109 @@
-%% Main execution
+% Run on execution start
+
+version_info=ver("MATLAB");
+
+try
+  if (version_info.Name=="MATLAB")
+    fprintf("Running on Matlab\n")
+  end
+catch ME
+  fprintf("Running on Octave\n")
+  %% Octave load packages
+  pkg load control
+  pkg load symbolic
+  pkg load optim
+end
+
+fprintf("Running initial module\n")
+
+%clc;
+clear;
+
+%% Define
+s=tf('s');
+
+file_id = fopen("./identool_results.m", "wt");
+file_json_id = fopen("./identool_results_json_format.txt", "wt");
+
+%% Global variables definition
+global To vo Lo Ko ynorm unorm tnorm long tin tmax tu
+
+%% Load data from thread cache
+carga=load("./step_response.txt"); % step response .txt load data
+in_v1=carga(:,1);                                % time vector
+in_v2=carga(:,2);                                % control signal vector
+in_v3=carga(:,3);                                % controled variable vector
+long=length(in_v3);                              % define the default length
+m_long=floor(long/2);
+
+%% Infer vectors
+mid_line_v1 = abs((in_v1(end)-in_v1(1))/2);
+mid_line_v2 = abs((in_v2(end)-in_v2(1))/2);
+mid_line_v3 = abs((in_v3(end)-in_v3(1))/2);
+
+diff_v1 = diff(in_v1(m_long:end))/mid_line_v1;
+diff_v2 = diff(in_v2(m_long:end))/mid_line_v2;
+diff_v3 = diff(in_v3(m_long:end))/mid_line_v3;
+
+mean_v1 = mean(abs(diff_v1));
+mean_v2 = mean(abs(diff_v2));
+mean_v3 = mean(abs(diff_v3));
+
+%% Find u(s) in signals columns
+u_v1=false;
+u_v2=false;
+u_v3=false;
+
+if max(diff_v1) < mean_v2 && max(diff_v1) < mean_v3
+    fprintf('\tu(s) is vector 1\n');
+    u_v1=true;
+    u = in_v1;
+elseif max(diff_v2) < mean_v1 && max(diff_v2) < mean_v3
+    fprintf('\tu(s) is vector 2\n');
+    u_v2=true;
+    u = in_v2;
+else
+    fprintf('\tu(s) is vector 3\n');
+    u_v3=true;
+    u = in_v3;
+end
+
+%% Find t(s) in signals columns
+t_v1=false;
+t_v2=false;
+t_v3=false;
+
+if ~u_v1 && min(diff_v1) > min(diff_v2) && min(diff_v1) > min(diff_v3)
+    fprintf('\tt(s) is vector 1\n');
+    t_v1=true;
+    t = in_v1;
+elseif ~u_v2 && min(diff_v2) > min(diff_v1) && min(diff_v2) > min(diff_v3)
+    fprintf('\tt(s) is vector 2\n');
+    t_v2=true;
+    t = in_v2;
+else
+    fprintf('\tt(s) is vector 3\n');
+    t_v3=true;
+    t = in_v3;
+end
+
+%% Find y(s) in signals columns
+
+if ~u_v1 && ~t_v1
+    fprintf('\ty(s) is vector 1\n');
+    y = in_v1;
+elseif ~u_v2 && ~t_v2
+    fprintf('\ty(s) is vector 2\n');
+    y = in_v2;
+else
+    fprintf('\ty(s) is vector 3\n');
+    y = in_v3;
+end
+
+%% FIXME, fixed definitions
+t = in_v1;
+u = in_v2;
+y = in_v3;%% Main execution
 % The next program is able to generate the fractional model parameters
 % compute previous variables and then get the final constants
 
@@ -227,7 +332,17 @@ fprintf("Computing initial model\n")
         Gmm=zpk(z0,p0,k0);
     end
 
-    Gm0 = 1*exp(-(L0+tin)*s)/(T0*Gmm+1);     % Define initial model
+    try
+      if (version_info.Name=="MATLAB")
+       Gm0 = 1*exp(-(L0+tin)*s)/(T0*Gmm+1);     % Define initial model for MATLAB
+      end
+    catch ME
+      %% Octave PADE delay approximation
+      [pade_num, pade_den] = padecoef(L0+tin,18);
+      pade_delay=tf(pade_num,pade_den);
+      Gm0 = pade_delay/(T0*Gmm+1);     % Define initial model
+    end
+
     ym0=step(Gm0,tnorm);                     % set tolerances
     Tolf=trapz(tnorm,abs(ym0-ynorm))*1e-7;   % optimization (Tolx and Tolf).
     Tolx=norm([T0 v0 L0])*1e-7;
@@ -276,7 +391,17 @@ else
     Gm= zpk(zo,po,koo);
 end
 
-Gmo=Ko*exp(-(Lo+tin)*s)/(To*Gm+1);
+try
+  if (version_info.Name=="MATLAB")
+    Gmo=Ko*exp(-(Lo+tin)*s)/(To*Gm+1); % Define the tf for MATLAB
+  end
+catch ME
+  %% Octave PADE delay approximation
+  [pade_num, pade_den] = padecoef(Lo+tin,18);
+  pade_delay=tf(pade_num,pade_den);
+  Gmo=Ko*pade_delay/(To*Gm+1);
+end
+
 ym=step(Gmo,tnorm);
 
 %% Print parameters
@@ -359,17 +484,19 @@ subplot(2,1,2)
   title('Step response for optimal model');
 
 % Save the image
-print(output_path+"model_comparison.png",'-dpng')
+print("./model_comparison.png",'-dpng')
 fprintf('Image ready\n')
 
 % Save signals to file
 out = [tnorm unorm ynorm ym/Ko];
-fid=fopen(output_path+"model_step_response.txt",'wt');
+fid=fopen("./model_step_response.txt",'wt');
 for i = 1:length(out)
     fprintf(fid,'%d\t%d\t%d\t%d\n',out(i,1),out(i,2),out(i,3),out(i,4));
 end
 fclose(fid);
 
-file_flag_id = fopen(output_path+"ready.txt", "a+");
+file_flag_id = fopen("./ready.txt", "a+");
 fprintf(file_flag_id,'model_comparison_ready\n');
 fclose(file_flag_id);
+fclose(file_id);
+fclose(file_json_id);

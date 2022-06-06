@@ -1,3 +1,6 @@
+%% IDFOM for Octave variation, uses padé delay approximation instead exp()
+
+
 function J = f_IDFOM(xns, tnorm, ynorm, tin, flagtin, opp)
 s=tf('s');
 
@@ -10,7 +13,17 @@ else
     Gmm=zpk(z,p,k);
 end
 
-Gm0 = 1*exp((-(xns(3)+tin))*s)/(xns(1)*Gmm+1);
+try
+  if (version_info.Name=="MATLAB")
+    Gm0 = 1*exp((-(xns(3)+tin))*s)/(xns(1)*Gmm+1); % Define the tf for MATLAB
+  end
+catch ME
+  %% Octave PADE delay approximation
+  [pade_num, pade_den] = padecoef((xns(3)+tin),18);
+  pade_delay=tf(pade_num,pade_den);
+  Gm0 = 1*pade_delay/(xns(1)*Gmm+1);
+end
+
 yout=step(Gm0,tnorm);
 
 if opp==1
