@@ -63,12 +63,12 @@ def plant_open_loop_response(request):
 
                 # Append columns its respective vector
                 col1,col2,col3 = row.split("\t")
-                time_vector.append(col1)
-                step_vector.append(col2)
-                resp_vector.append(col3)
+                time_vector.append(float(col1))
+                step_vector.append(float(col2))
+                resp_vector.append(float(col3))
 
-        except ValueError:
-            return JsonResponse(status=400, data={"message": "Invalid data, corrupt rows"})
+        except ValueError as e:
+            return JsonResponse(status=400, data={"message": "Invalid data, corrupt rows: {}".format(e)})
 
         ## Plant processing
         try:
