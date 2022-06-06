@@ -5,6 +5,8 @@ from ..rules import frac_order as _frac_order # Only rule it has by now
 #from scipy import signal
 #import control
 #from oct2py import Oct2py as o2p # ??
+from subprocess import Popen, PIPE, STDOUT
+from os import path
 
 class FractionalOrderModel():
     def __init__(self,
@@ -20,10 +22,34 @@ class FractionalOrderModel():
 
         print("Create a fractional order model for the plant")
 
+        ## Identify the plant model
         if not (alpha or time_constant or proportional_constant or dead_time_constant):
             if not (len(time_vector) and len(step_vector) and len(resp_vector)):
                 raise ValueError("Plant model wrong input values, no vectors or constants")
 
+            try:
+                print(path.join(path.dirname(__file__), '../matlib/'))
+                octave_run = Popen(
+                    ['octave'],
+                    stdout=PIPE,
+                    stdin=PIPE,
+                    stderr=PIPE,
+                    start_new_session=True)
+
+                script = open('IDFOM.m', 'r').readlines()
+                script = "".join(script)
+
+                octave_run.stdin.write(script.encode())
+                octave_run.stdin.close()
+
+                lines = [ line.decode() for line in octave_run.stdout.readlines()]
+                print("".join(lines))
+
+                octave_run.terminate()
+                print(octave_run.returncode)
+            except Exception as e:
+                print(e)
+                #raise ValueError("Plant model wrong input values")
 
 
         try:
