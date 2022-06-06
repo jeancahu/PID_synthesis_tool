@@ -6,7 +6,8 @@ from ..rules import frac_order as _frac_order # Only rule it has by now
 #import control
 #from oct2py import Oct2py as o2p # ??
 from subprocess import Popen, PIPE, STDOUT
-from os import path
+from os import path, remove, rmdir
+import tempfile
 
 class FractionalOrderModel():
     def __init__(self,
@@ -28,16 +29,55 @@ class FractionalOrderModel():
                 raise ValueError("Plant model wrong input values, no vectors or constants")
 
             try:
-                print(path.join(path.dirname(__file__), '../matlib/'))
+                octalib_path = path.join(path.dirname(__file__), '../octalib/')
                 octave_run = Popen(
                     ['octave'],
+                    cwd=octalib_path,
                     stdout=PIPE,
                     stdin=PIPE,
                     stderr=PIPE,
                     start_new_session=True)
 
-                script = open('IDFOM.m', 'r').readlines()
-                script = "".join(script)
+                tmpdir = tempfile.mkdtemp()
+                results_file = path.join(tmpdir, 'response_fifo')
+
+                script = open(path.join(octalib_path, 'IDFOM.m'), 'r').readlines()
+                script = """
+                % Run on execution start
+version_info=ver("MATLAB");
+
+try
+  if (version_info.Name=="MATLAB")
+    fprintf("Running on Matlab\\n")
+  end
+catch ME
+  fprintf("Running on Octave\\n")
+  %% Octave load packages
+  pkg load control
+  pkg load symbolic
+  pkg load optim
+end
+
+fprintf("Running initial module\\n")
+
+%clc;
+clear;
+
+%% Define
+s=tf('s');
+
+file_id = fopen("./identool_results.m", "wt");
+file_json_id = fopen("{}", "wt");
+
+%% Global variables definition
+global To vo Lo Ko ynorm unorm tnorm long tin tmax tu
+
+%% Load data from thread cache
+carga=load("./step_response.txt"); % step response .txt load data
+in_v1=carga(:,1);                                % time vector
+in_v2=carga(:,2);                                % control signal vector
+in_v3=carga(:,3);                                % controled variable vector
+                """.format(results_file) + "".join(script)
 
                 octave_run.stdin.write(script.encode())
                 octave_run.stdin.close()
@@ -45,12 +85,21 @@ class FractionalOrderModel():
                 lines = [ line.decode() for line in octave_run.stdout.readlines()]
                 print("".join(lines))
 
+                lines = [ line.decode() for line in octave_run.stderr.readlines()]
+                print("".join(lines))
+
                 octave_run.terminate()
                 print(octave_run.returncode)
+
+                results = open(results_file, 'r')
+                print("".join(results.readlines()))
+                results.close()
+                remove(results_file)
+                rmdir(tmpdir)
+
             except Exception as e:
                 print(e)
                 #raise ValueError("Plant model wrong input values")
-
 
         try:
             self.alpha = float(alpha)

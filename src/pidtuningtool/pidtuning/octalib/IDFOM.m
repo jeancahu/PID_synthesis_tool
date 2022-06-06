@@ -1,38 +1,3 @@
-% Run on execution start
-
-version_info=ver("MATLAB");
-
-try
-  if (version_info.Name=="MATLAB")
-    fprintf("Running on Matlab\n")
-  end
-catch ME
-  fprintf("Running on Octave\n")
-  %% Octave load packages
-  pkg load control
-  pkg load symbolic
-  pkg load optim
-end
-
-fprintf("Running initial module\n")
-
-%clc;
-clear;
-
-%% Define
-s=tf('s');
-
-file_id = fopen("./identool_results.m", "wt");
-file_json_id = fopen("./identool_results_json_format.txt", "wt");
-
-%% Global variables definition
-global To vo Lo Ko ynorm unorm tnorm long tin tmax tu
-
-%% Load data from thread cache
-carga=load("./step_response.txt"); % step response .txt load data
-in_v1=carga(:,1);                                % time vector
-in_v2=carga(:,2);                                % control signal vector
-in_v3=carga(:,3);                                % controled variable vector
 long=length(in_v3);                              % define the default length
 m_long=floor(long/2);
 
