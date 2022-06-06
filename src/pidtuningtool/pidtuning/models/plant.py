@@ -1,12 +1,21 @@
-from pidtuning.rules import frac_order as _frac_order # Only rule it has by now
+from ..rules import frac_order as _frac_order # Only rule it has by now
 
 class FractionalOrderModel():
     def __init__(self,
-                 alpha,                 # Fractional order   (alpha)
-                 time_constant,         # Main time constant (T)
-                 proportional_constant, # Gain               (K)
-                 dead_time_constant):   # Dead time          (L)
-        print("fractional order model for plant")
+                 alpha=0,                 # Fractional order   (alpha)
+                 time_constant=0,         # Main time constant (T)
+                 proportional_constant=0, # Gain               (K)
+                 dead_time_constant=0,    # Dead time          (L)
+
+                 time_vector=[], # Time vetor to identify the plant model
+                 step_vector=[], # Step vector to identify the plant model
+                 resp_vector=[]  # Open-loop system response to identify the plant model
+                 ):
+
+        print("Create a fractional order model for the plant")
+
+        if not (alpha or time_constant or proportional_constant or dead_time_constant):
+            pass
 
         try:
             self.alpha = float(alpha)
@@ -16,9 +25,9 @@ class FractionalOrderModel():
         except Exception:
             raise ValueError("Plant model wrong input values")
 
-        self.controllers = self.tuning_controllers()
+        self.controllers = self.tune_controllers()
 
-    def tuning_controllers(self):
+    def tune_controllers(self):
         controllers = []
         for ctype in _frac_order.valid_controllers:
             for Ms in _frac_order.valid_Ms:

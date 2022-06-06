@@ -4,6 +4,9 @@ from django.http import JsonResponse
 from django.views.decorators.http import require_GET, require_POST
 from .__version__ import __version__ as se_version # TODO
 
+#from .pidtuning import rules
+from .pidtuning.models import plant
+
 import re
 ## Util functions
 def valid_response_input(strg, search=re.compile(r'^[0-9\n\r\t .]+$').search):
@@ -67,7 +70,16 @@ def plant_open_loop_response(request):
         except ValueError:
             return JsonResponse(status=400, data={"message": "Invalid data, corrupt rows"})
 
-        # TODO input the response to the plant model
+        ## Plant processing
+        try:
+            plant_model = plant.FractionalOrderModel(
+                time_vector=time_vector,
+                step_vector=step_vector,
+                resp_vector=resp_vector
+            )
+        except ValueError as e:
+            return JsonResponse(status=400, data={"message": "Invalid data, {}".format(e)})
+
 
         return JsonResponse(status=200, data={"message": "Web push successful"})
     except TypeError:
@@ -85,7 +97,16 @@ def plant_fractional_model(request):
            'in_dtime' not in data:
             return JsonResponse(status=400, data={"message": "Invalid data format"})
 
-        print("v: {}\nT: {}\nK: {}\nL: {}".format(data["in_frac"], data["in_time"], data["in_prop"], data["in_dtime"]))
+        plant_model = plant.FractionalOrderModel(
+            alpha=data["in_frac"],
+            time_constant=data["in_time"],
+            proportional_constant=data["in_prop"],
+            dead_time_constant=data["in_dtime"]
+        )
+
+        print(str(plant_model))
+        for controller in plant_model.tune_controllers():
+            print(controller)
 
         return JsonResponse(status=200, data={"message": "Web push successful"})
     except TypeError:

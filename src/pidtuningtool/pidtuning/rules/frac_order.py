@@ -2,7 +2,7 @@
 # TODO: quitar los raise, colocarlos donde corresponde
 
 import numpy as _np
-from pidtuning.models.controller import Controller
+from ..models.controller import Controller
 
 valid_controllers = ('PID', 'PI')
 valid_Ms          = ('1.4', '2.0')
