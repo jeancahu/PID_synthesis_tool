@@ -22,8 +22,6 @@ class FractionalOrderModel():
                  resp_vector=[]  # Open-loop system response to identify the plant model
                  ):
 
-        print("Create a fractional order model for the plant")
-
         ## Identify the plant model
         if (alpha or time_constant or proportional_constant or dead_time_constant):
             try:
@@ -77,7 +75,6 @@ clear;
 %% Define
 s=tf('s');
 
-file_id = fopen("./identool_results.m", "wt");
 file_json_id = fopen("{}", "wt");
 
 %% Global variables definition
@@ -98,14 +95,12 @@ in_v3={};                                % controled variable vector
                 octave_run.stdin.write(script.encode())
                 octave_run.stdin.close()
 
+                ### The two next lines will wait till the program ends. !IMPORTANT
                 lines = [ line.decode() for line in octave_run.stdout.readlines()]
-                print("".join(lines))
-
                 lines = [ line.decode() for line in octave_run.stderr.readlines()]
-                print("".join(lines))
 
-                octave_run.terminate()
-                print(octave_run.returncode)
+                if octave_run.terminate():
+                    raise Exception("Internal Octave/Matlab execution error")
 
                 results = open(results_file, 'r')
                 results_dict = json.loads("".join(results.readlines()))
@@ -113,7 +108,7 @@ in_v3={};                                % controled variable vector
                 remove(results_file)
                 rmdir(tmpdir)
 
-                print(results_dict)
+                ## Computed params
                 self.alpha = results_dict["v"]
                 self.T = results_dict["T"]
                 self.K = results_dict["K"]

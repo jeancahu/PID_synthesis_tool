@@ -408,50 +408,6 @@ fprintf(file_json_id, '\t"L": %.20f,\n', Lo);
 fprintf(file_json_id, '\t"IAE": %.20f\n', IAEns);
 fprintf(file_json_id, '}\n');
 
-
-%% Write optimal model in results cache file:
-fprintf(file_id,'v=%.20f;',vo);
-fprintf(file_id,'T=%.20f;',To);
-fprintf(file_id,'K=%.20f;',Ko);
-fprintf(file_id,'L=%.20f;',Lo);
-fprintf(file_id,' %% model_calculated_values\n');
-
-%% Graphics and simulations:
-figure(1)
-subplot(2,1,1)
-  plot(tnorm,u,'g',tnorm,y,'b','LineWidth',1.2)
-  grid on;
-  ylabel('Signals magnitude (%)')
-  xlabel('Time (s)')
-  xlim([0 tmax])
-  yu_min=min(min(y,u));
-  yu_max=max(max(y,u));
-  if yu_min<0
-      ylim([1.1*yu_min 1.1*yu_max])
-  else
-      ylim([0.9*yu_min 1.1*yu_max])
-  end
-  legend('r(t)','y(t)','Location','East')
-  title('Original input signals')
-
-subplot(2,1,2)
-  plot(tnorm,unorm,'g',tnorm,ynorm,'b',tnorm,ym/Ko,'r','LineWidth',1.2)
-  grid on;
-  ylabel('Signals magnitude (%)');
-  xlabel('Time (s)');
-  xlim([0 tmax]);
-  if (min(ynorm)>=0)
-      ylim([0.90*min(ynorm) 1.1*ymax])
-  else
-      ylim([1.1*min(ynorm) 1.1*ymax])
-  end
-  legend('r(t)','y(t)','y_m(t)','Location','East');
-  title('Step response for optimal model');
-
-% Save the image
-print("./model_comparison.png",'-dpng')
-fprintf('Image ready\n')
-
 % Save signals to file
 out = [tnorm unorm ynorm ym/Ko];
 fid=fopen("./model_step_response.txt",'wt');
@@ -460,8 +416,4 @@ for i = 1:length(out)
 end
 fclose(fid);
 
-file_flag_id = fopen("./ready.txt", "a+");
-fprintf(file_flag_id,'model_comparison_ready\n');
-fclose(file_flag_id);
-fclose(file_id);
 fclose(file_json_id);
