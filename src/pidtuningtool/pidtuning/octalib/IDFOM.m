@@ -410,10 +410,9 @@ fprintf(file_json_id, '}\n');
 
 % Save signals to file
 out = [tnorm unorm ynorm ym/Ko];
-fid=fopen("./model_step_response.txt",'wt');
+% fprintf(fid,'time\tstep\tinitial\tmodel\n');
 for i = 1:length(out)
     fprintf(fid,'%d\t%d\t%d\t%d\n',out(i,1),out(i,2),out(i,3),out(i,4));
 end
 fclose(fid);
-
 fclose(file_json_id);

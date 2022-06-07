@@ -20,7 +20,8 @@ REQUIRES_PYTHON = '>=3.6.0'
 REQUIRED = [
     'numpy',
     'Django',
-    'sympy==1.5.1'
+    'sympy==1.5.1',
+    'pandas',
 ]
 
 # What packages are optional?

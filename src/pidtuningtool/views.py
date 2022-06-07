@@ -84,7 +84,7 @@ def plant_open_loop_response(request):
         for controller in plant_model.tune_controllers():
             print(controller)
 
-        return JsonResponse(status=200, data={"message": "Web push successful"})
+        return JsonResponse(status=200, data={"message": "Web push successful", "simulation": plant_model.toResponse()})
     except TypeError:
         return JsonResponse(status=500, data={"message": "An error occurred"})
 

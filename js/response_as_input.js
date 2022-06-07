@@ -18,5 +18,6 @@ form.addEventListener("click", function(event){
     // No connection - server down
     console.log("Failed " + error);
   })
-    .then(console.log("Done"));
+    .then(response => response.json())
+    .then(data => console.log(data));
 });

@@ -8,6 +8,7 @@ from ..rules import frac_order as _frac_order # Only rule it has by now
 from subprocess import Popen, PIPE, STDOUT
 from os import path, remove, rmdir
 import tempfile
+import pandas as pd
 import json
 
 class FractionalOrderModel():
@@ -17,7 +18,7 @@ class FractionalOrderModel():
                  proportional_constant=0, # Gain               (K)
                  dead_time_constant=0,    # Dead time          (L)
 
-                 time_vector=[], # Time vetor to identify the plant model
+                 time_vector=[], # Time vector to identify the plant model
                  step_vector=[], # Step vector to identify the plant model
                  resp_vector=[]  # Open-loop system response to identify the plant model
                  ):
@@ -40,7 +41,7 @@ class FractionalOrderModel():
             try:
                 octalib_path = path.join(path.dirname(__file__), '../octalib/')
                 octave_run = Popen(
-                    ['octave'],
+                    ['octave-cli'],
                     cwd=octalib_path,
                     stdout=PIPE,
                     stdin=PIPE,
@@ -48,7 +49,8 @@ class FractionalOrderModel():
                     start_new_session=True)
 
                 tmpdir = tempfile.mkdtemp()
-                results_file = path.join(tmpdir, 'response_fifo')
+                results_file = path.join(tmpdir, 'results.json')
+                step_response_file = path.join(tmpdir, 'model_vs_initial_step_response.csv')
 
                 script = open(path.join(octalib_path, 'IDFOM.m'), 'r').readlines()
                 script = """
@@ -76,6 +78,7 @@ clear;
 s=tf('s');
 
 file_json_id = fopen("{}", "wt");
+fid=fopen("{}",'wt');
 
 %% Global variables definition
 global To vo Lo Ko ynorm unorm tnorm long tin tmax tu
@@ -87,6 +90,7 @@ in_v3={};                                % controled variable vector
 
                 """.format(
                     results_file,
+                    step_response_file,
                     str(time_vector).replace(',',';'),
                     str(step_vector).replace(',',';'),
                     str(resp_vector).replace(',',';'),
@@ -105,6 +109,17 @@ in_v3={};                                % controled variable vector
                 results = open(results_file, 'r')
                 results_dict = json.loads("".join(results.readlines()))
                 results.close()
+
+
+                colums = ["time", "step", "initial", "model"]
+                df = pd.read_csv(step_response_file, sep='\t', header=None, names=colums)
+
+                self.time_vector=df.time.tolist()        # Time vector
+                self.step_vector=df.step.tolist()        # Step vector
+                self.resp_vector=df.initial.tolist()      # Open-loop system response
+                self.model_resp_vector=df.model.tolist()  # Open-loop model-system response
+
+                remove(step_response_file)
                 remove(results_file)
                 rmdir(tmpdir)
 
@@ -116,6 +131,7 @@ in_v3={};                                % controled variable vector
                 self.IAE = results_dict["L"]
 
             except Exception as e:
+                print(e)
                 raise ValueError("Plant response wrong input vectors, verify your data")
 
         ## Tune controllers
@@ -136,6 +152,14 @@ in_v3={};                                % controled variable vector
             'T'     :     self.T,
             'K'     :     self.K,
             'L'     :     self.L
+        }
+
+    def toResponse(self):
+        return {
+            'time'    :   self.time_vector,       # Time vector
+            'step'    :   self.step_vector,       # Step vector
+            'respo'   :   self.resp_vector,       # Open-loop system response
+            'm_respo' :   self.model_resp_vector  # Open-loop model-system response
         }
 
     def __str__(self):
