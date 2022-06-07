@@ -80,6 +80,9 @@ def plant_open_loop_response(request):
         except ValueError as e:
             return JsonResponse(status=400, data={"message": "Invalid data, {}".format(e)})
 
+        print(str(plant_model))
+        for controller in plant_model.tune_controllers():
+            print(controller)
 
         return JsonResponse(status=200, data={"message": "Web push successful"})
     except TypeError:
