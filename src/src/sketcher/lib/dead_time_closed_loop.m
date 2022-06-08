@@ -49,11 +49,9 @@ function [yn_sum, local_step, local_time] = dead_time_closed_loop(input_A, input
   [pade_num, pade_den] = padecoef(input_L,2);
   pade_delay=tf(pade_num,pade_den);
 
-  input_C_delay = input_C*exp(-input_L*s);
   input_C_pade = input_C*pade_delay;
 
   local_Myr = input_A*input_C/(1+input_B*input_C);
-  local_Myr_delay = input_A*input_C_delay/(1+input_B*input_C_delay);
   local_Myr_pade_delay = input_A*input_C_pade/(1+input_B*input_C_pade);
 
   [local_y_pade,local_time] =step(local_Myr_pade_delay);
@@ -71,7 +69,6 @@ function [yn_sum, local_step, local_time] = dead_time_closed_loop(input_A, input
   local_step_delay_0 = (local_time > (max(local_time)*0.1+input_L)); %% step at 10%
 
   y_pade = lsim(local_Myr_pade_delay, local_step, local_time);
-  y_delay = lsim(local_Myr_delay, local_step, local_time);
 
   y = lsim(local_Myr, local_step, local_time);
 
@@ -102,10 +99,6 @@ function [yn_sum, local_step, local_time] = dead_time_closed_loop(input_A, input
     end
   end
 
-%plot(local_time, y, local_time, yn_sum, local_time, y_delay, local_time, y_pade, local_time, local_step);
-%%plot(local_time, yn_sum, local_time, y_delay, local_time, local_step);
-
-                 %plot(local_time, y_delay, local_time, local_step); %% exp(-Ls)
                  %plot(local_time, yn_sum, local_time, local_step); %% y_sum
                  %plot(local_time, y_pade, local_time, local_step); %% Pade
 end
