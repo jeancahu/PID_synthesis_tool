@@ -33,60 +33,79 @@
 %%
 %%
 
-% input_L; must be more than 0.1
-% input_A
-% input_B
-% input_C
+% input_L: float, must be more than 0.1
+% input_A: tf
+% input_B: tf
+% input_C: tf
 
-input_A = PID_Ms_1_4;
-input_B = PID_Ms_1_4;
-input_C = (3/((2.2*s+3.4)*(1.3*s+1))); %% sub
-input_C = (3/((2.2*s+13)*(1.3*s+1))); %% sobre
+function [yn_sum, local_step, local_time] = dead_time_closed_loop(input_A, input_B, input_C, input_L)
+  s = tf("s");
 
-%% Octave PADE delay approximation
-[pade_num, pade_den] = padecoef(input_L,2);
-pade_delay=tf(pade_num,pade_den);
+  if (input_L < 0.1)
+    error('Error.L must be more than 0.1')
+  end
 
-input_C_delay = input_C*exp(-input_L*s);
-input_C_pade = input_C*pade_delay;
+  %% Octave PADE delay approximation
+  [pade_num, pade_den] = padecoef(input_L,2);
+  pade_delay=tf(pade_num,pade_den);
 
-local_Myr = input_A*input_C/(1+input_B*input_C);
-local_Myr_delay = input_A*input_C_delay/(1+input_B*input_C_delay);
-local_Myr_pade_delay = input_A*input_C_pade/(1+input_B*input_C_pade);
+  input_C_delay = input_C*exp(-input_L*s);
+  input_C_pade = input_C*pade_delay;
 
-[local_y_pade,local_time] =step(local_Myr_pade_delay);
-timestep_L_ratio=double(int32((L*12000)/max(local_time))) %% Tries to aprox 12K simulations
-[local_y_pade,local_time] =step(local_Myr_pade_delay,[0:input_L/timestep_L_ratio:max(local_time)*1.1]);
+  local_Myr = input_A*input_C/(1+input_B*input_C);
+  local_Myr_delay = input_A*input_C_delay/(1+input_B*input_C_delay);
+  local_Myr_pade_delay = input_A*input_C_pade/(1+input_B*input_C_pade);
+
+  [local_y_pade,local_time] =step(local_Myr_pade_delay);
+
+  if ((input_L*100)/max(local_time)) %% L is less than 1% time simulation
+    timestep_L_ratio=26.0;
+  else
+    timestep_L_ratio=double(int32((L*12000)/max(local_time))) %% Tries to aprox 12K simulations
+  end
+  local_time = [0:input_L/timestep_L_ratio:max(local_time)*1.1];
+  local_y_pade = step(local_Myr_pade_delay,local_time);
 
 
-local_step = (local_time > max(local_time)*0.1); %% step at 10%
-local_step_delay_0 = (local_time > (max(local_time)*0.1+input_L)); %% step at 10%
+  local_step = (local_time > max(local_time)*0.1); %% step at 10%
+  local_step_delay_0 = (local_time > (max(local_time)*0.1+input_L)); %% step at 10%
 
-y_pade = lsim(local_Myr_pade_delay, local_step, local_time);
-y_delay = lsim(local_Myr_delay, local_step, local_time);
+  y_pade = lsim(local_Myr_pade_delay, local_step, local_time);
+  y_delay = lsim(local_Myr_delay, local_step, local_time);
 
-y = lsim(local_Myr, local_step, local_time);
-%y_temp0 = lsim(input_A*input_C, local_step, local_time);
+  y = lsim(local_Myr, local_step, local_time);
 
-%y = lsim(local_Myr, local_step_delay_0, local_time);
 
-y_temp = lsim(input_A*input_C, local_step_delay_0, local_time);
-yn_sum = y_temp; %% Sume all the signals together
-yn = [];
+  y_temp = lsim(input_A*input_C, local_step_delay_0, local_time);
+  yn_sum = y_temp; %% Sume all the signals together
+  yn = [];
 
-for i = [0:input_L:max(local_time)*1.1] %% Delay steps
-  y_temp = lsim(input_B*input_C, y_temp, local_time);
-  B = zeros(size(y_temp));
-  B(timestep_L_ratio+1:end) = y_temp(1:length(y_temp) - timestep_L_ratio);
-  y_temp = B;
-  yn = [yn y_temp];
-end
+  delay_steps = [0:input_L:max(local_time)*1.1];
+  for i = delay_steps %% Delay steps
+    y_temp = lsim(input_B*input_C, y_temp, local_time);
+    B = zeros(size(y_temp));
+    B(timestep_L_ratio+1:end) = y_temp(1:length(y_temp) - timestep_L_ratio);
+    y_temp = B;
+    yn = [yn y_temp];
+  end
 
-%% Sum individual Yn to get Y(t)
-for i = [1:length(yn(1,:))] %% colums
-  yn_sum = yn_sum + ((-1.0)^i)*yn(:,i);
-end
+  %% Use PADE for yn matrix > 49
+  if (length(yn(1,:)) > 48)
+    for i = [1:48]
+      yn_sum = yn_sum + ((-1.0)^i)*yn(:,i);
+    end
+    yn_sum(int32(length(yn_sum)/2):end) = y_pade(int32(length(yn_sum)/2):end); %% Use PADE where it is accurate
+  else
+    %% Sum individual Yn to get Y(t)
+    for i = [1:length(yn(1,:))] %% colums
+      yn_sum = yn_sum + ((-1.0)^i)*yn(:,i);
+    end
+  end
 
 %plot(local_time, y, local_time, yn_sum, local_time, y_delay, local_time, y_pade, local_time, local_step);
-plot(local_time, yn_sum, local_time, y_delay, local_time, local_step);
-%%plot(local_time, y_delay, local_time, local_step);
+%%plot(local_time, yn_sum, local_time, y_delay, local_time, local_step);
+
+                 %plot(local_time, y_delay, local_time, local_step); %% exp(-Ls)
+                 %plot(local_time, yn_sum, local_time, local_step); %% y_sum
+                 %plot(local_time, y_pade, local_time, local_step); %% Pade
+end
