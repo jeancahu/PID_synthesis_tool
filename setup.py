@@ -18,10 +18,7 @@ REQUIRES_PYTHON = '>=3.6.0'
 
 # What packages are required for this module to be executed?
 REQUIRED = [
-    'numpy',
     'Django',
-    'sympy==1.5.1',
-    'pandas',
 ]
 
 # What packages are optional?
