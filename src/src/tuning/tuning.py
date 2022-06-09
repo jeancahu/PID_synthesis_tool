@@ -23,7 +23,7 @@ from sys import argv
 
 #
 
-import pidtuning.rules as rules
+from pidtuning import rules
 from common.outformat import table_format
 
 # Define controller type

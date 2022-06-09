@@ -5,12 +5,6 @@
 #
 #
 
-## Global parameters
-source $( dirname $0 )/../../bash/functions.sh
-
-define_from_config local_path SERVER_PATH
-define_from_config python_env PYTHON_ENV
-
 SYNTAX='m_code'
 if [[ $5 ]]; then SYNTAX="$5" ; fi
 
@@ -21,7 +15,7 @@ for CONTROLLER in PI PID
 do
     for SENSIBILITY in 1.4 2.0
     do
-	$PYTHON_ENV $SERVER_PATH/src/tuning/tuning.py \
+	python ./tuning.py \
 		    $1 $2 $3 $4 $SENSIBILITY $SYNTAX $CONTROLLER
 	ERROR=$?
 	if (( $ERROR ))
