@@ -9,7 +9,7 @@ from shutil import rmtree
 from setuptools import find_packages, setup, Command
 
 # Package meta-data.
-NAME = 'pidtuning'
+NAME = 'django-pidtune'
 DESCRIPTION = 'PID tuning server for factorial order models.'
 URL = 'https://github.com/jeancahu/PID_synthesis_wheel_package'
 EMAIL = 'jeancahu@gmail.com'
@@ -19,6 +19,7 @@ REQUIRES_PYTHON = '>=3.6.0'
 # What packages are required for this module to be executed?
 REQUIRED = [
     'Django',
+    'pidtune',
 ]
 
 # What packages are optional?

@@ -4,8 +4,7 @@ from django.http import JsonResponse
 from django.views.decorators.http import require_GET, require_POST
 from .__version__ import __version__ as se_version # TODO
 
-#from .pidtuning import rules
-from .pidtuning.models import plant
+from pidtune.models import plant
 
 import re
 ## Util functions
