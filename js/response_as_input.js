@@ -1,3 +1,5 @@
+import Plotly from 'plotly.js/lib/core'; // Chart lib
+
 window.onresize = function() {
 	Plotly.Plots.resize('step_response_graph');
 };
@@ -19,6 +21,14 @@ let sys_response = {
 	type: 'scatter',
 	name: 'System response'
 };
+
+let model_response = {
+	x: [1, 2, 2.3, 2.5, 3, 4],
+	y: [0, 0, 0, 0.4, 0.6, 0.7],
+	type: 'scatter',
+	name: 'Model response'
+};
+
 
 let data = [step_input, sys_response];
 
