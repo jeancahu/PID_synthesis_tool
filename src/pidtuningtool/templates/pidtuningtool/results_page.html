@@ -33,12 +33,13 @@
 	<number_label>{{L_param}}</number_label>
 	</div>
 
+{% if not from_model %}
 	<div class='number_space'>
 	<label>IAE Index</label>
 	<number_label>{{model_IAE}}</number_label>
 	</div>
 	</div>
-
+  {% endif %}
 
 	<h2>Controller parameters:</h2>
 
@@ -64,6 +65,7 @@
 	<number_label id='td_const'>-</number_label>
 	</div>
 
+{% if not from_model %}
 	<div class='number_space'>
 	<label>Servo-control performance</label>
 	<number_label id='servo_iae'>-</number_label>
@@ -78,6 +80,7 @@
 	<label>Overall performance</label>
 	<number_label id='total_iae'>-</number_label>
 	</div>
+  {% endif %}
 
 </div>
 	</div>

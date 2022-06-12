@@ -35,7 +35,7 @@ def plant_step_response_input(request):
     return render(request, 'pidtuningtool/plant_step_response_input.html', context)
 
 @require_GET
-def pidtune_results(request, plant_slug):
+def pidtune_results(request, data_input, plant_slug):
     tmp_plant = get_object_or_404(db_plant, url_ref=plant_slug)
     print(tmp_plant.plant_params)
 
@@ -56,6 +56,7 @@ def pidtune_results(request, plant_slug):
         "L_param": tmp_plant.plant_params['L'],
         "model_IAE": '-', # TODO
         "controller_params": controller_params,
+        "from_model": data_input == "model",
     }
     return render(request, 'pidtuningtool/results_page.html', context)
 

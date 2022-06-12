@@ -12,5 +12,8 @@ form_button.addEventListener("click", function(event){
     console.log("Failed " + str(error));
   })
     .then(response => response.json())
-    .then(data => console.log(data));
+    .then(
+      data => {
+        document.location.href='/results_from_model_'+data['url_slug'];
+      });
 });

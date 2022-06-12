@@ -144,6 +144,11 @@ form_button.addEventListener("click", function(event){
       return response.json();
     })
     .then(data => {
+
+      let continue_a = document.getElementById("continue");
+      continue_a.href='/results_from_response_'+data['url_slug'];
+      continue_a.disabled = false;
+
       step_input = {
 		    x: data.simulation.time,
 		    y: data.simulation.step,
