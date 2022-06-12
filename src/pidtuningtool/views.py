@@ -8,7 +8,7 @@ from pidtune.models import plant
 
 import re
 ## Util functions
-def valid_response_input(strg, search=re.compile(r'^[0-9\n\r\t .]+$').search):
+def valid_response_input(strg, search=re.compile(r'^[0-9\n\r\tEe+-.]+$').search):
     return bool(search(strg))
 
 ## Views
@@ -45,10 +45,14 @@ def plant_open_loop_response(request):
         if len(data) == 0:
             return JsonResponse(status=400, data={"message": "Invalid data no lenght"})
 
-        data = data.replace(';', '\t').replace('\r', '').replace(',','\t')
+        data = re.sub(r'[;, ]', '\t', data, flags=re.MULTILINE)
+        data = data.replace('\r', '')
 
         if not valid_response_input(data):
-            return JsonResponse(status=400, data={"message": "Invalid data bad syntax"})
+            # If format is not valid drop first line and try again
+            data = "\n".join(data.split("/n")[1:])
+            if not valid_response_input(data):
+                return JsonResponse(status=400, data={"message": "Invalid data bad syntax"})
 
         time_vector=[]
         step_vector=[]
@@ -59,6 +63,9 @@ def plant_open_loop_response(request):
                 # Drop ghost rows
                 if not len(row):
                     continue
+
+                row = re.sub(r'\t{1,}', '\t', row) ## Removes null columns
+                row = re.sub(r'^\t', '', row) ## Removes begin fake column
 
                 # Append columns its respective vector
                 col1,col2,col3 = row.split("\t")
@@ -100,10 +107,10 @@ def plant_fractional_model(request):
             return JsonResponse(status=400, data={"message": "Invalid data format"})
 
         plant_model = plant.FractionalOrderModel(
-            alpha=data["in_frac"],
-            time_constant=data["in_time"],
-            proportional_constant=data["in_prop"],
-            dead_time_constant=data["in_dtime"]
+            alpha=float(data["in_frac"]),
+            time_constant=float(data["in_time"]),
+            proportional_constant=float(data["in_prop"]),
+            dead_time_constant=float(data["in_dtime"])
         )
 
         print(str(plant_model))
