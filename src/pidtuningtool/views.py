@@ -1,11 +1,15 @@
 from django.shortcuts import render
 # from django.contrib.auth.decorators import login_required # TODO
+from django.core.exceptions import ObjectDoesNotExist
+
 from django.http import JsonResponse
 from django.views.decorators.http import require_GET, require_POST
 from .__version__ import __version__ as se_version # TODO
 
 from pidtune.models import plant
+from .models import Plant as db_plant
 
+import json
 import re
 ## Util functions
 def valid_response_input(strg, search=re.compile(r'^[0-9\n\r\tEe+-.]+$').search):
@@ -30,12 +34,23 @@ def plant_step_response_input(request):
     }
     return render(request, 'pidtuningtool/plant_step_response_input.html', context)
 
+@require_GET
+def pidtune_results(request, plant_slug):
+    # plant = get_object_or_404(Plant, url_ref=order_slug)
+    context = {
+    }
+    return render(request, 'pidtuningtool/results_page.html', context)
+
 
 @require_POST
 def plant_open_loop_response(request):
     # Open loop plant response when a step signal is applied
     try:
         data = request.POST
+        if not request.session or not request.session.session_key:
+            # expiry 15 minutes
+            request.session.set_expiry(900)
+            request.session.save()
 
         if 'textcontent' not in data:
             return JsonResponse(status=400, data={"message": "Invalid data format"})
@@ -86,11 +101,20 @@ def plant_open_loop_response(request):
         except ValueError as e:
             return JsonResponse(status=400, data={"message": "Invalid data, {}".format(e)})
 
-        print(str(plant_model))
-        for controller in plant_model.tune_controllers():
-            print(controller)
+        try: # Save the plant params in database
+            tmp_plant = db_plant.objects.get(tuner_user=request.session.session_key)
+            tmp_plant.plant_params = plant_model.toDict()
+        except ObjectDoesNotExist:
+            tmp_plant = db_plant(
+                tuner_user = request.session.session_key,
+                plant_params = plant_model.toDict()
+            )
+        tmp_plant.save()
 
-        return JsonResponse(status=200, data={"message": "Web push successful", "simulation": plant_model.toResponse()})
+        return JsonResponse(status=200,
+                            data={"message": "Web push successful",
+                                  "url_slug": tmp_plant.url_ref,
+                                  "simulation": plant_model.toResponse()})
     except TypeError:
         return JsonResponse(status=500, data={"message": "An error occurred"})
 
@@ -99,6 +123,10 @@ def plant_fractional_model(request):
     # Plant fractional order model previously calculated by the user
     try:
         data = request.POST
+        if not request.session or not request.session.session_key:
+            # expiry 15 minutes
+            request.session.set_expiry(900)
+            request.session.save()
 
         if 'in_frac' not in data or \
            'in_time' not in data or \
@@ -113,10 +141,16 @@ def plant_fractional_model(request):
             dead_time_constant=float(data["in_dtime"])
         )
 
-        print(str(plant_model))
-        for controller in plant_model.tune_controllers():
-            print(controller)
+        try: # Save the plant params in database
+            tmp_plant = db_plant.objects.get(tuner_user=request.session.session_key)
+            tmp_plant.plant_params = plant_model.toDict()
+        except ObjectDoesNotExist:
+            tmp_plant = db_plant(
+                tuner_user = request.session.session_key,
+                plant_params = plant_model.toDict()
+            )
+        tmp_plant.save()
 
-        return JsonResponse(status=200, data={"message": "Web push successful"})
+        return JsonResponse(status=200, data={"message": "Web push successful", "url_slug": tmp_plant.url_ref})
     except TypeError:
         return JsonResponse(status=500, data={"message": "An error occurred"})

@@ -1,7 +1,7 @@
-<html lang="en">
+{% load i18n static %}<html lang="en">
   <head>
     <meta charset="utf-8"/>
-    <link rel="stylesheet" type="text/css" href="/css/tool_style.css" media="screen"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'pidtuningtool/css/tool_style.css' %}" media="screen"/>
 
     <title>PI/PID Tunning CGI tool web interface</title>
   </head>
@@ -37,8 +37,6 @@
 	      <label>IAE Index</label>
 	      <number_label>{{model_IAE}}</number_label>
 	    </div>
-
-	    
 	  </div>
 
 
@@ -80,7 +78,7 @@
 	      <label>Overall performance</label>
 	      <number_label id='total_iae'>-</number_label>
 	    </div>
-	    	    
+
 	  </div>
 	</div>
       </parameters>
@@ -88,7 +86,7 @@
     <images_tag>
 
       <iframe id="response_graph" scrolling="no" src="{{iframe_plotly_close_loop}}"></iframe>
-     
+
       <div id="keyboard">
 	<button class='result_button' onclick='params_toggle("PI","1.4")'>PI, Ms=1.4</button>
 	<button class='result_button' onclick='params_toggle("PI","2.0")'>PI, Ms=2.0</button>
@@ -100,13 +98,13 @@
       <script type="text/javascript">
 
 	document.getElementById("toggle_graph").disabled = {{button_disable}};
-	
+
 	var controllers = [ {{controller_params}} ];
 	var error_indexes = {{error_indexes}};
 	var key = '';
 
 	var iframe_src_model = false;
-	
+
 	function toggle_iframe_src()
 	{
 	    if (iframe_src_model)
@@ -120,7 +118,7 @@
 		document.getElementById('response_graph').src = "{{iframe_plotly_model_comparison}}";
 	    }
 	}
-	
+
 	function params_toggle(cnt, ms)
 	{
 	    for ( var element = 0; element<controllers.length; element++ ){
@@ -143,8 +141,6 @@
 	}
       </script>
     </images_tag>
-    
     </resultsbox>
-    
   </body>
 </html>

@@ -20,6 +20,7 @@ REQUIRES_PYTHON = '>=3.6.0'
 REQUIRED = [
     'Django',
     'pidtune',
+    'django-autoslug',
 ]
 
 # What packages are optional?

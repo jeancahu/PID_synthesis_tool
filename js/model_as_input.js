@@ -1,6 +1,8 @@
 // Add listener for the form
 let form = document.getElementsByTagName("form")[0];
-form.addEventListener("click", function(event){
+let form_button = document.getElementById("submit_button");
+
+form_button.addEventListener("click", function(event){
   event.preventDefault();
 
   fetch(form.action, {
@@ -9,5 +11,6 @@ form.addEventListener("click", function(event){
   }).catch(error => {
     console.log("Failed " + str(error));
   })
-    .then(console.log("Done"));
+    .then(response => response.json())
+    .then(data => console.log(data));
 });
