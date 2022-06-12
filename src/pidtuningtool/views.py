@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 # from django.contrib.auth.decorators import login_required # TODO
 from django.core.exceptions import ObjectDoesNotExist
 
@@ -36,8 +36,26 @@ def plant_step_response_input(request):
 
 @require_GET
 def pidtune_results(request, plant_slug):
-    # plant = get_object_or_404(Plant, url_ref=order_slug)
+    tmp_plant = get_object_or_404(db_plant, url_ref=plant_slug)
+    print(tmp_plant.plant_params)
+
+    plant_model = plant.FractionalOrderModel(
+            alpha=float(tmp_plant.plant_params['alpha'],),
+            time_constant=float(tmp_plant.plant_params['T']),
+            proportional_constant=float(tmp_plant.plant_params['K']),
+            dead_time_constant=float(tmp_plant.plant_params['L'])
+    )
+
+    controller_params = [ cnt.toDict() for cnt in plant_model.tune_controllers() ]
+    print(controller_params)
+
     context = {
+        "v_param": tmp_plant.plant_params['alpha'],
+        "T_param": tmp_plant.plant_params['T'],
+        "K_param": tmp_plant.plant_params['K'],
+        "L_param": tmp_plant.plant_params['L'],
+        "model_IAE": '-', # TODO
+        "controller_params": controller_params,
     }
     return render(request, 'pidtuningtool/results_page.html', context)
 
