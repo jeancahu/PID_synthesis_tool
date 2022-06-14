@@ -1,2 +1,4 @@
 Django
 numpy
+gunicorn
+django-autoslug
