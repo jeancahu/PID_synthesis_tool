@@ -6,7 +6,7 @@ from django.http import JsonResponse
 from django.views.decorators.http import require_GET, require_POST
 from .__version__ import __version__ as se_version # TODO
 
-from pidtune.models import plant
+from pidtune.models import plant, system as c_sys
 from .models import Plant as db_plant
 
 import json
@@ -43,7 +43,24 @@ def pidtune_results(request, data_input, plant_slug):
             proportional_constant=float(tmp_plant.plant_params['K']),
             dead_time_constant=float(tmp_plant.plant_params['L'])
     )
-    controller_params = [ cnt.toDict() for cnt in plant_model.tune_controllers() ]
+    controllers = plant_model.tune_controllers()
+    controller_params = []
+
+    for l_ctl in controllers:
+
+        l_sys = c_sys.ClosedLoop(
+            controller = l_ctl,
+            plant = plant_model
+        )
+
+        t_vect, y_vect = l_sys.step_response()
+        controller_params.append(
+            l_ctl.toDict()
+        )
+        controller_params[-1].update({
+                'y_vect': y_vect,
+                't_vect': t_vect
+        })
 
     context = {
         "v_param": tmp_plant.plant_params['alpha'],
