@@ -9,19 +9,23 @@
 <div id="step_response_graph"></div>
 <form action="{% url 'pidtuningtool_post_ri' %}" method="post" target="_blank">
     {% csrf_token %}
-    Paste your step response here...<br>
-      <textarea name="textcontent" id="textcontent">
-      </textarea>
+    <div class="mb-3">
+        <label for="textcontent" class="form-label">Paste your step response here:</label>
+        <textarea class="form-control" name="textcontent" id="textcontent" rows="3"></textarea>
+    </div>
+    <div class="mb-3">
+        <label for="formFile" class="form-label">Upload file with step response, columms order: time, step signal and plant response signal</label>
+        <input class="form-control" type="file" id="in_file" accept=".txt, text/csv, text/tsv"></input>
+    </div>
 
-      <div>
-	  <label for="name">File with step response:</label>
-	  <input type="file" accept=".txt, text/csv, text/tsv" id="in_file">Upload file, columm format is: time, step signal and system signal</input><br>
-	</div>
-  <button id="clear_button">Clear</button>
-  <button type="submit" id="submit_button">Compute</button>
+    <button class="btn btn-secondary" id="clear_button">Clear</button>
+  <button class="btn btn-secondary" type="submit" id="submit_button">Compute</button>
 </form>
 <a id="continue" disabled="">Continue to results</a>
-
+<div id="err_banner" class="alert alert-danger d-flex align-items-center d-none" role="alert">
+    <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Danger:"><use xlink:href="#exclamation-triangle-fill"/></svg>
+    <div>Error message</div>
+</div>
 {% endblock %}
 
 

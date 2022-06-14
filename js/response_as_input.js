@@ -113,6 +113,8 @@ document.getElementById('textcontent').addEventListener('change', updatePlotFrom
 let form = document.getElementsByTagName("form")[0];
 let form_button = document.getElementById("submit_button");
 let clear_button = document.getElementById("clear_button");
+let continue_a = document.getElementById("continue");
+let err_banner = document.getElementById("err_banner");
 
 clear_button.addEventListener("click", function(event){
   event.preventDefault();
@@ -123,6 +125,8 @@ form_button.addEventListener("click", function(event){
   event.preventDefault(); // avoid default behavior
 
   form_button.disabled = true;
+  continue_a.disabled = true;
+  err_banner.classList.add("d-none");
   form_button.innerText = 'Calculating...';
 
   fetch(form.action, {
@@ -137,15 +141,16 @@ form_button.addEventListener("click", function(event){
       form_button.innerText = 'Compute';
 
       if (response.status != 200){
-        response.json().then(data => console.log(data.message));
+        response.json().then(data => {
+          err_banner.getElementsByTagName("div")[0].innerText=data.message;
+          err_banner.classList.remove("d-none");
+        });
         throw "Bad response from the server.";
       }
 
       return response.json();
     })
     .then(data => {
-
-      let continue_a = document.getElementById("continue");
       continue_a.href='/results_from_response_'+data['url_slug'];
       continue_a.disabled = false;
 

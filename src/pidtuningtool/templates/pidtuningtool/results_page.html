@@ -1,127 +1,121 @@
-{% load i18n static %}<html lang="en">
-  <head>
-  <meta charset="utf-8"/>
-  <link rel="stylesheet" type="text/css" href="{% static 'pidtuningtool/css/tool_style.css' %}" media="screen"/>
+{% extends "./base.html" %}
+{% block content %}
+<resultsbox>
+    <parameters>
+	      <div>
+	          <h2>Model parameters:</h2>
 
-  <title>PI/PID Tune web tool</title>
-  </head>
-  <body>
+	          <div id="model_params">
+	              <div class='number_space'>
+	                  <label>Fractional parameter</label>
+	                  <number_label>{{v_param}}</number_label>
+	              </div>
 
-  <resultsbox>
-  <parameters>
-	<div>
-	<h2>Model parameters:</h2>
+	              <div class='number_space'>
+	                  <label>Time Constant</label>
+	                  <number_label>{{T_param}}</number_label>
+	              </div>
 
-	<div id="model_params">
-	<div class='number_space'>
-	<label>Fractional parameter</label>
-	<number_label>{{v_param}}</number_label>
-	</div>
+	              <div class='number_space'>
+	                  <label>Process Gain</label>
+	                  <number_label>{{K_param}}</number_label>
+	              </div>
 
-	<div class='number_space'>
-	<label>Time Constant</label>
-	<number_label>{{T_param}}</number_label>
-	</div>
+	              <div class='number_space'>
+	                  <label>Dead Time Constant</label>
+	                  <number_label>{{L_param}}</number_label>
+	              </div>
 
-	<div class='number_space'>
-	<label>Process Gain</label>
-	<number_label>{{K_param}}</number_label>
-	</div>
+                {% if not from_model %}
+	              <div class='number_space'>
+	                  <label>IAE Index</label>
+	                  <number_label>{{model_IAE}}</number_label>
+	              </div>
+	          </div>
+            {% endif %}
 
-	<div class='number_space'>
-	<label>Dead Time Constant</label>
-	<number_label>{{L_param}}</number_label>
-	</div>
+	          <h2>Controller parameters:</h2>
 
-{% if not from_model %}
-	<div class='number_space'>
-	<label>IAE Index</label>
-	<number_label>{{model_IAE}}</number_label>
-	</div>
-	</div>
-  {% endif %}
+	          <div id="controllers_params">
 
-	<h2>Controller parameters:</h2>
+	              <div class='number_space'>
+	                  <label>Controller:</label>
+	                  <number_label id='controller_name'>-</number_label>
+	              </div>
 
-	<div id="controllers_params">
+	              <div class='number_space'>
+	                  <label>Proportional Gain</label>
+	                  <number_label id='kp_const'>-</number_label>
+	              </div>
 
-	<div class='number_space'>
-	<label>Controller:</label>
-	<number_label id='controller_name'>-</number_label>
-	</div>
+	              <div class='number_space'>
+	                  <label>Integral Time</label>
+	                  <number_label id='ti_const'>-</number_label>
+	              </div>
 
-	<div class='number_space'>
-	<label>Proportional Gain</label>
-	<number_label id='kp_const'>-</number_label>
-	</div>
+	              <div class='number_space'>
+	                  <label>Derivative time</label>
+	                  <number_label id='td_const'>-</number_label>
+	              </div>
 
-	<div class='number_space'>
-	<label>Integral Time</label>
-	<number_label id='ti_const'>-</number_label>
-	</div>
+                {% if not from_model %}
+	              <div class='number_space'>
+	                  <label>Servo-control performance</label>
+	                  <number_label id='servo_iae'>-</number_label>
+	              </div>
 
-	<div class='number_space'>
-	<label>Derivative time</label>
-	<number_label id='td_const'>-</number_label>
-	</div>
+	              <div class='number_space'>
+	                  <label>Regulatory performance</label>
+	                  <number_label id='reg_iae'>-</number_label>
+	              </div>
 
-{% if not from_model %}
-	<div class='number_space'>
-	<label>Servo-control performance</label>
-	<number_label id='servo_iae'>-</number_label>
-	</div>
+	              <div class='number_space'>
+	                  <label>Overall performance</label>
+	                  <number_label id='total_iae'>-</number_label>
+	              </div>
+                {% endif %}
 
-	<div class='number_space'>
-	<label>Regulatory performance</label>
-	<number_label id='reg_iae'>-</number_label>
-	</div>
+            </div>
+	      </div>
+    </parameters>
 
-	<div class='number_space'>
-	<label>Overall performance</label>
-	<number_label id='total_iae'>-</number_label>
-	</div>
-  {% endif %}
+    <images_tag>
 
-</div>
-	</div>
-  </parameters>
+        <!-- <iframe id="response_graph" scrolling="no" src="{{iframe_plotly_close_loop}}"></iframe> -->
 
-  <images_tag>
+			  <ul class="nav nav-pills nav-justified">
+            {% for ctl in controller_params %}
+            <li class="nav-item">
+	              <button type="button" class='btn tbtn' id="toggle_btn_{{ctl.ctype}}_{{ctl.Ms}}" onclick='params_toggle("{{ctl.ctype}}","{{ctl.Ms}}")'>{{ctl.ctype}} Ms={{ctl.Ms}}</button>
+            </li>
+            {% endfor %}
+			  </ul>
+    </images_tag>
+</resultsbox>
+{% endblock %}
+{% block footer %}
+<script type="text/javascript">
 
-  <!-- <iframe id="response_graph" scrolling="no" src="{{iframe_plotly_close_loop}}"></iframe> -->
+ let controllers = {{controller_params | safe }};
+ function params_toggle(cnt, ms)
+ {
+	   for ( var element = 0; element<controllers.length; element++ ){
+		     if ( controllers[element].ctype == cnt && controllers[element].Ms == ms )
+		     {
+		         key = cnt+'_'+ms.replace('.','_');
 
-  <div id="keyboard">
-	<button class='result_button' onclick='params_toggle("PI","1.4")'>PI, Ms=1.4</button>
-	<button class='result_button' onclick='params_toggle("PI","2.0")'>PI, Ms=2.0</button>
-	<button class='result_button' onclick='params_toggle("PID","1.4")'>PID, Ms=1.4</button>
-	<button class='result_button' onclick='params_toggle("PID","2.0")'>PID, Ms=2.0</button>
-	<!-- <button id='toggle_graph' class='result_button' onclick='toggle_iframe_src()'>y vs ym</button> -->
-  </div>
+		         document.getElementById('controller_name').innerHTML = cnt+', Ms = '+ms;
+		         document.getElementById('kp_const').innerHTML = controllers[element].kp;
+		         document.getElementById('ti_const').innerHTML = controllers[element].ti;
+		         document.getElementById('td_const').innerHTML = controllers[element].td;
 
-  <script type="text/javascript">
-
-let controllers = {{controller_params | safe }};
-function params_toggle(cnt, ms)
-{
-	for ( var element = 0; element<controllers.length; element++ ){
-		if ( controllers[element].ctype == cnt && controllers[element].Ms == ms )
-		{
-		  key = cnt+'_'+ms.replace('.','_');
-
-		  document.getElementById('controller_name').innerHTML = cnt+', Ms = '+ms;
-		  document.getElementById('kp_const').innerHTML = controllers[element].kp;
-		  document.getElementById('ti_const').innerHTML = controllers[element].ti;
-		  document.getElementById('td_const').innerHTML = controllers[element].td;
-
-		  //document.getElementById('servo_iae').innerHTML = 'IAE = '+error_indexes['IAE_R_'+key];
-		  //document.getElementById('reg_iae').innerHTML = 'IAE = '+error_indexes['IAE_D_'+key];
-		  //document.getElementById('total_iae').innerHTML = 'IAE = '+error_indexes['IAE_T_'+key];
-		  break;
-		}
-	}
-}
+		         //document.getElementById('servo_iae').innerHTML = 'IAE = '+error_indexes['IAE_R_'+key];
+		         //document.getElementById('reg_iae').innerHTML = 'IAE = '+error_indexes['IAE_D_'+key];
+		         //document.getElementById('total_iae').innerHTML = 'IAE = '+error_indexes['IAE_T_'+key];
+		         break;
+		     }
+	   }
+ }
+ params_toggle(controllers[0].ctype, controllers[0].Ms);
 </script>
-  </images_tag>
-  </resultsbox>
-  </body>
-</html>
+{% endblock %}

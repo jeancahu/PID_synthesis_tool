@@ -37,24 +37,20 @@ def plant_step_response_input(request):
 @require_GET
 def pidtune_results(request, data_input, plant_slug):
     tmp_plant = get_object_or_404(db_plant, url_ref=plant_slug)
-    print(tmp_plant.plant_params)
-
     plant_model = plant.FractionalOrderModel(
             alpha=float(tmp_plant.plant_params['alpha'],),
             time_constant=float(tmp_plant.plant_params['T']),
             proportional_constant=float(tmp_plant.plant_params['K']),
             dead_time_constant=float(tmp_plant.plant_params['L'])
     )
-
     controller_params = [ cnt.toDict() for cnt in plant_model.tune_controllers() ]
-    print(controller_params)
 
     context = {
         "v_param": tmp_plant.plant_params['alpha'],
         "T_param": tmp_plant.plant_params['T'],
         "K_param": tmp_plant.plant_params['K'],
         "L_param": tmp_plant.plant_params['L'],
-        "model_IAE": '-', # TODO
+        "model_IAE": tmp_plant.plant_params['IAE'],
         "controller_params": controller_params,
         "from_model": data_input == "model",
     }
@@ -153,12 +149,20 @@ def plant_fractional_model(request):
            'in_dtime' not in data:
             return JsonResponse(status=400, data={"message": "Invalid data format"})
 
-        plant_model = plant.FractionalOrderModel(
-            alpha=float(data["in_frac"]),
-            time_constant=float(data["in_time"]),
-            proportional_constant=float(data["in_prop"]),
-            dead_time_constant=float(data["in_dtime"])
-        )
+        try:
+            plant_model = plant.FractionalOrderModel(
+                alpha=float(data["in_frac"]),
+                time_constant=float(data["in_time"]),
+                proportional_constant=float(data["in_prop"]),
+                dead_time_constant=float(data["in_dtime"])
+            )
+        except ValueError as e:
+            err_msg = "Invalid input: {}".format(e)
+            err_msg = re.sub(r'[()\']', '', err_msg)
+            err_msg = re.sub(r', , , ', ' - ', err_msg)
+            err_msg = re.sub(r',', '', err_msg)
+
+            return JsonResponse(status=400, data={"message": err_msg})
 
         try: # Save the plant params in database
             tmp_plant = db_plant.objects.get(tuner_user=request.session.session_key)
