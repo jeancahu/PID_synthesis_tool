@@ -52,14 +52,17 @@ def pidtune_results(request, data_input, plant_slug):
             controller = l_ctl,
             plant = plant_model
         )
-
-        t_vect, y_vect = l_sys.step_response()
+        print("Action: {}".format(l_sys.controller.action))
+        t_vect, y_vect, t_pade_vect, y_pade_vect = l_sys.step_response()
         controller_params.append(
             l_ctl.toDict()
         )
         controller_params[-1].update({
-                'y_vect': y_vect,
-                't_vect': t_vect
+            'y_vect': y_vect,
+            't_vect': t_vect,
+            'y_pade_vect': y_pade_vect,
+            't_pade_vect': t_pade_vect
+
         })
 
     context = {

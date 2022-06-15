@@ -1,7 +1,9 @@
 {% extends "./base.html" %}
+{% load i18n static %}
+
 {% block content %}
 <resultsbox>
-    <parameters>
+    <div class="parameters_board">
 	      <div>
 	          <h2>Model parameters:</h2>
 
@@ -77,16 +79,15 @@
 
             </div>
 	      </div>
-    </parameters>
+    </div>
 
     <images_tag>
-
-        <!-- <iframe id="response_graph" scrolling="no" src="{{iframe_plotly_close_loop}}"></iframe> -->
+        <div id="step_response_graph"></div>
 
 			  <ul class="nav nav-pills nav-justified">
             {% for ctl in controller_params %}
             <li class="nav-item">
-	              <button type="button" class='btn tbtn' id="toggle_btn_{{ctl.ctype}}_{{ctl.Ms}}" onclick='params_toggle("{{ctl.ctype}}","{{ctl.Ms}}")'>{{ctl.ctype}} Ms={{ctl.Ms}}</button>
+	              <button type="button" class='btn tbtn' id="toggle_btn_{{ctl.ctype}}_{{ctl.Ms}}" onclick='window.params_toggle("{{ctl.ctype}}","{{ctl.Ms}}")'>{{ctl.ctype}} Ms={{ctl.Ms}}</button>
             </li>
             {% endfor %}
 			  </ul>
@@ -94,28 +95,6 @@
 </resultsbox>
 {% endblock %}
 {% block footer %}
-<script type="text/javascript">
-
- let controllers = {{controller_params | safe }};
- function params_toggle(cnt, ms)
- {
-	   for ( var element = 0; element<controllers.length; element++ ){
-		     if ( controllers[element].ctype == cnt && controllers[element].Ms == ms )
-		     {
-		         key = cnt+'_'+ms.replace('.','_');
-
-		         document.getElementById('controller_name').innerHTML = cnt+', Ms = '+ms;
-		         document.getElementById('kp_const').innerHTML = controllers[element].kp;
-		         document.getElementById('ti_const').innerHTML = controllers[element].ti;
-		         document.getElementById('td_const').innerHTML = controllers[element].td;
-
-		         //document.getElementById('servo_iae').innerHTML = 'IAE = '+error_indexes['IAE_R_'+key];
-		         //document.getElementById('reg_iae').innerHTML = 'IAE = '+error_indexes['IAE_D_'+key];
-		         //document.getElementById('total_iae').innerHTML = 'IAE = '+error_indexes['IAE_T_'+key];
-		         break;
-		     }
-	   }
- }
- params_toggle(controllers[0].ctype, controllers[0].Ms);
-</script>
+<script type="text/javascript">let controllers = {{controller_params | safe }};</script>
+<script src="{% static 'pidtuningtool/js/results.bundle.js' %}"></script>
 {% endblock %}

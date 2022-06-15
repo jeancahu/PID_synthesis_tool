@@ -30,63 +30,6 @@ tbtn{
     margin: 3px 3px;
 }
 
-
-parameters
-{
-    text-align: left; 
-    display: inline-block;
-    background: rgb(255,255,255,0.8);
-    font-family: monospace;
-    color: black;
-    min-height: 600px;
-}
-
-parameters > div
-{
-    margin: 30px;
-}
-
-images_tag
-{
-    display: inline-block;
-    justify-content: center;
-    text-align: center;
-    background: white;
-    min-width: 75%;
-    //min-height: 90%;
-}
-
-img
-{
-    max-width: 100%;
-    max-height: 100%;
-    height: auto;
-}
-
-#response_graph
-{
-    //margin-top: 15px;
-    border: 0;
-    min-height: 90%;
-    min-width: 100%;
-}
-
-#keyboard
-{
-    justify-content: center;  
-    screen: flex-row;
-    //padding: 5px;
-    //background: aqua;
-}
-
-.result_button
-{
-    margin-right: 10px;
-    margin-left: 10px;
-    //border: 11px solid white;
-}
-
-
 .number_space
 {
     margin: 5px;
@@ -131,8 +74,3 @@ number_label
     text-align: center;
 }
 
-#result_web_pag
-{
-    width: 100%;
-    height: 100%;
-}

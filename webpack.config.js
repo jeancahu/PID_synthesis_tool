@@ -20,6 +20,10 @@ module.exports = {
       'js/response_as_input': {
         import: './js/response_as_input.js',
       },
+      'js/results': {
+        import: './js/results.js',
+      },
+
     },
     output: {
         filename: '[name].bundle.js',
