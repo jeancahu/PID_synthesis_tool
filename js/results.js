@@ -55,15 +55,7 @@ function params_toggle(cnt, ms)
 	           name: 'System response'
            };
 
-           let closed_loop_sys_response_pade = {
-	           x: controllers[element].t_pade_vect,
-	           y: controllers[element].y_pade_vect,
-	           type: 'scatter',
-	           name: 'System response'
-           };
-
-
-           let data = [step_input, closed_loop_sys_response, closed_loop_sys_response_pade];
+           let data = [step_input, closed_loop_sys_response];
            Plotly.newPlot('step_response_graph', data);
 
 		         break;
