@@ -22,6 +22,31 @@ window.onresize = function() {
 // let data = [step_input, closed_loop_sys_response];
 // Plotly.newPlot('step_response_graph', data);
 
+// Max simulation time
+let max_time = Math.max.apply(
+  Math,
+  controllers.map(ctl => ctl.t_vect[ ctl.t_vect.length -1 ])
+);
+
+let max_y = Math.max.apply(
+  Math,
+  controllers.map(ctl =>
+    Math.max.apply(
+      Math,
+      ctl.y_vect
+    ))
+);
+
+
+let min_y = Math.min.apply(
+  Math,
+  controllers.map(ctl =>
+    Math.min.apply(
+      Math,
+      ctl.y_vect
+    ))
+);
+
 
 function params_toggle(cnt, ms)
  {
@@ -42,7 +67,7 @@ function params_toggle(cnt, ms)
 
 
            let step_input = {
-	           x: [0, 0, controllers[element].t_vect[controllers[element].t_vect.length -1]],
+	           x: [0, 0, max_time],
 	           y: [0, 1, 1],
 	           type: 'scatter',
 	           name: 'Step input'
@@ -55,8 +80,11 @@ function params_toggle(cnt, ms)
 	           name: 'System response'
            };
 
+           let layout = {
+             yaxis: {range: [min_y, max_y*1.1]} // 0% 110%
+           };
            let data = [step_input, closed_loop_sys_response];
-           Plotly.newPlot('step_response_graph', data);
+           Plotly.newPlot('step_response_graph', data, layout);
 
 		         break;
 		     }

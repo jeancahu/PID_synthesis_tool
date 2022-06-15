@@ -52,7 +52,8 @@ def pidtune_results(request, data_input, plant_slug):
             controller = l_ctl,
             plant = plant_model
         )
-        print("Action: {}".format(l_sys.controller.action))
+
+        ## Get the closed loop simulation for the system: controller -> plant
         t_vect, y_vect = l_sys.step_response()
         controller_params.append(
             l_ctl.toDict()
