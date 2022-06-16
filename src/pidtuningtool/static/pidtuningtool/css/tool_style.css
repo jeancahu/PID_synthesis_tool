@@ -100,6 +100,19 @@ form{
     width: 224.667px;
 }
 
+.mi_buttons {
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.mi_buttons button{
+    width: 45%;
+}
+
+.mi_buttons a {
+    width: 45%;
+}
+
 /************ Step response as input ****************/
 .sri_buttons {
     display: flex;

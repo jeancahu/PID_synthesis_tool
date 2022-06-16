@@ -34,7 +34,6 @@
                 </div>
 	          </div>
 
-            {% if not from_model %}
 	          <div class='number_space'>
 	              <label>IAE Index</label>
                 <div class="number_label">
@@ -42,60 +41,49 @@
                 </div>
 	          </div>
 	      </div>
-        {% endif %}
 
 	      <div class="rp_params_table" id="controllers_params">
 	          <h2>Controller parameters:</h2>
 
 	          <div class='number_space'>
 	              <label>Controller:</label>
-                <div class="number_label" id='controller_name'>
-                </div>
+                <div class="number_label" id='controller_name'>-</div>
 	          </div>
 
 	          <div class='number_space'>
 	              <label>Proportional Gain</label>
-                <div class="number_label" id='kp_const'>
-                </div>
+                <div class="number_label" id='kp_const'>-</div>
 	          </div>
 
 	          <div class='number_space'>
 	              <label>Integral Time</label>
-                <div class="number_label" id='ti_const'>
-                </div>
+                <div class="number_label" id='ti_const'>-</div>
 	          </div>
 
 	          <div class='number_space'>
 	              <label>Derivative time</label>
-                <div class="number_label" id='td_const'>
-                </div>
+                <div class="number_label" id='td_const'>-</div>
 	          </div>
 
-            {% if not from_model %}
 	          <div class='number_space'>
 	              <label>Servo-control performance</label>
-                <div class="number_label" id='servo_iae'>
-                </div>
+                <div class="number_label" id='servo_iae'>-</div>
 	          </div>
 
 	          <div class='number_space'>
 	              <label>Regulatory performance</label>
-                <div class="number_label" id='reg_iae'>
-                </div>
+                <div class="number_label" id='reg_iae'>-</div>
 	          </div>
 
 	          <div class='number_space'>
 	              <label>Overall performance</label>
-                <div class="number_label" id='total_iae'>
-                </div>
+                <div class="number_label" id='total_iae'>-</div>
 	          </div>
-            {% endif %}
 
         </div>
 	  </div>
 
     <div class="rp_graph">
-        <div id="step_response_graph"></div>
         <ul class="nav nav-pills nav-justified">
             {% for ctl in controller_params %}
             <li class="nav-item">
@@ -103,6 +91,7 @@
             </li>
             {% endfor %}
 		    </ul>
+        <div id="step_response_graph"></div>
     </div>
 
 </div>

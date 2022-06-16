@@ -1,7 +1,15 @@
 import Plotly from 'plotly.js/lib/core'; // Chart lib
 
+// Add listener for the form
+let form = document.getElementsByTagName("form")[0];
+let form_button = document.getElementById("submit_button");
+let err_banner = document.getElementById("err_banner");
+let model_as_input_box = document.getElementsByClassName("model_as_input_box")[0];
+
 window.onresize = function() {
 	Plotly.Plots.resize('step_response_graph');
+  layout["width"] = model_as_input_box.clientWidth - form.clientWidth;
+  Plotly.newPlot('step_response_graph', s_data, layout);
 };
 
 /* this script plots the file input when a file in the form Time,Step,PlantResponse is supplied*/
@@ -22,20 +30,15 @@ let model_response = {
 let layout = {
   title: "Open-loop Model Response",
   height: 700,
+  width: model_as_input_box.clientWidth - form.clientWidth,
   xaxis: {title: "Time (s)"},
   yaxis: {title: "Magnitude"},
 };
 
-let data = [step_input, model_response];
-Plotly.newPlot('step_response_graph', data, layout);
+let s_data = [step_input, model_response];
+Plotly.newPlot('step_response_graph', s_data, layout);
 
-
-// Add listener for the form
-let form = document.getElementsByTagName("form")[0];
-let form_button = document.getElementById("submit_button");
-let err_banner = document.getElementById("err_banner");
-
-form_button.addEventListener("click", function(event){
+function handleForm(event){
   event.preventDefault();
   err_banner.classList.add("d-none");
   fetch(form.action, {
@@ -78,9 +81,11 @@ form_button.addEventListener("click", function(event){
 	        name: 'Model response'
         };
 
-        data = [step_input, model_response];
-        Plotly.newPlot('step_response_graph', data);
+        s_data = [step_input, model_response];
+        Plotly.newPlot('step_response_graph', s_data, layout);
 
         document.getElementById("show_results_btn").href=l_href;
       });
-});
+}
+
+form_button.addEventListener("click", handleForm);

@@ -15,7 +15,14 @@ let closed_loop_sys_response = {
 	x: [1, 2, 2.3, 2.5, 3, 4],
 	y: [0, 0, 0, 0.4, 0.6, 0.7],
 	type: 'scatter',
-	name: 'System response'
+	name: 'Servo response'
+};
+
+let closed_loop_reg_response = {
+	x: [1, 2, 2.3, 2.5, 3, 4],
+	y: [0, 0, 0, 0.4, 0.6, 0.7],
+	type: 'scatter',
+	name: 'Regulatory response'
 };
 
 
@@ -35,14 +42,23 @@ let max_y = Math.max.apply(
 );
 
 
-let min_y = Math.min.apply(
+let min_y = Math.min(Math.min.apply(
   Math,
   controllers.map(ctl =>
     Math.min.apply(
       Math,
       ctl.y_vect
     ))
-);
+),
+Math.min.apply(
+  Math,
+  controllers.map(ctl =>
+    Math.min.apply(
+      Math,
+      ctl.y_vect_reg
+    ))
+));
+
 
 
 function params_toggle(cnt, ms)
@@ -58,9 +74,9 @@ function params_toggle(cnt, ms)
 		         document.getElementById('ti_const').innerHTML = controllers[element].ti;
 		         document.getElementById('td_const').innerHTML = controllers[element].td;
 
-		         //document.getElementById('servo_iae').innerHTML = 'IAE = '+error_indexes['IAE_R_'+key];
-		         //document.getElementById('reg_iae').innerHTML = 'IAE = '+error_indexes['IAE_D_'+key];
-		         //document.getElementById('total_iae').innerHTML = 'IAE = '+error_indexes['IAE_T_'+key];
+		       document.getElementById('servo_iae').innerHTML = 'IAE = '+controllers[element].IAE;
+		       document.getElementById('reg_iae').innerHTML = 'IAE = '+controllers[element].IAE_reg;
+		       document.getElementById('total_iae').innerHTML = 'IAE = ' + (parseFloat(controllers[element].IAE) + parseFloat(controllers[element].IAE_reg));
 
 	         step_input.x = [0, 0, max_time];
 	         step_input.y = [0, 1, 1];
@@ -68,14 +84,16 @@ function params_toggle(cnt, ms)
 	         closed_loop_sys_response.x = controllers[element].t_vect;
 	         closed_loop_sys_response.y = controllers[element].y_vect;
 
+           closed_loop_reg_response.x = controllers[element].t_vect;
+           closed_loop_reg_response.y = controllers[element].y_vect_reg;
+
            let layout = {
              title: "Close-loop System Response",
              height: 700,
-             xaxis: {title: "Time (s)"},
-             yaxis: {title: "Magnitude"},
-             yaxis: {range: [min_y, max_y*1.1]} // 0% 110%
+             xaxis: {title: "Time (s)", range: [0, max_time]},
+             yaxis: {title: "Magnitude", range: [min_y*1.1, max_y*1.1]} // 0% 110%
            };
-           let data = [step_input, closed_loop_sys_response];
+           let data = [step_input, closed_loop_sys_response, closed_loop_reg_response];
            Plotly.newPlot('step_response_graph', data, layout);
 
 		         break;
