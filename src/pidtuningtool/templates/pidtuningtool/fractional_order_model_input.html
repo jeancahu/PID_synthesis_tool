@@ -7,51 +7,47 @@
 {% endblock %}
 
 {% block content %}
-<form action="{% url 'pidtuningtool_post_mi' %}" method="post" target="_blank" style="max-width: 404rem;">
+<div class="row justify-content-center m-2">
+    <img src="{% static 'pidtuningtool/img/card_mi.svg' %}" style="padding: 8px; height: 8rem;" class="card-img-top" alt="fractional order model example">
+</div>
+<div class="model_as_input_box">
+<form action="{% url 'pidtuningtool_post_mi' %}" method="post" target="_blank">
     {% csrf_token %}
-    <div class="container-fluid m-4">
-        <div class="row justify-content-center m-2">
-            <img src="{% static 'pidtuningtool/img/card_mi.svg' %}" style="padding: 8px; height: 8rem;" class="card-img-top" alt="fractional order model example">
-        </div>
-
-        <div class="form-group row justify-content-center m-2">
-	          <label for="in_frac" class="col-sm-2 col-form-label">Fractional order (α):</label>
-        <div class="col-sm-2">
-            <input type="number" class="form-control" name="in_frac" value=1 step=0.001 min=1 max=1.8 id="in_frac"/>
-        </div>
+    <div class="input_box">
+    <div class="form-group frac_input_item">
+	      <label for="in_frac" class="col-sm-2 col-form-label fract_input_label">Fractional order (α):</label>
+        <input type="number" class="form-control fract_input" name="in_frac" value=1 step=0.001 min=1 max=1.8 id="in_frac"/>
 	  </div>
 
-    <div class="form-group row justify-content-center m-2">
-	      <label for="in_time" class="col-sm-2 col-form-label">Time constant (T):</label>
-        <div class="col-sm-2">
-            <input type="number" class="form-control" name="in_time" value=1 step=0.001 min=0.001 id="in_time"/>
-        </div>
+    <div class="form-group frac_input_item">
+	      <label for="in_time" class="col-sm-2 col-form-label fract_input_label">Time constant (T):</label>
+        <input type="number" class="form-control fract_input" name="in_time" value=1 step=0.001 min=0.001 id="in_time"/>
 	  </div>
 
-    <div class="form-group row justify-content-center m-2">
-	      <label for="in_prop" class="col-sm-2 col-form-label">Proportional constant (K):</label>
-	      <div class="col-sm-2">
-            <input type="number" class="form-control" name="in_prop" value=1 step=0.001 min=0.001 id="in_prop"/>
-        </div>
+    <div class="form-group frac_input_item">
+	      <label for="in_prop" class="col-sm-2 col-form-label fract_input_label">Proportional constant (K):</label>
+        <input type="number" class="form-control fract_input" name="in_prop" value=1 step=0.001 min=0.001 id="in_prop"/>
 	  </div>
 
-    <div class="form-group row justify-content-center m-2">
-	      <label for="in_dtime" class="col-sm-2 col-form-label">Dead time constant (L):</label>
-	      <div class="col-sm-2">
-            <input type="number" class="form-control" name="in_dtime" value=1 step=0.001 min=0.001 id="in_dtime"/>
-        </div>
-      </div>
+    <div class="form-group frac_input_item">
+	      <label for="in_dtime" class="col-sm-2 col-form-label fract_input_label">Dead time constant (L):</label>
+        <input type="number" class="form-control fract_input" name="in_dtime" value=1 step=0.001 min=0.001 id="in_dtime"/>
+    </div>
+    <button type="submit" class="btn btn-success m-2" id="submit_button">Compute</button>
 
-      <button type="submit" class="btn btn-success m-2" id="submit_button">Compute</button>
+    <div id="err_banner" class="alert alert-danger d-flex align-items-center d-none" role="alert">
+        <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Danger:"><use xlink:href="#exclamation-triangle-fill"/></svg>
+        <div>Error message</div>
+    </div>
+    </div>
 </form>
-<div id="err_banner" class="alert alert-danger d-flex align-items-center d-none" role="alert">
-    <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Danger:"><use xlink:href="#exclamation-triangle-fill"/></svg>
-    <div>Error message</div>
+<div class="step_response">
+    <div id="step_response_graph"></div>
+    <a href="#" id="show_results_btn" class="btn btn-success btn_refresh_plant_response">Show results</a>
+</div>
 </div>
 
-    </div>
-
-    {% endblock %}
+{% endblock %}
 
     {% block footer %}
     <script src="{% static 'pidtuningtool/js/model_as_input.bundle.js' %}"></script>

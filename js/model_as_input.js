@@ -1,3 +1,29 @@
+import Plotly from 'plotly.js/lib/core'; // Chart lib
+
+window.onresize = function() {
+	Plotly.Plots.resize('step_response_graph');
+};
+
+/* this script plots the file input when a file in the form Time,Step,PlantResponse is supplied*/
+let step_input = {
+	x: [1, 2, 2, 3, 4],
+	y: [0, 0, 0.5, 0.5, 0.5],
+	type: 'scatter',
+	name: 'Step input'
+};
+
+let model_response = {
+	x: [1, 2, 2.3, 2.5, 3, 4],
+	y: [0, 0, 0, 0.4, 0.6, 0.7],
+	type: 'scatter',
+	name: 'Model response'
+};
+
+
+let data = [step_input, model_response];
+Plotly.newPlot('step_response_graph', data);
+
+
 // Add listener for the form
 let form = document.getElementsByTagName("form")[0];
 let form_button = document.getElementById("submit_button");
@@ -25,6 +51,30 @@ form_button.addEventListener("click", function(event){
     })
     .then(
       data => {
-        document.location.href='/results_from_model_'+data['url_slug'];
+        let l_href = "/results_from_model_"+String(data.url_slug)
+        let max_t = Math.max.apply(
+          Math,
+          data.simulation.time
+        );
+
+        console.log(data);
+        step_input = {
+	        x: [0, 0, max_t],
+	        y: [0, 1, 1],
+	        type: 'scatter',
+	        name: 'Step input'
+        };
+
+        model_response = {
+	        x: data.simulation.time,
+	        y: data.simulation.m_respo,
+	        type: 'scatter',
+	        name: 'Model response'
+        };
+
+        data = [step_input, model_response];
+        Plotly.newPlot('step_response_graph', data);
+
+        document.getElementById("show_results_btn").href=l_href;
       });
 });

@@ -16,12 +16,15 @@
   </head>
   <body>
 
-    <div id="box1">
-    <h2>PI/PID Tunning Tool</h2><br>
+    <div class="content">
+        <div class="main_title">
+            <h2>PI/PID Tunning Tool</h2><br>
+        </div>
+        <div class="main">
+            {% block content %}{% endblock %}
+        </div>
+    </div>
 
-    {% block content %}{% endblock %}
-
-  </div>
  </body>
  <footer>
      {% block footer %}

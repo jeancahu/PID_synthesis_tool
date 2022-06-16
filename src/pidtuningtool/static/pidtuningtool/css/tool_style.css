@@ -1,5 +1,7 @@
 body
 {
+    display: flex;
+    flex-direction: column;
     padding: 18px;
     background: rgb(2,0,36);
     background: linear-gradient(180deg,
@@ -9,22 +11,94 @@ body
     background-attachment: fixed;
 }
 
-h1
+.content
 {
-    color: maroon;
-}
+    display: flex;
+    flex-direction: column;
 
-h2
-{
-    color: maroon;
-}
-
-#box1
-{
-    text-align: center;
+    justify-content: center;
+    align-items: center;
+    padding: 20px 20px;
+    border-radius: 10px;
 	  background: rgba(255,255,255,0.85);
 }
 
+.main_title {
+    padding: 4px 4px;
+    color: maroon;
+}
+
+.main {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.category_title{
+    width: 100%;
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.tune_methods {
+    margin: 10px 10px;
+}
+
+.tune_method { /* a single card */
+    margin: 10px 10px;
+}
+
+.fract_input_label{
+    min-width: 14rem;
+}
+
+.fract_input{
+}
+
+.frac_input_item{
+}
+
+form{
+    display: flex;
+    justify-content: center;
+}
+
+.input_box {
+    display: flex;
+    flex-direction: column;
+    max-width: 260px;
+}
+
+.model_as_input_box {
+    display: flex;
+    flex-direction: row;
+}
+
+
+@media only screen and (max-width: 600px) {
+    .model_as_input_box {
+        display: flex;
+        flex-direction: column;
+    }
+}
+
+.step_response {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: 10px 10px;
+    width: 100%;
+}
+
+.step_response_graph {
+    /*TODO*/
+}
+
+.btn_refresh_plant_response{
+    width: 224.667px;
+}
 
 tbtn{
     margin: 3px 3px;

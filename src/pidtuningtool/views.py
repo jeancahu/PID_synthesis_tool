@@ -192,6 +192,9 @@ def plant_fractional_model(request):
             )
         tmp_plant.save()
 
-        return JsonResponse(status=200, data={"message": "Web push successful", "url_slug": tmp_plant.url_ref})
+        return JsonResponse(status=200, data={
+            "message": "Web push successful",
+            "url_slug": tmp_plant.url_ref,
+            "simulation": plant_model.toResponse()})
     except TypeError:
         return JsonResponse(status=500, data={"message": "An error occurred"})
