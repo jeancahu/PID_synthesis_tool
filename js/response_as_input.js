@@ -19,7 +19,7 @@ let sys_response = {
 	x: [1, 2, 2.3, 2.5, 3, 4],
 	y: [0, 0, 0, 0.4, 0.6, 0.7],
 	type: 'scatter',
-	name: 'System response'
+	name: 'Plant response'
 };
 
 let model_response = {
@@ -29,10 +29,16 @@ let model_response = {
 	name: 'Model response'
 };
 
+let layout = {
+  title: "Open-loop Plant Response",
+  xaxis: {title: "Time (s)"},
+  yaxis: {title: "Magnitude"},
+  height: 700,
+};
+
 
 let data = [step_input, sys_response];
-
-Plotly.newPlot('step_response_graph', data);
+Plotly.newPlot('step_response_graph', data, layout);
 
 var file_content = "";
 
@@ -67,19 +73,11 @@ function updatePlot(file_content) {
 		    parseFloat(content_matrix[counter][2]));
 	  }
 
-	  step_input = {
-		  x: time_array,
-		  y: step_input_array,
-		  type: 'scatter',
-		  name: 'Step input'
-	  };
+	step_input["x"] = time_array;
+  step_input["y"] = step_input_array;
 
-	  sys_response = {
-		  x: time_array,
-		  y: sys_resp_array,
-		  type: 'scatter',
-		  name: 'System response'
-	  };
+	sys_response["x"] = time_array;
+	sys_response["y"] = sys_resp_array;
 
 	  data = [step_input, sys_response];
 	  Plotly.newPlot('step_response_graph', data);
@@ -119,13 +117,14 @@ let err_banner = document.getElementById("err_banner");
 clear_button.addEventListener("click", function(event){
   event.preventDefault();
   document.getElementById("textcontent").value="";
+  Plotly.newPlot('step_response_graph', [], layout);
 });
 
 form_button.addEventListener("click", function(event){
   event.preventDefault(); // avoid default behavior
 
   form_button.disabled = true;
-  continue_a.disabled = true;
+  continue_a.classList.add("disabled");
   err_banner.classList.add("d-none");
   form_button.innerText = 'Calculating...';
 
@@ -152,28 +151,16 @@ form_button.addEventListener("click", function(event){
     })
     .then(data => {
       continue_a.href='/results_from_response_'+data['url_slug'];
-      continue_a.disabled = false;
+      continue_a.classList.remove("disabled");
 
-      step_input = {
-		    x: data.simulation.time,
-		    y: data.simulation.step,
-		    type: 'scatter',
-		    name: 'Step input'
-	    };
+      step_input["x"] = data.simulation.time;
+      step_input["y"] = data.simulation.step;
 
-	    sys_response = {
-		    x: data.simulation.time,
-		    y: data.simulation.respo,
-		    type: 'scatter',
-		    name: 'Real plant response'
-	    };
+	    sys_response["x"] = data.simulation.time;
+	    sys_response["y"] = data.simulation.respo;
 
-      model_response = {
-		    x: data.simulation.time,
-		    y: data.simulation.m_respo,
-		    type: 'scatter',
-		    name: 'Model response'
-	    };
+      model_response["x"] = data.simulation.time;
+	    model_response["y"] = data.simulation.m_respo;
 
 	    data = [step_input, sys_response, model_response];
 	    Plotly.newPlot('step_response_graph', data);

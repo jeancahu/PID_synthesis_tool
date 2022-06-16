@@ -4,23 +4,20 @@ window.onresize = function() {
 };
 
 // /* this script plots the file input when a file in the form Time,Step,PlantResponse is supplied*/
-// let step_input = {
-// 	x: [1, 2, 2, 3, 4],
-// 	y: [0, 0, 0.5, 0.5, 0.5],
-// 	type: 'scatter',
-// 	name: 'Step input'
-// };
+let step_input = {
+	x: [1, 2, 2, 3, 4],
+	y: [0, 0, 0.5, 0.5, 0.5],
+	type: 'scatter',
+	name: 'Set-point value'
+};
 
-// let closed_loop_sys_response = {
-// 	x: [1, 2, 2.3, 2.5, 3, 4],
-// 	y: [0, 0, 0, 0.4, 0.6, 0.7],
-// 	type: 'scatter',
-// 	name: 'System response'
-// };
+let closed_loop_sys_response = {
+	x: [1, 2, 2.3, 2.5, 3, 4],
+	y: [0, 0, 0, 0.4, 0.6, 0.7],
+	type: 'scatter',
+	name: 'System response'
+};
 
-
-// let data = [step_input, closed_loop_sys_response];
-// Plotly.newPlot('step_response_graph', data);
 
 // Max simulation time
 let max_time = Math.max.apply(
@@ -65,22 +62,17 @@ function params_toggle(cnt, ms)
 		         //document.getElementById('reg_iae').innerHTML = 'IAE = '+error_indexes['IAE_D_'+key];
 		         //document.getElementById('total_iae').innerHTML = 'IAE = '+error_indexes['IAE_T_'+key];
 
+	         step_input.x = [0, 0, max_time];
+	         step_input.y = [0, 1, 1];
 
-           let step_input = {
-	           x: [0, 0, max_time],
-	           y: [0, 1, 1],
-	           type: 'scatter',
-	           name: 'Step input'
-           };
-
-           let closed_loop_sys_response = {
-	           x: controllers[element].t_vect,
-	           y: controllers[element].y_vect,
-	           type: 'scatter',
-	           name: 'System response'
-           };
+	         closed_loop_sys_response.x = controllers[element].t_vect;
+	         closed_loop_sys_response.y = controllers[element].y_vect;
 
            let layout = {
+             title: "Close-loop System Response",
+             height: 700,
+             xaxis: {title: "Time (s)"},
+             yaxis: {title: "Magnitude"},
              yaxis: {range: [min_y, max_y*1.1]} // 0% 110%
            };
            let data = [step_input, closed_loop_sys_response];

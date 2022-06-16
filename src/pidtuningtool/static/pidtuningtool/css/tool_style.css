@@ -38,7 +38,7 @@ body
 .category_title{
     width: 100%;
     text-align: center;
-    margin-bottom: 15px;
+    margin-bottom: 10px;
 }
 
 .tune_methods {
@@ -100,12 +100,33 @@ form{
     width: 224.667px;
 }
 
-tbtn{
-    margin: 3px 3px;
+/************ Step response as input ****************/
+.sri_buttons {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
 }
 
+.sri_form {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.sri_form textarea {
+    text-align: center;
+}
+
+.sri_btn {
+    margin: 6px;
+    width: 100%;
+}
+/****************************************************/
+
+/************** Results page ************************/
 .number_space
 {
+    max-width: 476px;
     margin: 5px;
     //background: rgb(255, 82, 197);
     background: #662737;
@@ -119,6 +140,68 @@ tbtn{
     display: flex;
     flex-direction: column;
 }
+
+.number_label
+{
+    color: white;
+    margin: 5px;
+    background: #8a344a;
+    border-radius: 31px 31px 31px 31px;
+    -moz-border-radius: 31px 31px 31px 31px;
+    -webkit-border-radius: 31px 31px 31px 31px;
+    //border: 0px solid #000000;
+    text-align: center;
+}
+
+.tbtn{
+    margin: 10px 10px;
+    width: 96%;
+    padding-left: 6px;
+    padding-right: 6px;
+}
+
+.parameters_board{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 96%;
+    padding: 22px 22px;
+}
+
+.results_box{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+
+}
+
+.rp_graph{
+    width: 96%;
+}
+
+.rp_params_table
+{
+    display: flex;
+    flex-direction: column;
+    min-width: 50%;
+}
+
+
+
+/* @media only screen and (min-width: 840px) { */
+/* } */
+
+
+@media only screen and (max-width: 700px) {
+    .parameters_board{
+        flex-direction: column;
+    }
+}
+
+/****************************************************/
+
+
 
 #model_params > div > label
 {
@@ -134,17 +217,5 @@ tbtn{
     text-align: left;
     color: white;
     font-weight: bold;
-}
-
-number_label
-{
-    color: white;
-    margin: 5px;
-    background: #8a344a;
-    border-radius: 31px 31px 31px 31px;
-    -moz-border-radius: 31px 31px 31px 31px;
-    -webkit-border-radius: 31px 31px 31px 31px;
-    //border: 0px solid #000000;
-    text-align: center;
 }
 

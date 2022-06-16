@@ -2,97 +2,110 @@
 {% load i18n static %}
 
 {% block content %}
-<resultsbox>
+<div class="results_box">
     <div class="parameters_board">
-	      <div>
+	      <div class="rp_params_table"  id="model_params">
 	          <h2>Model parameters:</h2>
+	          <div class='number_space'>
+	              <label>Fractional parameter</label>
+                <div class="number_label">
+                    {{v_param}}
+                </div>
+	          </div>
 
-	          <div id="model_params">
-	              <div class='number_space'>
-	                  <label>Fractional parameter</label>
-	                  <number_label>{{v_param}}</number_label>
-	              </div>
+	          <div class='number_space'>
+	              <label>Time Constant</label>
+                <div class="number_label">
+                    {{T_param}}
+                </div>
+	          </div>
 
-	              <div class='number_space'>
-	                  <label>Time Constant</label>
-	                  <number_label>{{T_param}}</number_label>
-	              </div>
+	          <div class='number_space'>
+	              <label>Process Gain</label>
+                <div class="number_label">
+                    {{K_param}}
+                </div>
+	          </div>
 
-	              <div class='number_space'>
-	                  <label>Process Gain</label>
-	                  <number_label>{{K_param}}</number_label>
-	              </div>
+	          <div class='number_space'>
+	              <label>Dead Time Constant</label>
+                <div class="number_label">
+                    {{L_param}}
+                </div>
+	          </div>
 
-	              <div class='number_space'>
-	                  <label>Dead Time Constant</label>
-	                  <number_label>{{L_param}}</number_label>
-	              </div>
+            {% if not from_model %}
+	          <div class='number_space'>
+	              <label>IAE Index</label>
+                <div class="number_label">
+                    {{model_IAE}}
+                </div>
+	          </div>
+	      </div>
+        {% endif %}
 
-                {% if not from_model %}
-	              <div class='number_space'>
-	                  <label>IAE Index</label>
-	                  <number_label>{{model_IAE}}</number_label>
-	              </div>
+	      <div class="rp_params_table" id="controllers_params">
+	          <h2>Controller parameters:</h2>
+
+	          <div class='number_space'>
+	              <label>Controller:</label>
+                <div class="number_label" id='controller_name'>
+                </div>
+	          </div>
+
+	          <div class='number_space'>
+	              <label>Proportional Gain</label>
+                <div class="number_label" id='kp_const'>
+                </div>
+	          </div>
+
+	          <div class='number_space'>
+	              <label>Integral Time</label>
+                <div class="number_label" id='ti_const'>
+                </div>
+	          </div>
+
+	          <div class='number_space'>
+	              <label>Derivative time</label>
+                <div class="number_label" id='td_const'>
+                </div>
+	          </div>
+
+            {% if not from_model %}
+	          <div class='number_space'>
+	              <label>Servo-control performance</label>
+                <div class="number_label" id='servo_iae'>
+                </div>
+	          </div>
+
+	          <div class='number_space'>
+	              <label>Regulatory performance</label>
+                <div class="number_label" id='reg_iae'>
+                </div>
+	          </div>
+
+	          <div class='number_space'>
+	              <label>Overall performance</label>
+                <div class="number_label" id='total_iae'>
+                </div>
 	          </div>
             {% endif %}
 
-	          <h2>Controller parameters:</h2>
+        </div>
+	  </div>
 
-	          <div id="controllers_params">
-
-	              <div class='number_space'>
-	                  <label>Controller:</label>
-	                  <number_label id='controller_name'>-</number_label>
-	              </div>
-
-	              <div class='number_space'>
-	                  <label>Proportional Gain</label>
-	                  <number_label id='kp_const'>-</number_label>
-	              </div>
-
-	              <div class='number_space'>
-	                  <label>Integral Time</label>
-	                  <number_label id='ti_const'>-</number_label>
-	              </div>
-
-	              <div class='number_space'>
-	                  <label>Derivative time</label>
-	                  <number_label id='td_const'>-</number_label>
-	              </div>
-
-                {% if not from_model %}
-	              <div class='number_space'>
-	                  <label>Servo-control performance</label>
-	                  <number_label id='servo_iae'>-</number_label>
-	              </div>
-
-	              <div class='number_space'>
-	                  <label>Regulatory performance</label>
-	                  <number_label id='reg_iae'>-</number_label>
-	              </div>
-
-	              <div class='number_space'>
-	                  <label>Overall performance</label>
-	                  <number_label id='total_iae'>-</number_label>
-	              </div>
-                {% endif %}
-
-            </div>
-	      </div>
-    </div>
-
-    <images_tag>
+    <div class="rp_graph">
         <div id="step_response_graph"></div>
-
-			  <ul class="nav nav-pills nav-justified">
+        <ul class="nav nav-pills nav-justified">
             {% for ctl in controller_params %}
             <li class="nav-item">
-	              <button type="button" class='btn tbtn' id="toggle_btn_{{ctl.ctype}}_{{ctl.Ms}}" onclick='window.params_toggle("{{ctl.ctype}}","{{ctl.Ms}}")'>{{ctl.ctype}} Ms={{ctl.Ms}}</button>
+	              <button type="button" class='btn btn-secondary tbtn' id="toggle_btn_{{ctl.ctype}}_{{ctl.Ms}}" onclick='window.params_toggle("{{ctl.ctype}}","{{ctl.Ms}}")'>{{ctl.ctype}} Ms={{ctl.Ms}}</button>
             </li>
             {% endfor %}
-			  </ul>
-    </images_tag>
-</resultsbox>
+		    </ul>
+    </div>
+
+</div>
 {% endblock %}
 {% block footer %}
 <script type="text/javascript">let controllers = {{controller_params | safe }};</script>

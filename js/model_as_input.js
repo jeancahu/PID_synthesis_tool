@@ -19,9 +19,15 @@ let model_response = {
 	name: 'Model response'
 };
 
+let layout = {
+  title: "Open-loop Model Response",
+  height: 700,
+  xaxis: {title: "Time (s)"},
+  yaxis: {title: "Magnitude"},
+};
 
 let data = [step_input, model_response];
-Plotly.newPlot('step_response_graph', data);
+Plotly.newPlot('step_response_graph', data, layout);
 
 
 // Add listener for the form
