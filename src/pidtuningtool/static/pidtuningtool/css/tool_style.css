@@ -167,10 +167,12 @@ form{
 }
 
 .tbtn{
-    margin: 10px 10px;
+    margin: 10px 10px 10px 10px;
     width: 96%;
     padding-left: 6px;
     padding-right: 6px;
+    max-height: 38px;
+    min-width: 114px;
 }
 
 .parameters_board{
