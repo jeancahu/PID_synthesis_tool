@@ -33,13 +33,14 @@
                     {{L_param}}
                 </div>
 	          </div>
-
+            {% if not from_model %}
 	          <div class='number_space'>
 	              <label>IAE Index</label>
                 <div class="number_label">
                     {{model_IAE}}
                 </div>
 	          </div>
+            {% endif %}
 	      </div>
 
 	      <div class="rp_params_table" id="controllers_params">
