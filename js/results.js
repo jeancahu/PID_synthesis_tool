@@ -4,14 +4,19 @@ let step_response_graph = document.getElementById("step_response_graph");
 function resize_graph() {
   if (step_response_graph.clientWidth < 700){
     layout.height = step_response_graph.clientWidth;
-    layout.xaxis.title = undefined;
-    layout.yaxis.title = undefined;
+
+    s_data[0].name = "R";
+    s_data[1].name = "Ser";
+    s_data[2].name = "Reg";
+
 
     Plotly.newPlot('step_response_graph', s_data, layout);
   } else {
     layout.height = 700;
-    layout.xaxis.title = "Time (s)";
-    layout.yaxis.title = "Magnitude";
+
+    s_data[0].name = "Set-point value";
+    s_data[1].name = "Servo response";
+    s_data[2].name = "Regulatory response";
 
     Plotly.newPlot('step_response_graph', s_data, layout);
   }
@@ -52,7 +57,7 @@ let closed_loop_reg_response = {
 	name: 'Regulatory response'
 };
 
-let s_data = {}
+let s_data = [step_input, closed_loop_sys_response, closed_loop_reg_response];
 
 // Max simulation time
 let max_time = Math.max.apply(

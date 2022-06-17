@@ -13,10 +13,15 @@ function resize_graph() {
   {
     layout.width = model_as_input_box.clientWidth - form.clientWidth;
     layout.height = 700;
+    s_data[0].name = 'Step input';
+    s_data[1].name = 'Model response';
+
     Plotly.newPlot('step_response_graph', s_data, layout);
   } else {
     layout.width = model_as_input_box.clientWidth;
     layout.height = model_as_input_box.clientWidth;
+    s_data[0].name = 'R';
+    s_data[1].name = 'P';
     Plotly.newPlot('step_response_graph', s_data, layout);
   }
 };
@@ -79,20 +84,11 @@ function handleForm(event){
           data.simulation.time
         );
 
-        console.log(data);
-        step_input = {
-	        x: [0, 0, max_t],
-	        y: [0, 1, 1],
-	        type: 'scatter',
-	        name: 'Step input'
-        };
+	      step_input.x = [0, 0, max_t];
+	      step_input.y = [0, 1, 1];
 
-        model_response = {
-	        x: data.simulation.time,
-	        y: data.simulation.m_respo,
-	        type: 'scatter',
-	        name: 'Model response'
-        };
+	      model_response.x = data.simulation.time;
+	      model_response.y = data.simulation.m_respo;
 
         s_data = [step_input, model_response];
         Plotly.newPlot('step_response_graph', s_data, layout);
