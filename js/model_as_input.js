@@ -6,11 +6,22 @@ let form_button = document.getElementById("submit_button");
 let err_banner = document.getElementById("err_banner");
 let model_as_input_box = document.getElementsByClassName("model_as_input_box")[0];
 
-window.onresize = function() {
+function resize_graph() {
 	Plotly.Plots.resize('step_response_graph');
-  layout["width"] = model_as_input_box.clientWidth - form.clientWidth;
-  Plotly.newPlot('step_response_graph', s_data, layout);
+
+  if (model_as_input_box.clientWidth > 524) // From CSS
+  {
+    layout.width = model_as_input_box.clientWidth - form.clientWidth;
+    layout.height = 700;
+    Plotly.newPlot('step_response_graph', s_data, layout);
+  } else {
+    layout.width = model_as_input_box.clientWidth;
+    layout.height = model_as_input_box.clientWidth;
+    Plotly.newPlot('step_response_graph', s_data, layout);
+  }
 };
+
+window.onresize = resize_graph
 
 /* this script plots the file input when a file in the form Time,Step,PlantResponse is supplied*/
 let step_input = {
@@ -37,6 +48,8 @@ let layout = {
 
 let s_data = [step_input, model_response];
 Plotly.newPlot('step_response_graph', s_data, layout);
+
+resize_graph();
 
 function handleForm(event){
   event.preventDefault();

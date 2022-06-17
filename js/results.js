@@ -1,7 +1,34 @@
 import Plotly from 'plotly.js/lib/core'; // Chart lib
-window.onresize = function() {
-	Plotly.Plots.resize('step_response_graph');
+
+let step_response_graph = document.getElementById("step_response_graph");
+function resize_graph() {
+  if (step_response_graph.clientWidth < 700){
+    layout.height = step_response_graph.clientWidth;
+    layout.xaxis.title = undefined;
+    layout.yaxis.title = undefined;
+
+    Plotly.newPlot('step_response_graph', s_data, layout);
+  } else {
+    layout.height = 700;
+    layout.xaxis.title = "Time (s)";
+    layout.yaxis.title = "Magnitude";
+
+    Plotly.newPlot('step_response_graph', s_data, layout);
+  }
+
+  Plotly.Plots.resize('step_response_graph');
 };
+
+window.onresize = resize_graph;
+
+let layout = {
+  title: "Close-loop System Response",
+  height: 700,
+  margin: {l: 60, r: 60, b: 60},
+  xaxis: {title: "Time (s)", range: [0, 0]},
+  yaxis: {title: "Magnitude", range: [0, 0]} // 0% 110%
+};
+
 
 // /* this script plots the file input when a file in the form Time,Step,PlantResponse is supplied*/
 let step_input = {
@@ -25,6 +52,7 @@ let closed_loop_reg_response = {
 	name: 'Regulatory response'
 };
 
+let s_data = {}
 
 // Max simulation time
 let max_time = Math.max.apply(
@@ -60,7 +88,7 @@ Math.min.apply(
 ));
 
 
-
+resize_graph();
 function params_toggle(cnt, ms)
  {
    let key;
@@ -87,14 +115,11 @@ function params_toggle(cnt, ms)
            closed_loop_reg_response.x = controllers[element].t_vect;
            closed_loop_reg_response.y = controllers[element].y_vect_reg;
 
-           let layout = {
-             title: "Close-loop System Response",
-             height: 700,
-             xaxis: {title: "Time (s)", range: [0, max_time]},
-             yaxis: {title: "Magnitude", range: [min_y*1.1, max_y*1.1]} // 0% 110%
-           };
-           let data = [step_input, closed_loop_sys_response, closed_loop_reg_response];
-           Plotly.newPlot('step_response_graph', data, layout);
+           layout.xaxis = {title: "Time (s)", range: [0, max_time]};
+           layout.yaxis = {title: "Magnitude", range: [min_y*1.1, max_y*1.1]}; // 0% 110%
+
+           s_data = [step_input, closed_loop_sys_response, closed_loop_reg_response];
+           Plotly.newPlot('step_response_graph', s_data, layout);
 
 		         break;
 		     }
