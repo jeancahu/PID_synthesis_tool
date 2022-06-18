@@ -1,18 +1,5 @@
-# django_based_PID_tool_web_service
-PID tuning web tool, server and client, django back-end
+# Django based Webapp for PID Control Tuning
 
-## PID_synthesis_android_client
-PID Synthesis software, Android Client
-Android TCP/IP client for https://github.com/jeancahu/PID_synthesis_server_client
-
-## identool_sys_control
-Identool use system control methods to identify simple models.
-
-## control_sys_tools
-Aplicación móvil para la sintonización de controladores PI/PID de 1 GdL basada en un  modelo de orden fraccional
-
-## PID_synthesis_server_client
-PID Synthesis software, Server and Client
-
-## PID_tuning_python_module
-PID tuning module for Python3
+A responsive website for PID controllers tuning using modern tuning techniques, fractional calculus and opensource software to run identiication routines for raw process data.
+This project goal is to allow most of the mobile devices to approach controller parametes even with their default hardware limitations switching the computation load to the cloud,
+this makes low stats computers able to display good aproximations and simulations anywhere they are needed.
