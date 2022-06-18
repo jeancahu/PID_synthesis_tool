@@ -43,7 +43,7 @@ def pidtune_results(request, data_input, plant_slug):
             proportional_constant=float(tmp_plant.plant_params['K']),
             dead_time_constant=float(tmp_plant.plant_params['L'])
     )
-    controllers = plant_model.tune_controllers()
+    controllers = plant_model.controllers
     controller_params = []
 
     for l_ctl in controllers:
