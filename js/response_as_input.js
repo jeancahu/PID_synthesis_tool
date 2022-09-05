@@ -31,6 +31,11 @@ let model_response = {
 
 let layout = {
   title: "Open-loop Plant Response",
+  font: {
+    //family: 'Courier New, monospace',
+    size: 14,
+    //color: '#7f7f7f'
+  },
   xaxis: {title: "Time (s)"},
   yaxis: {title: "Magnitude"},
   height: 700,
@@ -93,18 +98,18 @@ function readFileAsString() {
 	var reader = new FileReader();
 	reader.onload = function(event) {
 	  file_content = event.target.result;
-	  document.getElementById('textcontent').value = file_content
+	  document.getElementById('textcontent').value = file_content;
     updatePlot(file_content);
 	};
 	reader.readAsText(files[0]);
 }
-document.getElementById('in_file').addEventListener('change', readFileAsString)
+document.getElementById('in_file').addEventListener('change', readFileAsString);
 
 function updatePlotFromTextbox(event) {
   updatePlot(event.target.value);
 }
 
-document.getElementById('textcontent').addEventListener('change', updatePlotFromTextbox)
+document.getElementById('textcontent').addEventListener('change', updatePlotFromTextbox);
 
 
 // Add listener for the form

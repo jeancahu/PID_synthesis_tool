@@ -26,7 +26,7 @@ function resize_graph() {
   }
 };
 
-window.onresize = resize_graph
+window.onresize = resize_graph;
 
 /* this script plots the file input when a file in the form Time,Step,PlantResponse is supplied*/
 let step_input = {
@@ -45,6 +45,11 @@ let model_response = {
 
 let layout = {
   title: "Open-loop Model Response",
+  font: {
+    //family: 'Courier New, monospace',
+    size: 14,
+    //color: '#7f7f7f'
+  },
   height: 700,
   width: model_as_input_box.clientWidth - form.clientWidth,
   xaxis: {title: "Time (s)"},

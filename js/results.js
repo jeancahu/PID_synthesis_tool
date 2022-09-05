@@ -28,6 +28,11 @@ window.onresize = resize_graph;
 
 let layout = {
   title: "Close-loop System Response",
+  font: {
+    //family: 'Courier New, monospace',
+    size: 14,
+    //color: '#7f7f7f'
+  },
   height: 700,
   margin: {l: 60, r: 60, b: 60},
   xaxis: {title: "Time (s)", range: [0, 0]},
