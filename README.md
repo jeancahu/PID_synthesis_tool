@@ -43,6 +43,12 @@ Install the software below to get the project running properly.
 
   ```
 
+Git clone the _pidtune_ library required by the webapp:
+  ```bash
+  git clone https://github.com/jeancahu/pidtune.git
+  pidtune_dir=$PWD/pidtune
+  ```
+
 ### Installation
 
 1. Clone the repository.
@@ -59,8 +65,9 @@ Install the software below to get the project running properly.
    ```
 3. Install _pidtune_ dependency as developer.
    ```bash
-   # TODO
-    ```
+   cd $pidtune_dir # Get in the pidtune directory.
+   pip install .   # Install it as a module, make sure your virtualenv is active
+   ```
 
 <!-- USAGE -->
 ## Usage
