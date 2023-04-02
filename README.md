@@ -65,9 +65,26 @@ Git clone the _pidtune_ library required by the webapp:
    ```
 3. Install _pidtune_ dependency as developer.
    ```bash
-   cd $pidtune_dir # Get in the pidtune directory.
-   pip install .   # Install it as a module, make sure your virtualenv is active
+   cd server_demo                   # Once inside the project repository directory go to server demo
+   cd venv                          # Go to virtualenv directory
+   source bin/activate              # Activate the virtualenv
+   cd                               
+   cd pidtune                       # Go to your directory of the pidtune repository 
+   pip install .                    # Install pidtune library
    ```
+4. Generate database and migrate it to Django
+   ```bash
+   cd test\server_demo              # Go to server demo directory
+   python3 manage.py migrate        # Generate the database and migrate it
+   ```
+   
+5. Install the styles by Django
+   ```bash
+   cd PID_synthesis_tool            # Go to the root of the repository
+   npn install .                    # Install the styles package from js technology, create node_modules
+   npn run dist                     # Compress the package to make it easier to send to the server
+   ```
+   
 
 <!-- USAGE -->
 ## Usage
@@ -93,6 +110,6 @@ Distributed under the GPL-3.0 License. See `LICENSE.txt` for more information.
 
 [Jean Hidalgo](https://caroje.com/static/jeancahu/) - jeancahu@gmail.com
 
-Jose Mario -
+Jose Mario - jomagona01@gmail.com
 
 Project Repository: [https://github.com/jeancahu/PID_synthesis_tool](https://github.com/jeancahu/PID_synthesis_tool)
