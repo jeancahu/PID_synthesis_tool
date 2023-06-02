@@ -98,6 +98,12 @@ Git clone the _pidtune_ library required by the webapp:
    ```
 Open the [Local site](http://127.0.0.1:8000/) on your preferred browser.
 
+2. On a second terminal to the base directory, run `npm run watch` to compile
+   the assets JS and CSS.
+
+   ```bash
+   npm run watch
+   ```
 
 <!-- LICENSE -->
 ## License
