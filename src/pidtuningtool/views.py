@@ -1,5 +1,4 @@
 from django.shortcuts import render, get_object_or_404
-# from django.contrib.auth.decorators import login_required # TODO
 from django.core.exceptions import ObjectDoesNotExist
 
 from django.http import JsonResponse
@@ -11,28 +10,38 @@ from .models import Plant as db_plant
 
 import json
 import re
+
 ## Util functions
 def valid_response_input(strg, search=re.compile(r'^[0-9\n\r\tEe+-.]+$').search):
+    """
+    Test if the response syntaxis is valid
+    """
     return bool(search(strg))
 
 ## Views
 @require_GET
 def identify_plant(request):
+    """
+    Index page containing a card for each identification method implemented
+    """
     context = {
     }
     return render(request, 'pidtuningtool/identify_input.html', context)
+
+@require_GET
+def plant_step_response_input(request):
+    """
+    Input file in {TXT,TSV,CSV} format to be identified
+    """
+    context = {
+    }
+    return render(request, 'pidtuningtool/plant_step_response_input.html', context)
 
 @require_GET
 def fractional_order_model_input(request):
     context = {
     }
     return render(request, 'pidtuningtool/fractional_order_model_input.html', context)
-
-@require_GET
-def plant_step_response_input(request):
-    context = {
-    }
-    return render(request, 'pidtuningtool/plant_step_response_input.html', context)
 
 @require_GET
 def pidtune_results(request, data_input, plant_slug):
