@@ -3,10 +3,10 @@ from django.core.exceptions import ObjectDoesNotExist
 
 from django.http import JsonResponse
 from django.views.decorators.http import require_GET, require_POST
-from .__version__ import __version__ as se_version # TODO
+from pidtuningtool.__version__ import __version__ as se_version # TODO
 
 from pidtune.models import plant, system as c_sys
-from .models import Plant as db_plant
+from pidtuningtool.models import Plant as db_plant
 
 import json
 import re
