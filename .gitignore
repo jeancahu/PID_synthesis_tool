@@ -1,4 +1,3 @@
-
 staticfiles/
 pidtune
 node_modules/
@@ -113,3 +112,7 @@ src/pidtuningtool/static/pidtuningtool/css/main_style.css
 *.bundle.js*
 *.map
 octave-workspace
+
+## Test files
+test/data*.txt
+GUNT.txt
