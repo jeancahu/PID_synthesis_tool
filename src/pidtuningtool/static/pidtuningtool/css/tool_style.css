@@ -5,9 +5,9 @@ body
     padding: 18px;
     background: rgb(2,0,36);
     background: linear-gradient(180deg,
-				rgba(2,0,36,1) 0%,
-				rgba(9,9,121,1) 22%,
-				rgba(255,0,166,1) 100%);
+        rgba(2,0,36,1) 0%,
+        rgba(9,9,121,1) 22%,
+        rgba(255,0,166,1) 100%);
     background-attachment: fixed;
 
     height: 100vh;
@@ -23,7 +23,7 @@ body
     align-items: center;
     padding: 20px 20px;
     border-radius: 10px;
-	  background: rgba(255,255,255,0.85);
+    background: rgba(255,255,255,0.85);
 }
 
 .main_title {
@@ -247,4 +247,3 @@ form{
     color: white;
     font-weight: bold;
 }
-

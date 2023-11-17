@@ -34,6 +34,10 @@
  <footer>
      {% block footer %}
      {% endblock %}
+     <script type="module">
+      const model_id="{{ model_id }}";
+      globalThis.getModelId = () => model_id;
+     </script>
      <script src="{% static 'pidtuningtool/js/main_style.bundle.js' %}"></script>
  </footer>
 </html>

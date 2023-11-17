@@ -11,6 +11,8 @@ from pidtuningtool.models import Plant as db_plant
 import json
 import re
 
+from .utils.fractional_model import plant_model_fractional, plant_open_loop_response_fractional
+
 ## Util functions
 def valid_response_input(strg, search=re.compile(r'^[0-9\n\r\tEe+-.]+$').search):
     """
@@ -22,26 +24,29 @@ def valid_response_input(strg, search=re.compile(r'^[0-9\n\r\tEe+-.]+$').search)
 @require_GET
 def identify_plant(request):
     """
-    Index page containing a card for each identification method implemented
+    Index/landing page containing a card for each identification method implemented
     """
     context = {
+        'model_id': 'undefined',
     }
-    return render(request, 'pidtuningtool/identify_input.html', context)
+    return render(request, 'pidtuningtool/landing.html', context)
 
 @require_GET
-def plant_step_response_input(request):
+def plant_step_response_input(request, model_id="fractional"):
     """
     Input file in {TXT,TSV,CSV} format to be identified
     """
     context = {
+        'model_id': model_id,
     }
     return render(request, 'pidtuningtool/plant_step_response_input.html', context)
 
 @require_GET
-def fractional_order_model_input(request):
+def model_input(request, model_id='fractional'):
     context = {
+        'model_id': model_id,
     }
-    return render(request, 'pidtuningtool/fractional_order_model_input.html', context)
+    return render(request, 'pidtuningtool/model_as_input.html', context)
 
 @require_GET
 def pidtune_results(request, data_input, plant_slug):
@@ -77,6 +82,7 @@ def pidtune_results(request, data_input, plant_slug):
         })
 
     context = {
+        'model_id': model_id,
         "v_param": tmp_plant.plant_params['alpha'],
         "T_param": tmp_plant.plant_params['T'],
         "K_param": tmp_plant.plant_params['K'],
@@ -98,11 +104,12 @@ def plant_open_loop_response(request):
             request.session.set_expiry(900)
             request.session.save()
 
-        if 'textcontent' not in data:
+        if 'textcontent' not in data or not 'model_id' in data:
             return JsonResponse(status=400, data={"message": "Invalid data format"})
 
+        model_id = data['model_id']
+        print(model_id)
         data = data["textcontent"];
-
         if len(data) == 0:
             return JsonResponse(status=400, data={"message": "Invalid data no lenght"})
 
@@ -115,57 +122,22 @@ def plant_open_loop_response(request):
             if not valid_response_input(data):
                 return JsonResponse(status=400, data={"message": "Invalid data bad syntax"})
 
-        time_vector=[]
-        step_vector=[]
-        resp_vector=[]
+        if model_id == 'fractional':
+            return plant_open_loop_response_fractional(request, data)
+        # elif model_id == 'alfaro123c_etc':
+        #     return plant_model_fractional(request, data)
 
-        try:
-            for row in data.split('\n'):
-                # Drop ghost rows
-                if not len(row):
-                    continue
+        # elif model_id == 'alfaro123c_etcetc':
+        #     return plant_model_fractional(request, data)
 
-                row = re.sub(r'\t{1,}', '\t', row) ## Removes null columns
-                row = re.sub(r'^\t', '', row) ## Removes begin fake column
+        else:
+            return JsonResponse(status=400, data={"message": "Invalid model ID"})
 
-                # Append columns its respective vector
-                col1,col2,col3 = row.split("\t")
-                time_vector.append(float(col1))
-                step_vector.append(float(col2))
-                resp_vector.append(float(col3))
-
-        except ValueError as e:
-            return JsonResponse(status=400, data={"message": "Invalid data, corrupt rows: {}".format(e)})
-
-        ## Plant processing
-        try:
-            plant_model = plant.FractionalOrderModel(
-                time_vector=time_vector,
-                step_vector=step_vector,
-                resp_vector=resp_vector
-            )
-        except ValueError as e:
-            return JsonResponse(status=400, data={"message": "Invalid data, {}".format(e)})
-
-        try: # Save the plant params in database
-            tmp_plant = db_plant.objects.get(tuner_user=request.session.session_key)
-            tmp_plant.plant_params = plant_model.toDict()
-        except ObjectDoesNotExist:
-            tmp_plant = db_plant(
-                tuner_user = request.session.session_key,
-                plant_params = plant_model.toDict()
-            )
-        tmp_plant.save()
-
-        return JsonResponse(status=200,
-                            data={"message": "Web push successful",
-                                  "url_slug": tmp_plant.url_ref,
-                                  "simulation": plant_model.toResponse()})
     except TypeError:
         return JsonResponse(status=500, data={"message": "An error occurred"})
 
 @require_POST
-def plant_fractional_model(request):
+def plant_model(request):
     # Plant fractional order model previously calculated by the user
     try:
         data = request.POST
@@ -174,40 +146,20 @@ def plant_fractional_model(request):
             request.session.set_expiry(900)
             request.session.save()
 
-        if 'in_frac' not in data or \
-           'in_time' not in data or \
-           'in_prop' not in data or \
-           'in_dtime' not in data:
-            return JsonResponse(status=400, data={"message": "Invalid data format"})
+        if 'model_id' not in data:
+            return JsonResponse(status=400, data={"message": "No model ID"})
 
-        try:
-            plant_model = plant.FractionalOrderModel(
-                alpha=float(data["in_frac"]),
-                time_constant=float(data["in_time"]),
-                proportional_constant=float(data["in_prop"]),
-                dead_time_constant=float(data["in_dtime"])
-            )
-        except ValueError as e:
-            err_msg = "Invalid input: {}".format(e)
-            err_msg = re.sub(r'[()\']', '', err_msg)
-            err_msg = re.sub(r', , , ', ' - ', err_msg)
-            err_msg = re.sub(r',', '', err_msg)
+        if data['model_id'] == 'fractional':
+            return plant_model_fractional(request, data)
 
-            return JsonResponse(status=400, data={"message": err_msg})
+        # elif data['model_id'] == 'alfaro123c_etc':
+        #     return plant_model_fractional(request, data)
 
-        try: # Save the plant params in database
-            tmp_plant = db_plant.objects.get(tuner_user=request.session.session_key)
-            tmp_plant.plant_params = plant_model.toDict()
-        except ObjectDoesNotExist:
-            tmp_plant = db_plant(
-                tuner_user = request.session.session_key,
-                plant_params = plant_model.toDict()
-            )
-        tmp_plant.save()
+        # elif data['model_id'] == 'alfaro123c_etcetc':
+        #     return plant_model_fractional(request, data)
 
-        return JsonResponse(status=200, data={
-            "message": "Web push successful",
-            "url_slug": tmp_plant.url_ref,
-            "simulation": plant_model.toResponse()})
+        else:
+            return JsonResponse(status=400, data={"message": "Invalid model ID"})
+
     except TypeError:
         return JsonResponse(status=500, data={"message": "An error occurred"})

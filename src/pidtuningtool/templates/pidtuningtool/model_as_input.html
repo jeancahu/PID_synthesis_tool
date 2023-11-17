@@ -15,7 +15,7 @@
 
         <form action="{% url 'pidtuningtool_post_mi' %}" method="post" target="_blank">
             {% csrf_token %}
-
+            <input type="hidden" name="model_id" value="{{ model_id }}"/>
             <div class="input_box">
                 <div class="form-group frac_input_item">
 	                  <label for="in_frac" class="col-sm-2 col-form-label fract_input_label">Fractional order (α):</label>

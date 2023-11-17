@@ -2,3 +2,6 @@ Django
 numpy
 gunicorn
 django-autoslug
+typeguard
+control
+pandas

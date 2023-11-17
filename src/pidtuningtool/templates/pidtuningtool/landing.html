@@ -13,7 +13,7 @@
 {# TODO Cards for every method, an image and a bref description the method does, continue button #}
 
 <div class="card-container">
-    <a href="{% url 'pidtuningtool_mi' %}" class="card">
+    <a href="{% url 'pidtuningtool_mi' 'fractional' %}" class="card">
         <img src="{% static 'pidtuningtool/img/card_mi.svg' %}" alt="Frac order model input" style="background-color:white;">
         <div class="card-content">
             <h3>Fractional order model</h3>
@@ -21,7 +21,7 @@
         </div>
     </a>
 
-    <a href="{% url 'pidtuningtool_ri' %}" class="card">
+    <a href="{% url 'pidtuningtool_ri' 'fractional' %}" class="card">
         <img src="{% static 'pidtuningtool/img/card_ri.png' %}" alt="Frac order response input">
         <div class="card-content">
             <h3>Plant open-loop response</h3>
@@ -29,7 +29,7 @@
         </div>
     </a>
 
-    <a href="#" class="card">
+    <a href="{% url 'pidtuningtool_mi' 'alfaro123c' %}#" class="card">
         <img src="" alt="alfaro123c model input">
         <div class="card-content">
             <h3>Alfaro123c model parameters</h3>
@@ -37,7 +37,7 @@
         </div>
     </a>
 
-    <a href="#" class="card">
+    <a href="{% url 'pidtuningtool_ri' 'alfaro123c' %}" class="card">
         <img src="" alt="alfaro123c response input">
         <div class="card-content">
             <h3>Alfaro123c plant open-loop response</h3>

@@ -21,6 +21,9 @@ REQUIRED = [
     'Django',
     'pidtune',
     'django-autoslug',
+    'typeguard',
+    'control',
+    'pandas',
 ]
 
 # What packages are optional?

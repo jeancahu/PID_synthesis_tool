@@ -83,7 +83,7 @@ function handleForm(event){
     })
     .then(
       data => {
-        let l_href = "/results_from_model_"+String(data.url_slug)
+        let l_href = "/results_from_model_"+String(data.url_slug);
         let max_t = Math.max.apply(
           Math,
           data.simulation.time

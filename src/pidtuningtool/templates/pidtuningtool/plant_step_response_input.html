@@ -10,6 +10,7 @@
 <div>
     <form action="{% url 'pidtuningtool_post_ri' %}" method="post" target="_blank">
         {% csrf_token %}
+        <input type="hidden" name="model_id" value="{{ model_id }}"/>
         <div class="sri_form">
             <div class="mb-3">
                 <label for="formFile" class="form-label">Upload file with step response, columms order: time, step signal and plant response signal</label>
