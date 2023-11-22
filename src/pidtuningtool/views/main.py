@@ -93,6 +93,51 @@ def pidtune_results(request, data_input, plant_slug):
     }
     return render(request, 'pidtuningtool/results_page.html', context)
 
+@require_GET
+def pidtune_results_alfaro(request):#, data_input, plant_slug):
+    #tmp_plant = get_object_or_404(db_plant, url_ref=plant_slug)
+    plant_model = plant.FractionalOrderModel(
+            alpha=float(1),
+            time_constant=float(1),
+            proportional_constant=float(1),
+            dead_time_constant=float(1)
+    )
+    controllers = plant_model.controllers
+    controller_params = []
+
+    for l_ctl in controllers:
+
+        l_sys = c_sys.ClosedLoop(
+            controller = l_ctl,
+            plant = plant_model
+        )
+
+        ## Get the closed loop simulation for the system: controller -> plant
+        #t_vect, y_vect, y_vect_reg, servo_iae, regulatory_iae = l_sys.step_response(
+        #    servo_magnitude=1, disturbance_magnitude=0.5)
+        controller_params.append(
+            l_ctl.toDict()
+        )
+        '''controller_params[-1].update({
+            'y_vect': y_vect,
+            'y_vect_reg': y_vect_reg,
+            't_vect': t_vect,
+            'IAE': servo_iae,
+            'IAE_reg': regulatory_iae
+        })
+    '''
+    context = {
+        #'model_id': model_id,
+        "v_param": 45,
+        "T_param": 32,
+        "K_param": 32,
+        "L_param": 32,
+        "model_IAE": 42,
+        "controller_params": controller_params,
+        "from_model": True,
+    }
+    return render(request, 'pidtuningtool/results_page.html', context)
+
 
 @require_POST
 def plant_open_loop_response(request):
