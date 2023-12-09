@@ -12,6 +12,8 @@ import json
 import re
 
 from .utils.fractional_model import plant_model_fractional, plant_open_loop_response_fractional
+from .utils.alfaro123c_model import plant_model_alfaro_first_order, plant_model_alfaro_second_order,plant_model_alfaro_overdamped
+from .utils.alfaro123c_model import plant_open_loop_response_alfaro_first_order, plant_model_alfaro_second_order, plant_model_alfaro_overdamped
 
 ## Util functions
 def valid_response_input(strg, search=re.compile(r'^[0-9\n\r\tEe+-.]+$').search):
@@ -51,6 +53,7 @@ def model_input(request, model_id='fractional'):
 @require_GET
 def pidtune_results(request, data_input, plant_slug):
     tmp_plant = get_object_or_404(db_plant, url_ref=plant_slug)
+    print(tmp_plant.plant_params)
     plant_model = plant.FractionalOrderModel(
             alpha=float(tmp_plant.plant_params['alpha'],),
             time_constant=float(tmp_plant.plant_params['T']),
@@ -169,11 +172,12 @@ def plant_open_loop_response(request):
 
         if model_id == 'fractional':
             return plant_open_loop_response_fractional(request, data)
-        # elif model_id == 'alfaro123c_etc':
-        #     return plant_model_fractional(request, data)
-
-        # elif model_id == 'alfaro123c_etcetc':
-        #     return plant_model_fractional(request, data)
+        elif model_id == 'alfaro123c_first_order':
+            return plant_model_alfaro_first_order(request, data)
+        elif model_id == 'alfaro123c_second_order':
+            return plant_model_alfaro_second_order(request, data)
+        elif model_id == 'alfaro123c_overdamped':
+            return plant_model_alfaro_overdamped(request, data)
 
         else:
             return JsonResponse(status=400, data={"message": "Invalid model ID"})
@@ -193,15 +197,19 @@ def plant_model(request):
 
         if 'model_id' not in data:
             return JsonResponse(status=400, data={"message": "No model ID"})
-
+        print(data)
         if data['model_id'] == 'fractional':
+            print(data)
             return plant_model_fractional(request, data)
 
-        # elif data['model_id'] == 'alfaro123c_etc':
-        #     return plant_model_fractional(request, data)
+        elif data['model_id'] == 'alfaro123c_first_order':
+            return plant_model_alfaro_first_order(request, data)
 
-        # elif data['model_id'] == 'alfaro123c_etcetc':
-        #     return plant_model_fractional(request, data)
+        elif data['model_id'] == 'alfaro123c_second_order':
+            return plant_model_alfaro_second_order(request, data)
+        
+        elif data['model_id'] == 'alfaro123c_overdamped':
+            return plant_model_alfaro_overdamped(request, data)
 
         else:
             return JsonResponse(status=400, data={"message": "Invalid model ID"})
