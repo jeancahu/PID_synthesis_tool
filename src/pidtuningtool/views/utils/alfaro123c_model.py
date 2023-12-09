@@ -183,7 +183,7 @@ def plant_open_loop_response_alfaro_first_order(request, data):
                               })
 
 @require_POST
-def plant_open_loop_response_alfaro_first_order(request, data):
+def plant_open_loop_response_alfaro_second_order(request, data):
     time_vector=[]
     step_vector=[]
     resp_vector=[]
@@ -234,7 +234,7 @@ def plant_open_loop_response_alfaro_first_order(request, data):
                               })
 
 @require_POST
-def plant_open_loop_response_alfaro_first_order(request, data):
+def plant_open_loop_response_alfaro_overdamped(request, data):
     time_vector=[]
     step_vector=[]
     resp_vector=[]
