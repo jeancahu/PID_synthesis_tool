@@ -10,7 +10,7 @@ import re
 
 @require_POST
 def plant_model_alfaro_first_order(request, data):
-    if 'in_frac' not in data or \
+    if 'in_cr' not in data or \
        'in_time' not in data or \
        'in_prop' not in data or \
        'in_dtime' not in data:
@@ -45,12 +45,12 @@ def plant_model_alfaro_first_order(request, data):
         "message": "Web push successful",
         "url_slug": tmp_plant.url_ref,
         "simulation": plant_model.toResponse(),
-        'model_id': "fractional",
+        'model_id': "alfaro123c_first_order",
     })
 
 @require_POST
 def plant_model_alfaro_second_order(request, data):
-    if 'in_frac' not in data or \
+    if 'in_cr' not in data or \
        'in_time' not in data or \
        'in_prop' not in data or \
        'in_dtime' not in data:
@@ -85,12 +85,12 @@ def plant_model_alfaro_second_order(request, data):
         "message": "Web push successful",
         "url_slug": tmp_plant.url_ref,
         "simulation": plant_model.toResponse(),
-        'model_id': "fractional",
+        'model_id': "alfaro123c_second_order",
     })
 
 @require_POST
 def plant_model_alfaro_overdamped(request, data):
-    if 'in_frac' not in data or \
+    if 'in_cr' not in data or \
        'in_time' not in data or \
        'in_prop' not in data or \
        'in_dtime' not in data:
@@ -125,7 +125,7 @@ def plant_model_alfaro_overdamped(request, data):
         "message": "Web push successful",
         "url_slug": tmp_plant.url_ref,
         "simulation": plant_model.toResponse(),
-        'model_id': "fractional",
+        'model_id': "alfaro123c_overdamped",
     })
 
 #-------------------------------------------------------------------------#
